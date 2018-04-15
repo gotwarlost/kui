@@ -1,0 +1,20 @@
+{
+  "name": "kui-shared-types",
+  "version": "0.1.0",
+  "description": "types shared between server and webapp code",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "check": "npm run build && npm run lint",
+    "clean": "rm -rf ./dist",
+    "lint": "tslint 'src/**/*.ts'",
+    "test": "echo no tests"
+  },
+  "author": "gotwarlost",
+  "license": "MIT",
+  "peerDependencies": {
+    "tslint": "^5.9.1",
+    "typescript": "^2.8.1"
+  }
+}

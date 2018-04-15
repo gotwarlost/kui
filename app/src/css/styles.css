@@ -1,0 +1,49 @@
+
+.list-link {
+    padding: 0.25em 0;
+    border-bottom: 2px solid white;
+}
+
+.list-link-selected {
+    border-bottom: 2px solid #669;
+}
+
+.navbar {
+    padding: 0.5em;
+    margin-bottom: 1em;
+    border-bottom: 1px solid #ccc;
+}
+
+.padded-radio {
+    padding-left: 1em;
+    padding-right: 0.25em;
+}
+
+.ns-list {
+    display: inline-block;
+    margin-left: 2em;
+}
+
+.inline-stats {
+    font-weight: normal;
+    font-size: 75%;
+    font-style: italic;
+}
+
+.label-item {
+    display: inline-block;
+    padding-bottom: 0.25em;
+}
+
+pre.wrapped {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+pre.prettyprint {
+    border: none;
+}
+
+.hide {
+    display: none;
+}

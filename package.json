@@ -1,0 +1,46 @@
+{
+  "name": "kui",
+  "productName": "kui",
+  "version": "0.1.0",
+  "description": "Local kubernetes UI",
+  "scripts": {
+    "clean": "rm -rf dist/ && (cd shared && npm run clean) && (cd app && npm run clean)",
+    "clean-build": "npm run clean && npm run build",
+    "setup": "./setup.sh",
+    "lint": "tslint '*.js' 'src/**/*.ts' && (cd shared && npm run lint) && (cd app && npm run lint)",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts",
+    "build-chrome": "tsc -p src/",
+    "build": "(cd shared && npm run build) && npm run build-chrome && (cd app && npm run build)",
+    "watch": "(cd app && npm run watch)",
+    "start": "electron dist/",
+    "pack": "./pack.sh"
+  },
+  "keywords": [],
+  "author": "gotwarlost",
+  "license": "MIT",
+  "dependencies": {
+    "JSONStream": "^1.3.2",
+    "express": "^4.16.2",
+    "history": "^4.7.2",
+    "hyperquest": "^2.1.2",
+    "js-yaml": "^3.10.0",
+    "kui-shared-types": "file:./shared",
+    "open": "0.0.5",
+    "rxjs": "^5.5.6"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/es6-promise": "0.0.33",
+    "@types/express": "^4.11.0",
+    "@types/history": "^4.6.2",
+    "@types/js-yaml": "^3.10.1",
+    "@types/mocha": "^5.0.0",
+    "chai": "^4.1.2",
+    "electron": "1.7.9",
+    "electron-packager": "^12.0.1",
+    "mocha": "^5.0.5",
+    "ts-node": "^5.0.1",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
+  }
+}

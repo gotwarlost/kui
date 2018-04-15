@@ -1,0 +1,91 @@
+{
+  "name": "kui-app",
+  "version": "0.1.0",
+  "description": "Webapp for  kubernetes UI",
+  "scripts": {
+    "build": "webpack",
+    "clean": "rm -rf dist/",
+    "lint": "tslint '*.js' 'src/**/*.ts' 'src/**/*.tsx'",
+    "check": "npm run build && npm run lint",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts",
+    "clean-build": "npm run clean && npm run build",
+    "watch": "webpack --watch"
+  },
+  "keywords": [],
+  "author": "gotwarlost",
+  "license": "MIT",
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {
+        "packageManager": "npm",
+        "icon": "./icons/k8s"
+      },
+      "electronWinstallerConfig": {
+        "name": "new_app"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": "",
+        "name": "newapp"
+      }
+    }
+  },
+  "dependencies": {
+    "clone": "^2.1.1",
+    "deep-equal": "^1.0.1",
+    "kui-shared-types": "file:../shared",
+    "moment": "^2.20.1",
+    "oboe": "^2.1.4",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.6",
+    "react-router": "^4.2.0",
+    "react-router-redux": "~5.0.0-alpha.9",
+    "react-table": "^6.7.6",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "semantic-ui-react": "^0.77.1"
+  },
+  "devDependencies": {
+    "@types/clone": "^0.1.30",
+    "@types/es6-promise": "0.0.33",
+    "@types/oboe": "^2.0.28",
+    "@types/react": "^16.0.3",
+    "@types/react-dom": "^16.0.3",
+    "@types/react-redux": "^5.0.14",
+    "@types/react-router": "^4.0.23",
+    "@types/react-router-dom": "^4.2.5",
+    "@types/react-router-redux": "^5.0.12",
+    "@types/request": "^2.0.9",
+    "awesome-typescript-loader": "^3.4.1",
+    "copy-webpack-plugin": "^4.3.1",
+    "source-map-loader": "^0.2.3",
+    "webpack": "^3.10.0"
+  },
+  "peerDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^5.0.0",
+    "chai": "^4.1.2",
+    "mocha": "^5.0.5",
+    "ts-node": "^5.0.1",
+    "tslint": "^5.9.1",
+    "typescript": "^2.8.1"
+  }
+}
