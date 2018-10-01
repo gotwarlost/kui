@@ -1,0 +1,500 @@
+{
+  "kind": "PodList",
+  "apiVersion": "v1",
+  "metadata": {
+    "selfLink": "/api/v1/namespaces/default/pods",
+    "resourceVersion": "26657519"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "test-identity-client-84d67bb5c7-55z9q",
+        "generateName": "test-identity-client-84d67bb5c7-",
+        "namespace": "default",
+        "selfLink": "/api/v1/namespaces/default/pods/test-identity-client-84d67bb5c7-55z9q",
+        "uid": "0453cfed-c2a6-11e8-8fcb-0633d9a73992",
+        "resourceVersion": "26140204",
+        "creationTimestamp": "2018-09-27T22:38:12Z",
+        "labels": {
+          "app": "test-identity-client",
+          "pod-template-hash": "4082366173"
+        },
+        "annotations": {
+          "kubernetes.io/psp": "200-allow-root"
+        },
+        "ownerReferences": [
+          {
+            "apiVersion": "extensions/v1beta1",
+            "kind": "ReplicaSet",
+            "name": "test-identity-client-84d67bb5c7",
+            "uid": "c84363f8-912d-11e8-b61d-0255f6cabc88",
+            "controller": true,
+            "blockOwnerDeletion": true
+          }
+        ]
+      },
+      "spec": {
+        "volumes": [
+          {
+            "name": "test-identity-client-token-cjjdr",
+            "secret": {
+              "secretName": "test-identity-client-token-cjjdr",
+              "defaultMode": 420
+            }
+          }
+        ],
+        "containers": [
+          {
+            "name": "main",
+            "image": "images/test-identity-client:0.1-20180625-060503",
+            "ports": [
+              {
+                "containerPort": 8080,
+                "protocol": "TCP"
+              }
+            ],
+            "resources": {
+              "limits": {
+                "cpu": "1",
+                "memory": "1Gi"
+              },
+              "requests": {
+                "cpu": "1",
+                "memory": "1Gi"
+              }
+            },
+            "volumeMounts": [
+              {
+                "name": "test-identity-client-token-cjjdr",
+                "readOnly": true,
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+              }
+            ],
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "imagePullPolicy": "IfNotPresent"
+          }
+        ],
+        "restartPolicy": "Always",
+        "terminationGracePeriodSeconds": 30,
+        "dnsPolicy": "ClusterFirst",
+        "serviceAccountName": "test-identity-client",
+        "serviceAccount": "test-identity-client",
+        "nodeName": "ip-10-200-133-84.us-west-2.compute.internal",
+        "securityContext": {},
+        "schedulerName": "default-scheduler",
+        "tolerations": [
+          {
+            "key": "node.kubernetes.io/not-ready",
+            "operator": "Exists",
+            "effect": "NoExecute",
+            "tolerationSeconds": 300
+          },
+          {
+            "key": "node.kubernetes.io/unreachable",
+            "operator": "Exists",
+            "effect": "NoExecute",
+            "tolerationSeconds": 300
+          }
+        ]
+      },
+      "status": {
+        "phase": "Running",
+        "conditions": [
+          {
+            "type": "Initialized",
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2018-09-27T22:38:12Z"
+          },
+          {
+            "type": "Ready",
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2018-09-27T22:38:23Z"
+          },
+          {
+            "type": "PodScheduled",
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2018-09-27T22:38:12Z"
+          }
+        ],
+        "hostIP": "10.200.133.84",
+        "podIP": "100.108.30.132",
+        "startTime": "2018-09-27T22:38:12Z",
+        "containerStatuses": [
+          {
+            "name": "main",
+            "state": {
+              "running": {
+                "startedAt": "2018-09-27T22:38:23Z"
+              }
+            },
+            "lastState": {},
+            "ready": true,
+            "restartCount": 0,
+            "image": "images/test-identity-client:0.1-20180625-060503",
+            "imageID": "docker-pullable://images/test-identity-client@sha256:09b697e20ed1510fb796bf2ea6bb75ede8b50db11b8cbf473a4ba7b6e7fbaf91",
+            "containerID": "docker://c48cf06e902289760adfc603e07634c4218b77998ac82e8f1de60868a36f2551"
+          }
+        ],
+        "qosClass": "Guaranteed"
+      }
+    },
+    {
+      "metadata": {
+        "name": "test-identity-service-5789d445cf-znmqw",
+        "generateName": "test-identity-service-5789d445cf-",
+        "namespace": "default",
+        "selfLink": "/api/v1/namespaces/default/pods/test-identity-service-5789d445cf-znmqw",
+        "uid": "daaf6aca-c2a6-11e8-8fcb-0633d9a73992",
+        "resourceVersion": "26142148",
+        "creationTimestamp": "2018-09-27T22:44:12Z",
+        "labels": {
+          "app": "test-identity-service",
+          "pod-template-hash": "1345800179"
+        },
+        "annotations": {
+          "kubernetes.io/psp": "200-allow-root"
+        },
+        "ownerReferences": [
+          {
+            "apiVersion": "extensions/v1beta1",
+            "kind": "ReplicaSet",
+            "name": "test-identity-service-5789d445cf",
+            "uid": "c80e58a4-912d-11e8-b61d-0255f6cabc88",
+            "controller": true,
+            "blockOwnerDeletion": true
+          }
+        ]
+      },
+      "spec": {
+        "volumes": [
+          {
+            "name": "accesslogs",
+            "emptyDir": {}
+          },
+          {
+            "name": "test-identity-service-token-pr9sh",
+            "secret": {
+              "secretName": "test-identity-service-token-pr9sh",
+              "defaultMode": 420
+            }
+          }
+        ],
+        "containers": [
+          {
+            "name": "main",
+            "image": "images/test-identity-service:0.1-20180625-060503",
+            "ports": [
+              {
+                "containerPort": 8080,
+                "protocol": "TCP"
+              }
+            ],
+            "resources": {},
+            "volumeMounts": [
+              {
+                "name": "test-identity-service-token-pr9sh",
+                "readOnly": true,
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+              }
+            ],
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "imagePullPolicy": "IfNotPresent"
+          },
+          {
+            "name": "proxy",
+            "image": "images/pod-tls-proxy:0.1-20180625-060503",
+            "ports": [
+              {
+                "containerPort": 4443,
+                "protocol": "TCP"
+              }
+            ],
+            "resources": {},
+            "volumeMounts": [
+              {
+                "name": "accesslogs",
+                "mountPath": "/logs"
+              },
+              {
+                "name": "test-identity-service-token-pr9sh",
+                "readOnly": true,
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+              }
+            ],
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "imagePullPolicy": "IfNotPresent"
+          }
+        ],
+        "restartPolicy": "Always",
+        "terminationGracePeriodSeconds": 30,
+        "dnsPolicy": "ClusterFirst",
+        "serviceAccountName": "test-identity-service",
+        "serviceAccount": "test-identity-service",
+        "nodeName": "ip-10-200-151-23.us-west-2.compute.internal",
+        "securityContext": {},
+        "schedulerName": "default-scheduler",
+        "tolerations": [
+          {
+            "key": "node.kubernetes.io/not-ready",
+            "operator": "Exists",
+            "effect": "NoExecute",
+            "tolerationSeconds": 300
+          },
+          {
+            "key": "node.kubernetes.io/unreachable",
+            "operator": "Exists",
+            "effect": "NoExecute",
+            "tolerationSeconds": 300
+          }
+        ]
+      },
+      "status": {
+        "phase": "Running",
+        "conditions": [
+          {
+            "type": "Initialized",
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2018-09-27T22:44:12Z"
+          },
+          {
+            "type": "Ready",
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2018-09-27T22:48:07Z"
+          },
+          {
+            "type": "PodScheduled",
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2018-09-27T22:44:12Z"
+          }
+        ],
+        "hostIP": "10.200.151.23",
+        "podIP": "100.123.115.138",
+        "startTime": "2018-09-27T22:44:12Z",
+        "containerStatuses": [
+          {
+            "name": "main",
+            "state": {
+              "running": {
+                "startedAt": "2018-09-27T22:45:24Z"
+              }
+            },
+            "lastState": {},
+            "ready": true,
+            "restartCount": 0,
+            "image": "images/test-identity-service:0.1-20180625-060503",
+            "imageID": "docker-pullable://images/test-identity-service@sha256:a42036d6a1ffcf090ac2f93d57dd74833969645659244763af549f82632bb4c3",
+            "containerID": "docker://29f3723d20623d08309b89c42a5586fcac37327262a9acc6542aea2a53cafa4b"
+          },
+          {
+            "name": "proxy",
+            "state": {
+              "running": {
+                "startedAt": "2018-09-27T22:48:06Z"
+              }
+            },
+            "lastState": {},
+            "ready": true,
+            "restartCount": 0,
+            "image": "images/pod-tls-proxy:0.1-20180625-060503",
+            "imageID": "docker-pullable://images/pod-tls-proxy@sha256:daf0eb2dde07c39321fb116dc0a2f6298278ffa32b63ccd95d7125f86f39c180",
+            "containerID": "docker://2961e9fd4ae09ba2e280b081fa39754d88960ab4bc4d389b817ea3b2a55861aa"
+          }
+        ],
+        "qosClass": "BestEffort"
+      }
+    },
+    {
+      "metadata": {
+        "name": "test-identity-service1-6c66f967f5-2pf57",
+        "generateName": "test-identity-service1-6c66f967f5-",
+        "namespace": "default",
+        "selfLink": "/api/v1/namespaces/default/pods/test-identity-service1-6c66f967f5-2pf57",
+        "uid": "daabc398-c2a6-11e8-8fcb-0633d9a73992",
+        "resourceVersion": "26142113",
+        "creationTimestamp": "2018-09-27T22:44:12Z",
+        "labels": {
+          "app": "test-identity-service1",
+          "pod-template-hash": "2722952391"
+        },
+        "annotations": {
+          "kubernetes.io/psp": "200-allow-root"
+        },
+        "ownerReferences": [
+          {
+            "apiVersion": "extensions/v1beta1",
+            "kind": "ReplicaSet",
+            "name": "test-identity-service1-6c66f967f5",
+            "uid": "c79727d0-ac62-11e8-af32-0a3b9a052cac",
+            "controller": true,
+            "blockOwnerDeletion": true
+          }
+        ]
+      },
+      "spec": {
+        "volumes": [
+          {
+            "name": "test-identity-service1-token-xvq44",
+            "secret": {
+              "secretName": "test-identity-service1-token-xvq44",
+              "defaultMode": 420
+            }
+          },
+          {
+            "name": "tlsaccesslogs",
+            "emptyDir": {}
+          }
+        ],
+        "containers": [
+          {
+            "name": "main",
+            "image": "images/test-identity-service:0.1-20180625-060503",
+            "ports": [
+              {
+                "containerPort": 8080,
+                "protocol": "TCP"
+              }
+            ],
+            "resources": {},
+            "volumeMounts": [
+              {
+                "name": "test-identity-service1-token-xvq44",
+                "readOnly": true,
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+              }
+            ],
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "imagePullPolicy": "IfNotPresent"
+          },
+          {
+            "name": "tls-proxy",
+            "image": "images/pod-tls-proxy:0.1-20180924-181900-8ef792e",
+            "args": [
+              "--never-fail",
+              "--proxy-port=8080",
+              "--listen-port=4443"
+            ],
+            "ports": [
+              {
+                "containerPort": 4443,
+                "protocol": "TCP"
+              }
+            ],
+            "resources": {
+              "limits": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            },
+            "volumeMounts": [
+              {
+                "name": "test-identity-service1-token-xvq44",
+                "readOnly": true,
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+              },
+              {
+                "name": "tlsaccesslogs",
+                "mountPath": "/logs"
+              }
+            ],
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "imagePullPolicy": "IfNotPresent"
+          }
+        ],
+        "restartPolicy": "Always",
+        "terminationGracePeriodSeconds": 30,
+        "dnsPolicy": "ClusterFirst",
+        "serviceAccountName": "test-identity-service1",
+        "serviceAccount": "test-identity-service1",
+        "nodeName": "ip-10-200-151-23.us-west-2.compute.internal",
+        "securityContext": {},
+        "schedulerName": "default-scheduler",
+        "tolerations": [
+          {
+            "key": "node.kubernetes.io/not-ready",
+            "operator": "Exists",
+            "effect": "NoExecute",
+            "tolerationSeconds": 300
+          },
+          {
+            "key": "node.kubernetes.io/unreachable",
+            "operator": "Exists",
+            "effect": "NoExecute",
+            "tolerationSeconds": 300
+          }
+        ]
+      },
+      "status": {
+        "phase": "Running",
+        "conditions": [
+          {
+            "type": "Initialized",
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2018-09-27T22:44:12Z"
+          },
+          {
+            "type": "Ready",
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2018-09-27T22:47:58Z"
+          },
+          {
+            "type": "PodScheduled",
+            "status": "True",
+            "lastProbeTime": null,
+            "lastTransitionTime": "2018-09-27T22:44:12Z"
+          }
+        ],
+        "hostIP": "10.200.151.23",
+        "podIP": "100.123.115.139",
+        "startTime": "2018-09-27T22:44:12Z",
+        "containerStatuses": [
+          {
+            "name": "main",
+            "state": {
+              "running": {
+                "startedAt": "2018-09-27T22:44:55Z"
+              }
+            },
+            "lastState": {},
+            "ready": true,
+            "restartCount": 0,
+            "image": "images/test-identity-service:0.1-20180625-060503",
+            "imageID": "docker-pullable://images/test-identity-service@sha256:a42036d6a1ffcf090ac2f93d57dd74833969645659244763af549f82632bb4c3",
+            "containerID": "docker://e9e6b70f026e36ec01529e89bd1a95139c9fd0ba05cda8074c1a6e59433aa25a"
+          },
+          {
+            "name": "tls-proxy",
+            "state": {
+              "running": {
+                "startedAt": "2018-09-27T22:47:58Z"
+              }
+            },
+            "lastState": {},
+            "ready": true,
+            "restartCount": 0,
+            "image": "images/pod-tls-proxy:0.1-20180924-181900-8ef792e",
+            "imageID": "docker-pullable://images/pod-tls-proxy@sha256:0c46b634aa031cbb12f5b4936f06e0178876e025bff55ee5f41a8c8b46dbb136",
+            "containerID": "docker://782e7a1cad3ac63bd903c9d3d7a587e592d401414555f639b9c0124c6a18fde8"
+          }
+        ],
+        "qosClass": "Burstable"
+      }
+    }
+  ]
+}

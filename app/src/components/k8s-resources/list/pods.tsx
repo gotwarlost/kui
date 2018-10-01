@@ -3,22 +3,20 @@ import {genericListForResource} from "./generic-list";
 const cols = [
     {
         Header: "Ready",
-        accessor: "ready",
+        accessor: "derived.ready",
         id: "ready",
         sortable: false,
         width: 60,
     },
-    /*
     {
         Header: "Status",
-        accessor: "status",
+        accessor: "derived.status",
         id: "status",
         width: 80,
     },
-    */
     {
         Header: "Restarts",
-        accessor: "restarts",
+        accessor: "derived.restarts",
         headerStyle: {textAlign: "right"},
         id: "restarts",
         style: {textAlign: "right"},
@@ -26,12 +24,12 @@ const cols = [
     },
     {
         Header: "IP",
-        accessor: "ip",
+        accessor: "derived.ip",
         id: "ip",
     },
     {
         Header: "Node",
-        accessor: "node",
+        accessor: "derived.nodeName",
         id: "node",
     },
 ];

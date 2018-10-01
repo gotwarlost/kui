@@ -5,12 +5,12 @@ import {genericListForResource} from "./generic-list";
 const cols = [
     {
         Header: "Selector",
-        accessor: "selector",
+        accessor: "derived.selector",
         id: "selector",
     },
     {
         Header: "Cluster IP",
-        accessor: "clusterIP",
+        accessor: "spec.clusterIP",
         id: "clusterIP",
     },
     {
@@ -23,7 +23,7 @@ const cols = [
 ];
 
 const portsCell = (item: IServiceProjection): React.ReactNode => {
-    const p = item.portsArray || [];
+    const p = item.spec.ports || [];
     const lines: React.ReactNode[] = [];
     let count = 0;
     p.forEach((port) => {

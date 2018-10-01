@@ -285,7 +285,16 @@ func (s *server) getOrList(w http.ResponseWriter, r *http.Request, object bool) 
 	}
 	defer resp.Body.Close()
 	w.WriteHeader(resp.StatusCode)
-	io.Copy(w, resp.Body)
+
+	if object {
+		io.Copy(w, resp.Body)
+		return
+	}
+
+	filter := newFilter(resp.Body, w, res)
+	if err := filter.process(); err != nil {
+		log.Println(err)
+	}
 }
 
 func (s *server) listResources(w http.ResponseWriter, r *http.Request) {
