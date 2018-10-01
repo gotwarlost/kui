@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import {Grid} from "semantic-ui-react";
 import {State, StateReader} from "../model/state";
 import {ListPageSelection} from "../model/types";
+import {Breadcrumb} from "./breadcrumb";
 import {listFor} from "./k8s-resources/list";
 import {LeftNav} from "./left-nav";
 
@@ -24,6 +25,7 @@ export class ListPageUI extends React.Component<IListPage, {}> {
                         <LeftNav/>
                     </Grid.Column>
                     <Grid.Column width={13}>
+                        <Breadcrumb/>
                         {...pages}
                     </Grid.Column>
                 </Grid.Row>

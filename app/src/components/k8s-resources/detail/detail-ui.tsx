@@ -31,7 +31,6 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
     }
 
     public render() {
-        const state = this._state();
         if (!this.props.qr) {
             return null;
         }

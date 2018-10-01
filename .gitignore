@@ -9,5 +9,7 @@ dist/
 docs/
 kui-*
 kui.dmg
+nohup.out
+vendor/
 
 

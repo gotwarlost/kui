@@ -1,8 +1,8 @@
 import * as deepEqual from "deep-equal";
 import {Client} from "../../client";
-import {ActionFactory, ActionTypes} from "../actions";
+import {ActionFactory} from "../actions";
 import {State, StateReader} from "../state";
-import {ContextCache, QueryScope, ResourceQuery} from "../types";
+import {ResourceQuery} from "../types";
 
 const loadList = (dispatch: any, client: Client, q: ResourceQuery) => {
     dispatch(ActionFactory.loadData({

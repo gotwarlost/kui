@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import {Grid} from "semantic-ui-react";
 import {State, StateReader} from "../model/state";
 import {ObjectSelection} from "../model/types";
+import {Breadcrumb} from "./breadcrumb";
 import {detailFor} from "./k8s-resources/detail";
 import {LeftNav} from "./left-nav";
 
@@ -22,6 +23,7 @@ export class DetailPageUI extends React.Component<IDetailPage, {}> {
                         <LeftNav/>
                     </Grid.Column>
                     <Grid.Column width={13}>
+                        <Breadcrumb/>
                         {detailFor(this.props.selection.resourceName)}
                     </Grid.Column>
                 </Grid.Row>

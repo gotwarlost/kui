@@ -6,7 +6,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     devtool: "source-map",
-    mode: "production",
+    mode: "development",
     entry: {
         app: path.resolve(srcDir, "run.ts"),
     },
@@ -31,6 +31,10 @@ module.exports = {
     },
 
     plugins: [
+        new webpack.DllReferencePlugin({
+            context: ".",
+            manifest: require(path.resolve(distDir, "vendor-manifest.json")),
+        }),
         new CopyWebpackPlugin([
             {
                 from: path.resolve(srcDir, "index.html"),
