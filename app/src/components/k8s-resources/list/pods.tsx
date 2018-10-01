@@ -8,12 +8,14 @@ const cols = [
         sortable: false,
         width: 60,
     },
+    /*
     {
         Header: "Status",
         accessor: "status",
         id: "status",
         width: 80,
     },
+    */
     {
         Header: "Restarts",
         accessor: "restarts",

@@ -148,13 +148,13 @@ export class ListUI extends React.Component<IList, {}> {
     private getAgeColumn(): IReactTableColumn {
         const that = this;
         return {
-            Cell: ({original}) => original.creationTimestamp && (
-                <span title={original.creationTimestamp}>
+            Cell: ({original}) => original.metadata.creationTimestamp && (
+                <span title={original.metadata.creationTimestamp}>
                     {that.age(original)}
                 </span>
             ),
             Header: "Created",
-            accessor: "creationTimestamp",
+            accessor: "metadata.creationTimestamp",
             headerStyle: {textAlign: "right"},
             id: "__age__",
             style: {textAlign: "right"},
@@ -163,10 +163,10 @@ export class ListUI extends React.Component<IList, {}> {
     }
 
     private age(item: any): string {
-        if (!item.creationTimestamp) {
+        if (!item.metadata.creationTimestamp) {
             return "";
         }
-        return ageInWords(item.creationTimestamp);
+        return ageInWords(item.metadata.creationTimestamp);
     }
 
     private onClick(e: React.SyntheticEvent<HTMLElement>) {
