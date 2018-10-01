@@ -16,6 +16,7 @@ var projections = map[string]func() projection{
 	"daemonsets":  func() projection { return &daemonset{} },
 	"deployments": func() projection { return &deployment{} },
 	"events":      func() projection { return &event{} },
+	"nodes":       func() projection { return &node{} },
 	"pods":        func() projection { return &pod{} },
 	"services":    func() projection { return &service{} },
 	"":            func() projection { return &defaultObject{} },
@@ -255,6 +256,8 @@ type outPod struct {
 
 func (p *pod) clear() {
 	p.defaultObject.clear()
+	p.Spec.NodeName = ""
+	p.Status = v1.PodStatus{}
 }
 
 func (p *pod) projectData(w io.Writer) error {
@@ -289,4 +292,57 @@ func (p *pod) projectData(w io.Writer) error {
 	}
 	_, err = w.Write(data)
 	return err
+}
+
+type node struct {
+	defaultObject
+	Spec struct {
+		PodCIDR    string `json:"podCIDR"`
+		ExternalID string `json:"externalID"`
+	}
+	Status v1.NodeStatus `json:"status"`
+}
+
+func (n *node) clear() {
+	n.defaultObject.clear()
+	n.Spec.PodCIDR = ""
+	n.Spec.ExternalID = ""
+	n.Status = v1.NodeStatus{}
+}
+
+func (n *node) projectData(w io.Writer) error {
+	out := outNode{
+		defaultObject: n.defaultObject,
+	}
+	out.Derived.Roles = n.defaultObject.Metadata.Labels["kubernetes.io/role"]
+	out.Derived.KubeletVersion = n.Status.NodeInfo.KubeletVersion
+	out.Derived.PodCIDR = n.Spec.PodCIDR
+	out.Derived.ExternalID = n.Spec.ExternalID
+	out.Derived.Status = "Unknown"
+	for _, c := range n.Status.Conditions {
+		if c.Type == v1.NodeReady {
+			if c.Status == v1.ConditionTrue {
+				out.Derived.Status = "Ready"
+			} else {
+				out.Derived.Status = "NotReady"
+			}
+		}
+	}
+	data, err := json.Marshal(out)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(data)
+	return err
+}
+
+type outNode struct {
+	defaultObject
+	Derived struct {
+		Status         string `json:"status"`
+		Roles          string `json:"roles"`
+		KubeletVersion string `json:"kubeletVersion"`
+		PodCIDR        string `json:"podCIDR"`
+		ExternalID     string `json:"externalID"`
+	} `json:"derived"`
 }

@@ -8,8 +8,10 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"github.com/dimfeld/httptreemux"
 	"github.com/gotwarlost/kui/pkg/kubeconfig"
@@ -49,11 +51,13 @@ type handler struct {
 	*server
 }
 
+var lg = log.New(os.Stderr, "[accesslog] ", 0)
+
 type logger struct {
 }
 
 func (l *logger) Log(rec accesslog.LogRecord) {
-	log.Printf("(%d) %s %s", rec.Status, rec.Method, rec.Uri)
+	lg.Printf("(%d, %15v) %s %s", rec.Status, rec.ElapsedTime, rec.Method, rec.Uri)
 }
 
 func New(files []string, staticRoot string) APIHandler {
@@ -233,6 +237,8 @@ func (s *server) getResourceInfo(cfg *kubeconfig.Config, ctx string, name string
 	return rr.ResourceInfo(name)
 }
 
+var downLog = log.New(os.Stderr, "[downstream] ", 0)
+
 func (s *server) getOrList(w http.ResponseWriter, r *http.Request, object bool) {
 	p := httptreemux.ContextParams(r.Context())
 	cfg, err := s.getConfig()
@@ -277,12 +283,20 @@ func (s *server) getOrList(w http.ResponseWriter, r *http.Request, object bool) 
 	}
 
 	u := conn.baseURL + ri.Prefix + gpath + endPath
-	log.Println("GET", u)
+
+	start := time.Now()
 	resp, err := conn.client.Get(u)
 	if err != nil {
+		downLog.Println("error: GET", u, ",", err)
 		http.Error(w, err.Error(), 500)
 		return
 	}
+	defer func() {
+		d := time.Now().Sub(start)
+		code := resp.StatusCode
+		downLog.Printf("(%d, %15v) %s %s", code, d, "GET", u)
+	}()
+
 	defer resp.Body.Close()
 	w.WriteHeader(resp.StatusCode)
 
