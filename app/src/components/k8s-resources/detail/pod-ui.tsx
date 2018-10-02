@@ -6,7 +6,7 @@ interface IContainerProps {
     status?: any;
 }
 
-function formatArgs(args: string[]): string {
+const formatArgs = (args: string[]): string => {
     const ret = [];
     args.forEach((arg) => {
         if (arg.length === 0 || arg.indexOf(" ") >= 0 || arg.indexOf("'") >= 0) {
@@ -18,9 +18,9 @@ function formatArgs(args: string[]): string {
         }
     });
     return ret.join("  ");
-}
+};
 
-function formatEnv(env: any[]) {
+const formatEnv = (env: any[]): React.ReactNode => {
     const rows = [];
     env.forEach((e) => {
         let cell = e.value;
@@ -75,9 +75,9 @@ function formatEnv(env: any[]) {
             </Table.Body>
         </Table>
     );
-}
+};
 
-function formatEnvSource(e) {
+const  formatEnvSource = (e): React.ReactNode  => {
     let base;
     let source;
     let name;
@@ -103,7 +103,7 @@ function formatEnvSource(e) {
             <Table.Cell>{name}{prefix}{opt}</Table.Cell>
         </Table.Row>
     );
-}
+};
 
 class Container extends React.Component<IContainerProps, {}> {
     public render() {
