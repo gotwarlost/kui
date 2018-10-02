@@ -1,15 +1,15 @@
 .DS_Store
 node_modules/
 out/
-*.js
 .idea/
 tmp/
 dist/
-!*.config.js
 docs/
 kui-*
 kui.dmg
 nohup.out
 vendor/
+!app/src/vendor/
+
 
 

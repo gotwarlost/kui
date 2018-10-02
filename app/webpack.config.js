@@ -1,4 +1,3 @@
-const webpack = require("webpack");
 const path = require("path");
 const srcDir = path.resolve("src");
 const distDir = path.resolve(__dirname, "..", "dist", "app");
@@ -29,12 +28,6 @@ module.exports = {
     },
 
     plugins: [
-        /*
-        new webpack.DllReferencePlugin({
-            context: ".",
-            manifest: require(path.resolve(distDir, "vendor-manifest.json")),
-        }),
-        */
         new CopyWebpackPlugin([
             {
                 from: path.resolve(srcDir, "index.html"),
