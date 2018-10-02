@@ -22,46 +22,47 @@ export interface IMetadataProps {
     kind: string;
 }
 
+export const renderObject = (obj: object): React.ReactNode => {
+    if (!obj) {
+        return null;
+    }
+    obj = clone(obj);
+    delete(obj[lastApplied]);
+    const keys = Object.keys(obj).sort();
+    if (keys.length === 0) {
+        return null;
+    }
+    const data = keys.map((key) => {
+        if (key === lastApplied) {
+            return null; // TODO: render this some other way
+        }
+        const value = obj[key];
+        let v = value;
+        if (value.length > 40) {
+            const trig = <span>{value.substring(0, 37)}{"..."}</span>;
+            v = (
+                <Popup trigger={trig} wide="very">
+                    {value}
+                </Popup>
+            );
+        }
+        return (
+            <span className="label-item" key={key}>
+                        <Label pointing="right">{key}</Label>{v}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </span>
+        );
+    });
+    return (
+        <React.Fragment>
+            {data}
+        </React.Fragment>
+    );
+};
+
 export class MetadataDetailUI extends React.Component<IMetadataProps, {}> {
     public render() {
         const meta = this.props.metadata as IMetadata;
-        const renderObject = (obj: object): React.ReactNode => {
-            if (!obj) {
-                return null;
-            }
-            obj = clone(obj);
-            delete(obj[lastApplied]);
-            const keys = Object.keys(obj).sort();
-            if (keys.length === 0) {
-                return null;
-            }
-            const data = keys.map((key) => {
-                if (key === lastApplied) {
-                    return null; // TODO: render this some other way
-                }
-                const value = obj[key];
-                let v = value;
-                if (value.length > 40) {
-                    const trig = <span>{value.substring(0, 37)}{"..."}</span>;
-                    v = (
-                        <Popup trigger={trig} wide="very">
-                            {value}
-                        </Popup>
-                    );
-                }
-                return (
-                    <span className="label-item" key={key}>
-                        <Label pointing="right">{key}</Label>{v}
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </span>
-                );
-            });
-            return (
-                <React.Fragment>
-                    {data}
-                </React.Fragment>
-            );
-        };
 
         const labelData = renderObject(meta.labels);
         let labelRow = null;
@@ -84,7 +85,7 @@ export class MetadataDetailUI extends React.Component<IMetadataProps, {}> {
                 </Table.Row>
             );
         }
-        const generationRow = meta.generation && (
+        const generationRow = meta.generation !== undefined && (
             <Table.Row>
                 <Table.Cell textAlign="right">Generation</Table.Cell>
                 <Table.Cell>{meta.generation}</Table.Cell>

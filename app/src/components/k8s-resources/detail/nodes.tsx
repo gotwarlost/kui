@@ -17,19 +17,19 @@ const getResources = (status): React.ReactFragment => {
                 </Table.Header>
                 <Table.Body>
                     <Table.Row>
-                        <Table.Cell>CPU</Table.Cell>
-                        <Table.Cell>{status.allocatable.cpu}</Table.Cell>
-                        <Table.Cell>{status.capacity.cpu}</Table.Cell>
+                        <Table.Cell textAlign="right">CPU</Table.Cell>
+                        <Table.Cell textAlign="right">{status.allocatable.cpu}</Table.Cell>
+                        <Table.Cell textAlign="right">{status.capacity.cpu}</Table.Cell>
                     </Table.Row>
                     <Table.Row>
-                        <Table.Cell>Memory</Table.Cell>
-                        <Table.Cell>{status.allocatable.memory}</Table.Cell>
-                        <Table.Cell>{status.capacity.memory}</Table.Cell>
+                        <Table.Cell textAlign="right">Memory</Table.Cell>
+                        <Table.Cell textAlign="right">{status.allocatable.memory}</Table.Cell>
+                        <Table.Cell textAlign="right">{status.capacity.memory}</Table.Cell>
                     </Table.Row>
                     <Table.Row>
-                        <Table.Cell>Pods</Table.Cell>
-                        <Table.Cell>{status.allocatable.pods}</Table.Cell>
-                        <Table.Cell>{status.capacity.pods}</Table.Cell>
+                        <Table.Cell textAlign="right">Pods</Table.Cell>
+                        <Table.Cell textAlign="right">{status.allocatable.pods}</Table.Cell>
+                        <Table.Cell textAlign="right">{status.capacity.pods}</Table.Cell>
                     </Table.Row>
                 </Table.Body>
             </Table>
@@ -153,14 +153,14 @@ export const NodeDetail = genericDetailForResource(
                         {getResources(status)}
                         </Segment>
                     </Grid.Column>
-                    <Grid.Column width={8}>
-                        <Segment raised>
-                        {getSpec(spec)}
-                        </Segment>
-                    </Grid.Column>
                     <Grid.Column  width={8}>
                         <Segment raised>
                         {getNodeInfo(status)}
+                        </Segment>
+                    </Grid.Column>
+                    <Grid.Column width={8}>
+                        <Segment raised>
+                            {getSpec(spec)}
                         </Segment>
                     </Grid.Column>
                 </Grid>

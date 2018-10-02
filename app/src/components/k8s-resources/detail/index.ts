@@ -3,6 +3,7 @@ import {ConfigMapDetail} from "./configmaps";
 import {createDetailElement} from "./generic-detail";
 import {NodeDetail} from "./nodes";
 import {PodDetail} from "./pods";
+import {PrometheusRuleDetail} from "./prometheus-rules";
 import {ResourceQuotaDetail} from "./resourcequotas";
 import {ClusterRoleDetail, RoleDetail} from "./roles";
 import {SecretDetail} from "./secrets";
@@ -12,6 +13,7 @@ const pageMap = {
     configmaps: ConfigMapDetail,
     nodes: NodeDetail,
     pods: PodDetail,
+    prometheusrules: PrometheusRuleDetail,
     resourcequotas: ResourceQuotaDetail,
     roles: RoleDetail,
     secrets: SecretDetail,
