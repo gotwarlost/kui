@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Table} from "semantic-ui-react";
+import {Grid, Segment, Table} from "semantic-ui-react";
 import {ageInWords} from "../../../util";
 import {genericDetailForResource} from "./generic-detail";
 
@@ -142,10 +142,28 @@ export const NodeDetail = genericDetailForResource(
         const status = (item as any).status || {};
         return(
             <React.Fragment>
-                {getConditions(status)}
-                {getResources(status)}
-                {getSpec(spec)}
-                {getNodeInfo(status)}
+                <Grid stackable>
+                    <Grid.Column width={8}>
+                        <Segment raised>
+                        {getConditions(status)}
+                        </Segment>
+                    </Grid.Column>
+                    <Grid.Column width={8}>
+                        <Segment raised>
+                        {getResources(status)}
+                        </Segment>
+                    </Grid.Column>
+                    <Grid.Column width={8}>
+                        <Segment raised>
+                        {getSpec(spec)}
+                        </Segment>
+                    </Grid.Column>
+                    <Grid.Column  width={8}>
+                        <Segment raised>
+                        {getNodeInfo(status)}
+                        </Segment>
+                    </Grid.Column>
+                </Grid>
             </React.Fragment>
         );
     },

@@ -1,4 +1,5 @@
 import * as React from "react";
+import {Segment} from "semantic-ui-react";
 import {genericDetailForResource} from "./generic-detail";
 
 export const ConfigMapDetail = genericDetailForResource("configmaps",
@@ -8,12 +9,12 @@ export const ConfigMapDetail = genericDetailForResource("configmaps",
         const items = keys.map((key) => {
             const value = data[key];
             return (
-                <div key={key}>
+                <Segment raised key={key}>
                     <h4>{key}</h4>
                     <pre className="wrapped">
                         {value}
                     </pre>
-                </div>
+                </Segment>
             );
         });
         return (

@@ -144,12 +144,13 @@ func getSingularPluralNames(name, kind string) (string, string) {
 		var ret []string
 		for i := 0; i < len(s); i++ {
 			ch := s[i : i+1]
+			next := " "
+			if i < len(s)-1 {
+				next = s[i+1 : i+2]
+			}
 			if strings.ToUpper(ch) == ch {
-				if i > 0 {
-					ph := s[i-1 : i]
-					if ph != strings.ToUpper(ph) {
-						ret = append(ret, " ")
-					}
+				if i > 0 && next != strings.ToUpper(next) {
+					ret = append(ret, " ")
 				}
 			}
 			ret = append(ret, ch)

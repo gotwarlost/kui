@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Table} from "semantic-ui-react";
+import {Segment, Table} from "semantic-ui-react";
 import {genericDetailForResource} from "./generic-detail";
 
 const renderFn = (item): React.ReactNode => {
@@ -34,12 +34,15 @@ const renderFn = (item): React.ReactNode => {
         </Table.Header>
     );
     return (
-        <Table basic="very" celled collapsing compact>
-            {header}
-            <Table.Body>
-                {items}
-            </Table.Body>
-        </Table>
+        <Segment raised>
+            <h3>Permissions</h3>
+            <Table basic="very" celled collapsing compact>
+                {header}
+                <Table.Body>
+                    {items}
+                </Table.Body>
+            </Table>
+        </Segment>
     );
 };
 
