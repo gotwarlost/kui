@@ -1,5 +1,5 @@
-import {IContextDetail, IContextList, IResource, IResourceList} from "kui-shared-types";
 import * as oboe from "oboe";
+import {IContextDetail, IContextList, IResource, IResourceList} from "../model/types";
 
 export type listContextsCallback = (err: Error, result: IContextList) => void;
 export type getContextsCallback = (err: Error, result: IContextDetail) => void;

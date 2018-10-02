@@ -1,4 +1,3 @@
-import {IServiceProjection} from "kui-shared-types";
 import * as React from "react";
 import {genericListForResource} from "./generic-list";
 
@@ -22,7 +21,7 @@ const cols = [
     },
 ];
 
-const portsCell = (item: IServiceProjection): React.ReactNode => {
+const portsCell = (item): React.ReactNode => {
     const p = item.spec.ports || [];
     const lines: React.ReactNode[] = [];
     let count = 0;

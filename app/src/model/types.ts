@@ -1,8 +1,39 @@
-import {IContextDetail, IResource, IResourceList} from "kui-shared-types";
 
-// model objects shouldn't need a client dependency in any way.
-// re-export the things they need.
-export {IContextDetail, IResource, IResourceInfo, IResourceList} from "kui-shared-types";
+export interface IResourceMetadata {
+    name: string;
+    namespace?: string;
+    labels: object;
+}
+
+export interface IResource {
+    kind: string;
+    apiVersion: string;
+    metadata: IResourceMetadata;
+    spec: any;
+    status: any;
+}
+
+export interface IResourceList {
+    items: IResource[];
+}
+
+export interface IContextList {
+    default: string;
+    items: string[];
+    errors?: string[];
+}
+
+export interface IResourceInfo {
+    name: string;
+    isClusterResource: boolean;
+    displayName: string;
+    pluralName: string;
+}
+
+export interface IContextDetail {
+    defaultNamespace: string;
+    resources: IResourceInfo[];
+}
 
 // ResourceQuery is a query for a list or a single object.
 export class ResourceQuery {

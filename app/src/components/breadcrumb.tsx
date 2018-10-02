@@ -1,9 +1,9 @@
 import * as React from "react";
 import {connect} from "react-redux";
 import {Segment} from "semantic-ui-react";
+import {ActionFactory} from "../model/actions";
 import {overviewTitle, State, StateReader} from "../model/state";
 import {IResourceInfo, ListPageSelection, ObjectSelection, QueryScope} from "../model/types";
-import {ActionFactory} from "../model/actions";
 
 interface IPart {
     text: string;
@@ -34,11 +34,11 @@ export class BreadcrumbUI extends React.Component<IBreadcrumb, {}> {
         for (let i = 0; i < parts.length; i++) {
             const p = parts[i];
             if (p.link) {
-                partLinks.push(<span><a href={p.link} onClick={this.onClick}>{p.text}</a></span>)
+                partLinks.push(<span><a href={p.link} onClick={this.onClick}>{p.text}</a></span>);
             } else {
-                partLinks.push(<span>{p.text}</span>)
+                partLinks.push(<span>{p.text}</span>);
             }
-            if (i !== parts.length -1) {
+            if (i !== parts.length - 1) {
                 partLinks.push(<React.Fragment>&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</React.Fragment>);
             }
         }

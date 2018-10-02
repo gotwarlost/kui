@@ -6,17 +6,15 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     devtool: "source-map",
-    mode: "development",
     entry: {
         app: path.resolve(srcDir, "run.ts"),
     },
     module: {
         rules: [
             {
-                loader: "awesome-typescript-loader?configFileName=./src/tsconfig.json",
+                loader: "ts-loader?configFile=tsconfig.json",
                 test: /\.tsx?$/,
             },
-
             {
                 enforce: "pre",
                 loader: "source-map-loader",
@@ -31,10 +29,12 @@ module.exports = {
     },
 
     plugins: [
+        /*
         new webpack.DllReferencePlugin({
             context: ".",
             manifest: require(path.resolve(distDir, "vendor-manifest.json")),
         }),
+        */
         new CopyWebpackPlugin([
             {
                 from: path.resolve(srcDir, "index.html"),

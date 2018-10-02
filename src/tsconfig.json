@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "sourceMap": true,
-    "outDir": "../dist",
-    "rootDir": ".",
-    "lib": [ "es2015", "dom"]
-  }
-}

@@ -14,9 +14,8 @@ func TestProjection(t *testing.T) {
 	b, err := ioutil.ReadFile("testdata/pod-list.json")
 	require.Nil(t, err)
 
-	var pod defaultObject
 	var w bytes.Buffer
-	df := newFilter(bytes.NewReader(b), &w, &pod)
+	df := newFilter(bytes.NewReader(b), &w, "pods")
 	err = df.process()
 	require.Nil(t, err)
 	var generic interface{}
