@@ -4,7 +4,8 @@
   "description": "Webapp for  kubernetes UI",
   "scripts": {
     "build-app": "webpack",
-    "build": "npm run build-app",
+    "build-vendor": "webpack --config vendor.webpack.config.js",
+    "build": "npm run build-vendor && npm run build-app",
     "clean": "rm -rf ../dist/",
     "lint": "tslint '*.js' 'src/**/*.ts' 'src/**/*.tsx'",
     "check": "npm run build && npm run lint",
