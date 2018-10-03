@@ -16,7 +16,7 @@ const formatArgs = (args: string[]): string => {
     return ret.join("  ");
 };
 
-const formatPorts = (ports: any[]) : React.ReactNode => {
+const formatPorts = (ports: any[]): React.ReactNode => {
     let count = 0;
     const lines = [];
     ports.forEach((port) => {
@@ -45,7 +45,7 @@ const formatPorts = (ports: any[]) : React.ReactNode => {
         );
         lines.push(line);
     });
-    return (<React.Fragment>{lines}</React.Fragment>)
+    return <React.Fragment>{lines}</React.Fragment>;
 };
 
 const formatEnv = (env: any[]): React.ReactNode => {
@@ -223,14 +223,14 @@ class Container extends React.Component<IContainerProps, {}> {
                 <Table.Row>
                     <Table.Cell textAlign="right">Resources</Table.Cell>
                     <Table.Cell>{formatResources(spec.resources)}</Table.Cell>
-                </Table.Row>
+                </Table.Row>,
             );
         }
         rows.push(spec.volumeMounts && spec.volumeMounts.length &&
             <Table.Row>
                 <Table.Cell textAlign="right">Volume mounts</Table.Cell>
                 <Table.Cell>{formatMounts(spec.volumeMounts)}</Table.Cell>
-            </Table.Row>
+            </Table.Row>,
         );
         return (
             <Table basic="very" celled collapsing compact>
