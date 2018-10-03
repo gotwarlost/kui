@@ -1,10 +1,6 @@
 import * as React from "react";
 import {Table} from "semantic-ui-react";
-
-interface IContainerProps {
-    spec: any;
-    status?: any;
-}
+import {renderObject} from "./metadata-detail-ui";
 
 const formatArgs = (args: string[]): string => {
     const ret = [];
@@ -18,6 +14,38 @@ const formatArgs = (args: string[]): string => {
         }
     });
     return ret.join("  ");
+};
+
+const formatPorts = (ports: any[]) : React.ReactNode => {
+    let count = 0;
+    const lines = [];
+    ports.forEach((port) => {
+        const prefix = count === 0 ? null : <br/>;
+        count++;
+        const proto = port.protocol && (
+            <React.Fragment>
+                &nbsp;
+                <small>
+                    {"(" + port.protocol + ")"}
+                </small>
+            </React.Fragment>
+        );
+        const name = port.name && <b>{"[" + port.name + "]"}</b>;
+        const host = (port.hostIP || port.hostPort) &&
+            (<React.Fragment>&nbsp;&nbsp;(host: {port.hostIP} {port.hostPort})</React.Fragment>);
+        const line = (
+            <React.Fragment>
+                {prefix}
+                {name}
+                {" "}
+                {port.containerPort}
+                {proto}
+                {host}
+            </React.Fragment>
+        );
+        lines.push(line);
+    });
+    return (<React.Fragment>{lines}</React.Fragment>)
 };
 
 const formatEnv = (env: any[]): React.ReactNode => {
@@ -69,7 +97,7 @@ const formatEnv = (env: any[]): React.ReactNode => {
         );
     });
     return (
-        <Table basic="very" celled collapsing compact>
+        <Table basic="very" collapsing compact>
             <Table.Body>
                 {rows}
             </Table.Body>
@@ -105,6 +133,46 @@ const  formatEnvSource = (e): React.ReactNode  => {
     );
 };
 
+const formatResources = (res): React.ReactNode => {
+    const lines = [];
+    lines.push(res.requests && (
+        <React.Fragment>
+            <i>Request</i>&nbsp;&nbsp;
+            {renderObject(res.requests)}
+        </React.Fragment>
+    ));
+    lines.push(res.limits && (
+        <React.Fragment>
+            <i>Limit</i>&nbsp;&nbsp;
+            {renderObject(res.limits)}
+        </React.Fragment>
+    ));
+    return <React.Fragment>{lines}</React.Fragment>;
+};
+
+const formatMounts = (mounts: any[]): React.ReactNode => {
+    const rows = mounts.map( (mount) => {
+        const suffix = mount.subPath ? <React.Fragment>&nbsp;sub path: {mount.subPath}&nbsp;</React.Fragment> : "";
+        const suffix2 = mount.readOnly ? <React.Fragment>&nbsp;<i>read only</i>&nbsp;</React.Fragment> : "";
+        return (
+            <Table.Row>
+                <Table.Cell>{mount.name}</Table.Cell>
+                <Table.Cell><code>{mount.mountPath}</code></Table.Cell>
+                <Table.Cell>
+                    {suffix}
+                    {suffix2}
+                </Table.Cell>
+            </Table.Row>
+        );
+    });
+    return <Table basic="very" collapsing compact>{rows}</Table>;
+};
+
+interface IContainerProps {
+    spec: any;
+    status?: any;
+}
+
 class Container extends React.Component<IContainerProps, {}> {
     public render() {
         const spec = this.props.spec;
@@ -133,6 +201,12 @@ class Container extends React.Component<IContainerProps, {}> {
                 <Table.Cell>{spec.workingDir}</Table.Cell>
             </Table.Row>
         ));
+        rows.push(spec.ports && spec.ports.length && (
+            <Table.Row>
+                <Table.Cell textAlign="right">Ports</Table.Cell>
+                <Table.Cell>{formatPorts(spec.ports)}</Table.Cell>
+            </Table.Row>
+        ));
         rows.push(spec.env && spec.env.length && (
             <Table.Row>
                 <Table.Cell textAlign="right">Environment</Table.Cell>
@@ -144,14 +218,27 @@ class Container extends React.Component<IContainerProps, {}> {
                 rows.push(formatEnvSource(e));
             });
         }
-        const table = (
+        if (spec.resources && (spec.resources.requests || spec.resources.limits)) {
+            rows.push(
+                <Table.Row>
+                    <Table.Cell textAlign="right">Resources</Table.Cell>
+                    <Table.Cell>{formatResources(spec.resources)}</Table.Cell>
+                </Table.Row>
+            );
+        }
+        rows.push(spec.volumeMounts && spec.volumeMounts.length &&
+            <Table.Row>
+                <Table.Cell textAlign="right">Volume mounts</Table.Cell>
+                <Table.Cell>{formatMounts(spec.volumeMounts)}</Table.Cell>
+            </Table.Row>
+        );
+        return (
             <Table basic="very" celled collapsing compact>
                 <Table.Body>
                     {rows}
                 </Table.Body>
             </Table>
         );
-        return table;
     }
 }
 

@@ -9,7 +9,7 @@ export const PrometheusRuleDetail = genericDetailForResource(
         const spec = (item as any).spec || {};
         const makeRule = (rule) => {
             const rows = [];
-            rows.push(rule.alert && rule.alert.length &&
+            rows.push(rule.alert &&
                 <Table.Row>
                     <Table.Cell textAlign="right"><b>Alert</b></Table.Cell>
                     <Table.Cell><b>{rule.alert}</b></Table.Cell>
