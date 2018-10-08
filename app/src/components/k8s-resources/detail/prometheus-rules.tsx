@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Segment, Table} from "semantic-ui-react";
 import {genericDetailForResource} from "./generic-detail";
-import {renderObject} from "./metadata-detail-ui";
+import {InlineObject} from "./inline-object";
 
 export const PrometheusRuleDetail = genericDetailForResource(
     "prometheusrules",
@@ -36,13 +36,13 @@ export const PrometheusRuleDetail = genericDetailForResource(
             rows.push(rule.labels &&
                 <Table.Row>
                     <Table.Cell textAlign="right">Labels</Table.Cell>
-                    <Table.Cell>{renderObject(rule.labels || {})}</Table.Cell>
+                    <Table.Cell><InlineObject object={rule.labels || {}} /></Table.Cell>
                 </Table.Row>,
             );
             rows.push(rule.annotations &&
                 <Table.Row>
                     <Table.Cell textAlign="right">Annotations</Table.Cell>
-                    <Table.Cell>{renderObject(rule.annotations || {})}</Table.Cell>
+                    <Table.Cell><InlineObject object={rule.annotations || {}} /></Table.Cell>
                 </Table.Row>,
             );
             return (
