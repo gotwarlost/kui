@@ -57,7 +57,9 @@ type logger struct {
 }
 
 func (l *logger) Log(rec accesslog.LogRecord) {
-	lg.Printf("(%d, %15v) %s %s", rec.Status, rec.ElapsedTime, rec.Method, rec.Uri)
+	if rec.Status != http.StatusOK {
+		lg.Printf("(%d, %15v) %s %s", rec.Status, rec.ElapsedTime, rec.Method, rec.Uri)
+	}
 }
 
 func New(files []string, staticRoot string) APIHandler {
@@ -294,7 +296,9 @@ func (s *server) getOrList(w http.ResponseWriter, r *http.Request, object bool) 
 	defer func() {
 		d := time.Now().Sub(start)
 		code := resp.StatusCode
-		downLog.Printf("(%d, %15v) %s %s", code, d, "GET", u)
+		if code != http.StatusOK {
+			downLog.Printf("(%d, %15v) %s %s", code, d, "GET", u)
+		}
 	}()
 
 	defer resp.Body.Close()

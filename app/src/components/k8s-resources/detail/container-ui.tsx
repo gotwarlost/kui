@@ -345,7 +345,7 @@ export class Container extends React.Component<IContainerProps, {}> {
         rows.push(spec.securityContext &&
             <Table.Row>
                 <Table.Cell verticalAlign="top" textAlign="right">Security Context</Table.Cell>
-                <Table.Cell>IMPLEMENT ME!</Table.Cell>
+                <Table.Cell><InlineObject object={spec.securityContext} recurseFields={["capabilities","seLinuxOptions"]}/></Table.Cell>
             </Table.Row>,
         );
         return (
