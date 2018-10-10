@@ -47,8 +47,8 @@ export class InlineObject extends React.Component<IObjectProps, {}> {
         const elements = [];
         const max = this.props.maxValueLength || 40;
 
-        const addElement = (obj, key, prefix) => {
-            const val = obj[key];
+        const addElement = (ob, key, prefix) => {
+            const val = ob[key];
             let v;
             if (val && typeof val === "object") {
                 v = <i>object</i>;
@@ -74,11 +74,11 @@ export class InlineObject extends React.Component<IObjectProps, {}> {
                 <span className="label-item" key={key}>
                     <Label pointing="right">{prefix}{key}</Label>{v}
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                </span>
+                </span>,
             );
         };
         const fieldMap = {};
-        (this.props.recurseFields || []).forEach( (x) => { fieldMap[x] = true;});
+        (this.props.recurseFields || []).forEach( (x) => { fieldMap[x] = true; });
 
         keys.forEach((key) => {
             const val = obj[key];
