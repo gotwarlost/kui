@@ -30,18 +30,23 @@ export class LeftNavUI extends React.Component<ILeftNav, {}> {
         this.props.allResources.forEach((name) => {
             const info = this.props.typeFor(name);
             if (info) {
-                links.push((
-                    <List.Item key={name}>
-                        <ListPageLink
-                            title={info.pluralName}
-                            resources={[name]}
-                            selectedTitle={selectedTitle}
-                            count={this.props.counter(name)}
-                            loading={this.props.loading(name)}
-                            error={this.props.error(name)}
-                        />
-                    </List.Item>
-                ));
+                const count = this.props.counter(name);
+                const selected = info.pluralName === selectedTitle;
+                const zeroCount = typeof count === "number" && count === 0;
+                if (selected || !zeroCount) {
+                    links.push((
+                        <List.Item key={name}>
+                            <ListPageLink
+                                title={info.pluralName}
+                                resources={[name]}
+                                selectedTitle={selectedTitle}
+                                count={this.props.counter(name)}
+                                loading={this.props.loading(name)}
+                                error={this.props.error(name)}
+                            />
+                        </List.Item>
+                    ));
+                }
             }
         });
         return (

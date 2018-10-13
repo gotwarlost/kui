@@ -16,6 +16,7 @@ export interface IListProps {
     listName: string;
     qr: ResourceQueryResults;
     cols?: IReactTableColumn[];
+    showWhenNoResults?: boolean;
     displayNamespace: boolean;
     baseAccessors: IBaseAccessors;
 }
@@ -74,7 +75,7 @@ export class ListUI extends React.Component<IList, {}> {
                 {this.props.qr.err.message}
             </Message>
         );
-        let content: React.ReactNode;
+        let content: React.ReactNode = null;
         if (!(loading || err)) {
             const resourceList = this.props.qr.results as IResourceList;
             if (resourceList.items && resourceList.items.length > 0) {
@@ -96,13 +97,16 @@ export class ListUI extends React.Component<IList, {}> {
                         defaultPageSize={pageSize}
                     />
                 );
-            } else {
+            } else if (this.props.showWhenNoResults) {
                 content = (
                     <Message>
                         No {this.props.listName} found
                     </Message>
                 );
             }
+        }
+        if (content === null) {
+            return null;
         }
         return (
             <Segment raised>

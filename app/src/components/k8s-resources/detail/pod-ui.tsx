@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Segment} from "semantic-ui-react";
-import {Table} from "semantic-ui-react";
+import {List, Table} from "semantic-ui-react";
 import {toSelectorString} from "../../../util";
 import {Container} from "./container-ui";
 import {InlineObject} from "./inline-object";
@@ -10,6 +10,22 @@ interface IPodProps {
     spec: any;
     status: any;
 }
+
+const tolerationString = (toleration) => {
+    const v = toleration.operator === "Equal" ? "=" + toleration.value : null;
+    const e = toleration.effect ? ":" + toleration.effect : null;
+    const t = toleration.tolerationSeconds !== undefined ? <i>{" (" + toleration.tolerationSeconds + "s)"}</i> : null;
+    return (
+      <React.Fragment>
+          {toleration.key}{e}{v}{t}
+      </React.Fragment>
+    );
+};
+
+const renderTolerations = (tolerations) => {
+    const rows = tolerations.map((t) => <List.Item>{tolerationString(t)}</List.Item>);
+    return <List>{rows}</List>;
+};
 
 const renderAffinity = (affinity) => {
     return <React.Fragment>implement me!!</React.Fragment>;
@@ -138,6 +154,13 @@ const renderSpecAttributes = (spec) => {
             <Table.Cell>{renderAffinity(spec.affinity)}</Table.Cell>
         </Table.Row>
     ));
+    rows.push(spec.tolerations && spec.tolerations.length > 0 && (
+       <Table.Row>
+           <Table.Cell textAlign="right" verticalAlign="top">Tolerations</Table.Cell>
+           <Table.Cell>{renderTolerations(spec.tolerations)}</Table.Cell>
+       </Table.Row>
+    ));
+
     return (
         <Table basic="very" celled collapsing compact>
             <Table.Body>
