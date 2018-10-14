@@ -2,9 +2,9 @@ import * as React from "react";
 import {Segment, Table} from "semantic-ui-react";
 import {toSelectorString} from "../../../util";
 import {genericDetailForResource} from "./generic-detail";
-import {PodTemplate} from "./pods/pod-template-ui";
 import {Conditions} from "./common/conditions";
 import {InlineObject} from "./common/inline-object";
+import {PodTemplate} from "./pods/pod-template-ui";
 
 const render = (item) => {
     const spec = item.spec || {};
@@ -25,8 +25,9 @@ const render = (item) => {
     const replicas = {
         available: status.availableReplicas,
         desired: status.replicas,
-        fullyLabeled: status.fullyLabeledReplicas,
         ready: status.readyReplicas,
+        unavailable: status.unavailableReplicas,
+        updated: status.updatedReplicas,
     };
 
     rows.push(
@@ -37,7 +38,11 @@ const render = (item) => {
     );
 
     addRow("Min ready (seconds)", spec.minReadySeconds);
+    addRow("Revision history limit", spec.revisionHistoryLimit);
+    addRow("Paused", spec.paused === undefined ? undefined : (spec.paused ? "yes" : "no"));
+    addRow("Progress deadline (seconds)", spec.progressDeadlineSeconds);
     addRow("Observed generation", status.observedGeneration);
+    addRow("Collision count", status.collisionCount);
 
     const statNode = (
         <React.Fragment>
@@ -48,9 +53,15 @@ const render = (item) => {
                         <Table.Cell textAlign="right">Selector</Table.Cell>
                         <Table.Cell>{toSelectorString(spec.selector)}</Table.Cell>
                     </Table.Row>
+                    <Table.Row>
+                        <Table.Cell textAlign="right">Strategy</Table.Cell>
+                        <Table.Cell>
+                            <InlineObject object={spec.strategy} recurseFields={["rollingUpdate"]}/>
+                        </Table.Cell>
+                    </Table.Row>
                     {rows}
                 </Table>
-                <Conditions conditions={status.conditions} />
+                <Conditions conditions={status.conditions}/>
             </Segment>
         </React.Fragment>
     );
@@ -63,4 +74,4 @@ const render = (item) => {
     );
 };
 
-export const ReplicaSetDetail = genericDetailForResource("replicasets", render);
+export const DeploymentDetail = genericDetailForResource("deployments", render);

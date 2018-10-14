@@ -1,6 +1,7 @@
 import * as React from "react";
 import {ConfigMapDetail} from "./configmaps";
 import {createDetailElement} from "./generic-detail";
+import {DeploymentDetail} from "./deployments";
 import {NodeDetail} from "./nodes";
 import {PodDetail} from "./pods";
 import {PrometheusRuleDetail} from "./prometheus-rules";
@@ -13,6 +14,7 @@ import {ServiceAccountDetail} from "./serviceaccounts";
 const pageMap = {
     clusterroles: ClusterRoleDetail,
     configmaps: ConfigMapDetail,
+    deployments: DeploymentDetail,
     nodes: NodeDetail,
     pods: PodDetail,
     prometheusrules: PrometheusRuleDetail,

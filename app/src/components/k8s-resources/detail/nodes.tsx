@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Grid, Segment, Table} from "semantic-ui-react";
-import {ageInWords} from "../../../util";
+import {Conditions} from "./common/conditions";
 import {genericDetailForResource} from "./generic-detail";
 
 const getResources = (status): React.ReactFragment => {
@@ -31,48 +31,6 @@ const getResources = (status): React.ReactFragment => {
                         <Table.Cell textAlign="right">{status.allocatable.pods}</Table.Cell>
                         <Table.Cell textAlign="right">{status.capacity.pods}</Table.Cell>
                     </Table.Row>
-                </Table.Body>
-            </Table>
-        </React.Fragment>
-    );
-
-};
-
-const getConditions = (status): React.ReactFragment => {
-    const items = status.conditions.map( (cond) => {
-        return (
-            <Table.Row>
-                <Table.Cell>{cond.type}</Table.Cell>
-                <Table.Cell>{cond.status}</Table.Cell>
-                <Table.Cell>{cond.message}</Table.Cell>
-                <Table.Cell>
-                    <span title={cond.lastHeartbeatTime}>
-                        {ageInWords(cond.lastHeartbeatTime)}
-                    </span>
-                </Table.Cell>
-                <Table.Cell>
-                    <span title={cond.lastHeartbeatTime}>
-                        {ageInWords(cond.lastTransitionTime)}
-                    </span>
-                </Table.Cell>
-            </Table.Row>
-       );
-    });
-    return (
-        <React.Fragment>
-            <h3>Conditions</h3>
-            <Table basic="very" celled collapsing compact>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell>Condition</Table.HeaderCell>
-                        <Table.HeaderCell>Value</Table.HeaderCell>
-                        <Table.HeaderCell>Message</Table.HeaderCell>
-                        <Table.HeaderCell>Heartbeat</Table.HeaderCell>
-                        <Table.HeaderCell>Transition</Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    {items}
                 </Table.Body>
             </Table>
         </React.Fragment>
@@ -145,7 +103,7 @@ export const NodeDetail = genericDetailForResource(
                 <Grid stackable>
                     <Grid.Column width={8}>
                         <Segment raised>
-                        {getConditions(status)}
+                        <Conditions conditions={status.conditions}/>
                         </Segment>
                     </Grid.Column>
                     <Grid.Column width={8}>
