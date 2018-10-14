@@ -18,6 +18,7 @@ var projections = map[string]func() projection{
 	"events":      func() projection { return &event{} },
 	"nodes":       func() projection { return &node{} },
 	"pods":        func() projection { return &pod{} },
+	"replicasets": func() projection { return &replicaset{} },
 	"services":    func() projection { return &service{} },
 	"":            func() projection { return &defaultObject{} },
 }
@@ -171,6 +172,40 @@ func (d *daemonset) projectData(w io.Writer) error {
 		Derived: derivedData{
 			Selector: toSelectorString(d.Spec.Selector),
 			Ready:    fmt.Sprintf("%d / %d", d.Status.NumberReady, d.Status.NumberAvailable),
+		},
+	}
+	data, err := json.Marshal(out)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(data)
+	return err
+}
+
+type replicaset struct {
+	defaultObject
+	Spec struct {
+		Selector *metav1.LabelSelector `json:"selector"`
+	} `json:"spec"`
+	Status struct {
+		NumberAvailable int `json:"availableReplicas"`
+		NumberReady     int `json:"readyReplicas"`
+	} `json:"status"`
+}
+
+func (r *replicaset) clear() {
+	r.defaultObject.clear()
+	r.Spec.Selector = nil
+	r.Status.NumberAvailable = 0
+	r.Status.NumberReady = 0
+}
+
+func (r *replicaset) projectData(w io.Writer) error {
+	out := derivedObject{
+		defaultObject: r.defaultObject,
+		Derived: derivedData{
+			Selector: toSelectorString(r.Spec.Selector),
+			Ready:    fmt.Sprintf("%d / %d", r.Status.NumberReady, r.Status.NumberAvailable),
 		},
 	}
 	data, err := json.Marshal(out)

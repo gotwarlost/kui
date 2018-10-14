@@ -4,9 +4,11 @@ import {createDetailElement} from "./generic-detail";
 import {NodeDetail} from "./nodes";
 import {PodDetail} from "./pods";
 import {PrometheusRuleDetail} from "./prometheus-rules";
+import {ReplicaSetDetail} from "./replicasets";
 import {ResourceQuotaDetail} from "./resourcequotas";
 import {ClusterRoleDetail, RoleDetail} from "./roles";
 import {SecretDetail} from "./secrets";
+import {ServiceAccountDetail} from "./serviceaccounts";
 
 const pageMap = {
     clusterroles: ClusterRoleDetail,
@@ -14,9 +16,11 @@ const pageMap = {
     nodes: NodeDetail,
     pods: PodDetail,
     prometheusrules: PrometheusRuleDetail,
+    replicasets: ReplicaSetDetail,
     resourcequotas: ResourceQuotaDetail,
     roles: RoleDetail,
     secrets: SecretDetail,
+    serviceaccounts: ServiceAccountDetail,
 };
 
 export const detailFor = (name: string): React.ReactNode => {

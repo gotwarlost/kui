@@ -1,7 +1,7 @@
 import * as clone from "clone";
 import * as React from "react";
 import {Table} from "semantic-ui-react";
-import {InlineObject} from "./inline-object";
+import {InlineObject} from "../common/inline-object";
 
 export interface IVolumeProps {
     volumes: any;

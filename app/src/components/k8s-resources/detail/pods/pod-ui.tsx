@@ -1,9 +1,9 @@
 import * as React from "react";
 import {Segment} from "semantic-ui-react";
 import {List, Table} from "semantic-ui-react";
-import {toSelectorString} from "../../../util";
+import {toSelectorString} from "../../../../util";
+import {InlineObject} from "../common/inline-object";
 import {Container} from "./container-ui";
-import {InlineObject} from "./inline-object";
 import {Volumes} from "./volumes-ui";
 
 interface IPodProps {
@@ -28,17 +28,21 @@ const renderTolerations = (tolerations) => {
 };
 
 const renderAffinity = (affinity) => {
-    return <React.Fragment>implement me!!</React.Fragment>;
+    return <i>Affinity present but renderer not implemented. See YAML view for details</i>;
+};
+
+const renderDNSConfig = (dnsConfig) => {
+    return <i>DNS config present but renderer not implemented. See YAML view for details</i>;
 };
 
 const renderSpecAttributes = (spec) => {
     const rows = [];
-    rows.push(
+    rows.push(spec.nodeName && (
         <Table.Row>
             <Table.Cell textAlign="right">Node name</Table.Cell>
             <Table.Cell>{spec.nodeName}</Table.Cell>
-        </Table.Row>,
-    );
+        </Table.Row>
+    ));
 
     rows.push(spec.serviceAccountName && (
         <Table.Row>
@@ -54,8 +58,8 @@ const renderSpecAttributes = (spec) => {
     ));
     rows.push(spec.terminationGracePeriodSeconds !== undefined && (
         <Table.Row>
-            <Table.Cell textAlign="right">Termination grace period (seconds)</Table.Cell>
-            <Table.Cell>{spec.terminationGracePeriodSeconds}</Table.Cell>
+            <Table.Cell textAlign="right">Termination grace</Table.Cell>
+            <Table.Cell>{spec.terminationGracePeriodSeconds}s</Table.Cell>
         </Table.Row>
     ));
     rows.push(spec.activeDeadlineSeconds !== undefined && (
@@ -160,6 +164,12 @@ const renderSpecAttributes = (spec) => {
            <Table.Cell>{renderTolerations(spec.tolerations)}</Table.Cell>
        </Table.Row>
     ));
+    rows.push(spec.dnsConfig && (
+        <Table.Row>
+            <Table.Cell textAlign="right">DNS config</Table.Cell>
+            <Table.Cell>{renderDNSConfig(spec.dnsConfig)}</Table.Cell>
+        </Table.Row>
+    ));
 
     return (
         <Table basic="very" celled collapsing compact>
@@ -173,19 +183,30 @@ const renderSpecAttributes = (spec) => {
 export class Pod extends React.Component<IPodProps, {}> {
     public render() {
         const spec = this.props.spec;
+        const status = this.props.status;
         const pod = [];
+        if (status && Object.keys(status).length > 0) {
+            pod.push(
+                <Segment raised>
+                    <h2>Status</h2>
+                    TODO: Add status rendering
+                </Segment>,
+            );
+        }
         pod.push(
             <Segment raised>
                 <h2>Attributes</h2>
                 {renderSpecAttributes(spec)}
             </Segment>,
         );
-        pod.push(
-            <Segment raised>
-                <h2>Volumes</h2>
-                <Volumes volumes={spec.volumes} />
-            </Segment>,
-        );
+        if (spec.volumes && spec.volumes.length > 0) {
+            pod.push(
+                <Segment raised>
+                    <h2>Volumes</h2>
+                    <Volumes volumes={spec.volumes}/>
+                </Segment>,
+            );
+        }
         const containers = [];
         (spec.initContainers || []).forEach((c) => {
             containers.push(

@@ -16,6 +16,16 @@ const strVal = (v) => {
     return String(v);
 };
 
+const looksLikeJSON = (s) => {
+    const text = typeof s === "string" ? s.trim() : null;
+    if (!text) {
+        return false;
+    }
+    const start = text.charAt(0);
+    const end = text.charAt(text.length - 1);
+    return (start === "{" && end === "}") || (start === "[" && end === "]");
+};
+
 const valueFor = (value: any, props: IObjectProps) => {
     if (value === null) {
         return <i>null</i>;
@@ -26,7 +36,7 @@ const valueFor = (value: any, props: IObjectProps) => {
         if (text === "" && !props.showEmptyStrings) {
             return null;
         }
-        if (text.charAt(0) === "{" && text.charAt(text.length - 1) === "}" && !props.showJSONStrings) {
+        if (!props.showJSONStrings && looksLikeJSON(text)) {
             return null;
         }
         return text;

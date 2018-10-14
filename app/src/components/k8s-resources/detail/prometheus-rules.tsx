@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Segment, Table} from "semantic-ui-react";
+import {InlineObject} from "./common/inline-object";
 import {genericDetailForResource} from "./generic-detail";
-import {InlineObject} from "./inline-object";
 
 export const PrometheusRuleDetail = genericDetailForResource(
     "prometheusrules",

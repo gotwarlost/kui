@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Table} from "semantic-ui-react";
-import {ageInWords} from "../../../util";
+import {ageInWords} from "../../../../util";
 import {InlineObject} from "./inline-object";
 
 interface IMetadata {
@@ -24,19 +24,19 @@ export class MetadataDetailUI extends React.Component<IMetadataProps, {}> {
     public render() {
         const meta = this.props.metadata as IMetadata;
 
-        const labelRow = (
+        const labelRow = (meta.labels && Object.keys(meta.labels).length > 0) ? (
             <Table.Row>
                 <Table.Cell textAlign="right">Labels</Table.Cell>
                 <Table.Cell><InlineObject object={meta.labels}/></Table.Cell>
             </Table.Row>
-        );
+        ) : null;
 
-        const annRow = (
+        const annRow = (meta.annotations && Object.keys(meta.annotations).length > 0) ? (
             <Table.Row>
                 <Table.Cell textAlign="right">Annotations</Table.Cell>
                 <Table.Cell><InlineObject object={meta.annotations}/></Table.Cell>
             </Table.Row>
-        );
+        ) : null;
 
         const generationRow = meta.generation !== undefined && (
             <Table.Row>

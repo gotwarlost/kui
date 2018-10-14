@@ -2,7 +2,7 @@ import * as yaml from "js-yaml";
 import * as React from "react";
 import {Checkbox, Loader, Message, Segment} from "semantic-ui-react";
 import {IResource, ResourceQueryResults} from "../../../model/types";
-import {MetadataDetailUI} from "./metadata-detail-ui";
+import {MetadataDetailUI} from "./common/metadata-detail-ui";
 
 export type IContentProvider = (item: IResource) => React.ReactNode;
 
@@ -23,6 +23,36 @@ interface IDetailState {
     showYAML?: boolean;
 }
 
+const renderYAML = (item): React.ReactNode => {
+    return (
+        <React.Fragment>
+            <pre className="wrapped prettyprint lang-yaml">
+                {yaml.safeDump(item)}
+            </pre>
+        </React.Fragment>
+    );
+};
+
+const miniYAMLProvider = (item): React.ReactNode => {
+    if (!item) {
+        return null;
+    }
+    const ob = {};
+    Object.keys(item).forEach( (k) => {
+        if (k === "metadata" || k === "kind" || k === "apiVersion") {
+            return;
+        }
+        ob[k] = item[k];
+    });
+    const yml = renderYAML(ob);
+    return (
+        <React.Fragment>
+            <i>This resource does not have a custom renderer, rendering as YAML</i>
+            {yml}
+        </React.Fragment>
+    );
+};
+
 export class DetailUI extends React.Component<IDetail, IDetailState> {
     constructor(props, state) {
         super(props, state);
@@ -31,6 +61,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
     }
 
     public render() {
+        const provider = this.props.provider || miniYAMLProvider;
         if (!this.props.qr) {
             return null;
         }
@@ -44,7 +75,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
             </Message>
         );
         const toggle = (
-            !(loading || err) && this.props.provider && (
+            !(loading || err) && (
                 <span style={{fontWeight: "normal"}}>
                    <Checkbox toggle onChange={this.toggleYAML} label="YAML"/>
                 </span>
@@ -62,7 +93,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         );
         let content: React.ReactNode;
         if (!(loading || err)) {
-            content = this.renderItem(this.props.kind, this.props.qr.results as IResource);
+            content = this.renderItem(this.props.kind, this.props.qr.results as IResource, provider);
         }
         return (
             <Segment raised>
@@ -77,20 +108,10 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         (window as any).PR.prettyPrint();
     }
 
-    protected renderYAML(item: IResource): React.ReactNode {
-        return (
-            <React.Fragment>
-            <pre className="wrapped prettyprint lang-yaml">
-                {yaml.safeDump(item)}
-            </pre>
-            </React.Fragment>
-        );
-    }
-
-    private renderItem(kind: string, item: IResource): React.ReactNode {
-        if (this.props.provider && !this._state().showYAML) {
+    private renderItem(kind: string, item: IResource, provider: IContentProvider): React.ReactNode {
+        if (!this._state().showYAML) {
             const meta = <MetadataDetailUI kind={kind} metadata={item.metadata}/>;
-            const rest = this.props.provider(item);
+            const rest = provider(item);
             return (
                 <div>
                     {meta}
@@ -98,7 +119,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
                 </div>
             );
         }
-        return this.renderYAML(item);
+        return renderYAML(item);
     }
 
     private _state() {

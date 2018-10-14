@@ -1,6 +1,6 @@
 import * as React from "react";
 import {genericDetailForResource} from "./generic-detail";
-import {Pod} from "./pod-ui";
+import {Pod} from "./pods/pod-ui";
 
 export const PodDetail = genericDetailForResource(
     "pods",

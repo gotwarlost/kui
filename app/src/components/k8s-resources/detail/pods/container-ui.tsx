@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Table} from "semantic-ui-react";
-import {InlineObject} from "./inline-object";
+import {InlineObject} from "../common/inline-object";
 
 const formatArgs = (args: string[]): string => {
     const ret = [];
