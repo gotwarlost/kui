@@ -3,6 +3,7 @@ import {ConfigMapDetail} from "./configmaps";
 import {createDetailElement} from "./generic-detail";
 import {DaemonsetDetail} from "./daemonsets";
 import {DeploymentDetail} from "./deployments";
+import {JobDetail} from "./jobs";
 import {NodeDetail} from "./nodes";
 import {PodDetail} from "./pods";
 import {PrometheusRuleDetail} from "./prometheus-rules";
@@ -18,6 +19,7 @@ const pageMap = {
     configmaps: ConfigMapDetail,
     daemonsets: DaemonsetDetail,
     deployments: DeploymentDetail,
+    jobs: JobDetail,
     nodes: NodeDetail,
     pods: PodDetail,
     prometheusrules: PrometheusRuleDetail,

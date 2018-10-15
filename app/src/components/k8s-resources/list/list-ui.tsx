@@ -104,9 +104,9 @@ export class ListUI extends React.Component<IList, {}> {
                     </Message>
                 );
             }
-        }
-        if (content === null) {
-            return null;
+            if (content === null) {
+                return null;
+            }
         }
         return (
             <Segment raised>
