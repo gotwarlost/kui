@@ -1,6 +1,7 @@
 import * as React from "react";
 import {Table} from "semantic-ui-react";
 import {InlineObject} from "../common/inline-object";
+import {formatResources} from "../common/resources";
 
 const formatArgs = (args: string[]): string => {
     const ret = [];
@@ -131,24 +132,6 @@ const  formatEnvSource = (e): React.ReactNode  => {
             <Table.Cell>{name}{prefix}{opt}</Table.Cell>
         </Table.Row>
     );
-};
-
-const formatResources = (res): React.ReactNode => {
-    const lines = [];
-    lines.push(res.requests && (
-        <React.Fragment>
-            <i>Request</i>&nbsp;&nbsp;
-            <InlineObject object={res.requests}/>
-        </React.Fragment>
-    ));
-    lines.push(<br/>);
-    lines.push(res.limits && (
-        <React.Fragment>
-            <i>Limit</i>&nbsp;&nbsp;
-            <InlineObject object={res.limits}/>
-        </React.Fragment>
-    ));
-    return <React.Fragment>{lines}</React.Fragment>;
 };
 
 const formatMounts = (mounts: any[]): React.ReactNode => {

@@ -1,6 +1,7 @@
 import * as React from "react";
 import {ConfigMapDetail} from "./configmaps";
 import {createDetailElement} from "./generic-detail";
+import {DaemonsetDetail} from "./daemonsets";
 import {DeploymentDetail} from "./deployments";
 import {NodeDetail} from "./nodes";
 import {PodDetail} from "./pods";
@@ -10,10 +11,12 @@ import {ResourceQuotaDetail} from "./resourcequotas";
 import {ClusterRoleDetail, RoleDetail} from "./roles";
 import {SecretDetail} from "./secrets";
 import {ServiceAccountDetail} from "./serviceaccounts";
+import {StatefulsetDetail} from "./statefulsets";
 
 const pageMap = {
     clusterroles: ClusterRoleDetail,
     configmaps: ConfigMapDetail,
+    daemonsets: DaemonsetDetail,
     deployments: DeploymentDetail,
     nodes: NodeDetail,
     pods: PodDetail,
@@ -23,6 +26,7 @@ const pageMap = {
     roles: RoleDetail,
     secrets: SecretDetail,
     serviceaccounts: ServiceAccountDetail,
+    statefulsets: StatefulsetDetail,
 };
 
 export const detailFor = (name: string): React.ReactNode => {
