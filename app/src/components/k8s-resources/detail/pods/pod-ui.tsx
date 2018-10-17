@@ -1,14 +1,15 @@
 import * as React from "react";
 import {Segment} from "semantic-ui-react";
-import {List, Table} from "semantic-ui-react";
-import {toSelectorString} from "../../../../util";
+import {Grid, List, Table} from "semantic-ui-react";
+import {ageInWords, toSelectorString} from "../../../../util";
 import {InlineObject} from "../common/inline-object";
 import {Container} from "./container-ui";
 import {Volumes} from "./volumes-ui";
+import {Conditions} from "../common/conditions";
 
 interface IPodProps {
     spec: any;
-    status: any;
+    status?: any;
 }
 
 const tolerationString = (toleration) => {
@@ -36,6 +37,9 @@ const renderDNSConfig = (dnsConfig) => {
 };
 
 const renderSpecAttributes = (spec) => {
+    if (!spec) {
+        return null;
+    }
     const rows = [];
     rows.push(spec.nodeName && (
         <Table.Row>
@@ -172,7 +176,7 @@ const renderSpecAttributes = (spec) => {
     ));
 
     return (
-        <Table basic="very" celled collapsing compact>
+        <Table celled collapsing>
             <Table.Body>
                 {rows}
             </Table.Body>
@@ -180,16 +184,171 @@ const renderSpecAttributes = (spec) => {
     );
 };
 
+const getBasicStatus = (status) => {
+    const rows = [];
+    const phase = status.phase || null;
+    const msg = !status.message ? null : (
+        <React.Fragment>
+            &nbsp;&nbsp;( {status.message} )
+        </React.Fragment>
+    );
+    const start = !status.startTime ? null : (
+        <React.Fragment>
+            ,&nbsp;&nbsp;
+            started {ageInWords(status.startTime)} (<small>{status.startTime}</small>)
+        </React.Fragment>
+    );
+    if (phase || msg || start) {
+        rows.push(
+            <Table.Row>
+                <Table.Cell textAlign="right">Phase</Table.Cell>
+                <Table.Cell>{phase}{msg}{start}</Table.Cell>
+            </Table.Row>,
+        );
+    }
+    rows.push(status.podIP && (
+        <Table.Row>
+            <Table.Cell textAlign="right">Pod IP</Table.Cell>
+            <Table.Cell>{status.podIP}</Table.Cell>
+        </Table.Row>
+    ));
+    rows.push(status.hostIP && (
+        <Table.Row>
+            <Table.Cell textAlign="right">Host IP</Table.Cell>
+            <Table.Cell>{status.hostIP}</Table.Cell>
+        </Table.Row>
+    ));
+    rows.push(status.nominatedNodeName && (
+        <Table.Row>
+            <Table.Cell textAlign="right">Nominated node name</Table.Cell>
+            <Table.Cell>{status.nominatedNodeName}</Table.Cell>
+        </Table.Row>
+    ));
+    const statusTable = rows.length === 0 ? null : (
+        <React.Fragment>
+            <h3>Info</h3>
+            <Table celled collapsing>
+                {rows}
+            </Table>
+        </React.Fragment>
+    );
+    return statusTable;
+};
+
+const getState = (state) => {
+    if (!state) {
+        return null;
+    }
+    if (state.waiting) {
+        const waitMsg = !state.waiting.message ? null : (
+            <React.Fragment>
+                &nbsp;&nbsp;( {state.waiting.message} )
+            </React.Fragment>
+        );
+        return (
+           <React.Fragment>
+               Waiting{waitMsg}
+           </React.Fragment>
+        );
+    }
+    if (state.running) {
+        const started = !state.startedAt ? null : (
+            <React.Fragment>
+                ,&nbsp; &nbsp;
+                started {ageInWords(state.startedAt)} (<small>{state.startedAt}</small>)
+            </React.Fragment>
+        );
+        return (
+            <React.Fragment>
+                Running{started}
+            </React.Fragment>
+        );
+    }
+    if (state.terminated) {
+        const t = state.terminated;
+        return (
+            <React.Fragment>
+                Terminated&nbsp;&nbsp;
+                <InlineObject object={{
+                    exitCode: t.exitCode,
+                    finishedAt: t.finishedAt,
+                    message: t.message,
+                    signal: t.signal,
+                    startedAt: t.startedAt,
+                }} />
+            </React.Fragment>
+        );
+    }
+    return "<i>Unknown</i>";
+};
+
+const getContainerStatus = (status) => {
+    if (!(status.containerStatuses || status.initContainerStatuses)) {
+        return null;
+    }
+    const rows = [];
+    const addContainerStatus = (cstat, init) => {
+        rows.push(
+            <Table.Row>
+                <Table.Cell>{init ? "Init:" : ""}{cstat.name}</Table.Cell>
+                <Table.Cell>{cstat.ready ? "Yes" : "No"}</Table.Cell>
+                <Table.Cell>{getState(cstat.state)}</Table.Cell>
+                <Table.Cell>{cstat.restartCount}</Table.Cell>
+                <Table.Cell>{getState(cstat.lastTerminationState)}</Table.Cell>
+            </Table.Row>,
+        );
+    };
+
+    (status.initContainerStatuses || []).forEach( (cs) => { addContainerStatus(cs, true); });
+    (status.containerStatuses || []).forEach( (cs) => { addContainerStatus(cs, false); });
+    return (
+        <React.Fragment>
+            <h3>Container status</h3>
+            <Table celled collapsing>
+                <Table.Header>
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    <Table.HeaderCell>Ready</Table.HeaderCell>
+                    <Table.HeaderCell>State</Table.HeaderCell>
+                    <Table.HeaderCell>Restart count</Table.HeaderCell>
+                    <Table.HeaderCell>Last termination state</Table.HeaderCell>
+                </Table.Header>
+                <Table.Body>
+                    {rows}
+                </Table.Body>
+            </Table>
+        </React.Fragment>
+    );
+};
+
+const renderStatus = (status) => {
+    const conds = !status.conditions ? null : <Segment><Conditions conditions={status.conditions}/></Segment>;
+    return (
+        <React.Fragment>
+            <Grid stackable>
+                <Grid.Column width={6}>
+                    {getBasicStatus(status)}
+                </Grid.Column>
+                <Grid.Column width={10}>
+                    {conds}
+                </Grid.Column>
+                <Grid.Column width={16}>
+                    {getContainerStatus(status)}
+                </Grid.Column>
+            </Grid>
+        </React.Fragment>
+    );
+};
+
 export class Pod extends React.Component<IPodProps, {}> {
     public render() {
-        const spec = this.props.spec;
-        const status = this.props.status;
+        const spec = this.props.spec || {};
+        const status = this.props.status || {};
         const pod = [];
         if (status && Object.keys(status).length > 0) {
             pod.push(
                 <Segment raised>
                     <h2>Status</h2>
-                    TODO: Add status rendering
+                    {renderStatus(status)}
                 </Segment>,
             );
         }

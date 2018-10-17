@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/gotwarlost/kui/pkg/server"
@@ -13,14 +14,24 @@ import (
 )
 
 func main() {
-	var port int
+	var (
+		appDir string
+		port   int
+	)
+	appDir = os.Getenv("KUI_APP_DIR")
+	if appDir == "" {
+		appDir = "dist/app"
+	}
+
+	flag.StringVar(&appDir, "app-dir", appDir, "path to webapp directory")
 	flag.IntVar(&port, "port", 11491, "listen port, set to 0 for random port")
 	flag.Parse()
 
-	dir, err := filepath.Abs("dist/app")
+	dir, err := filepath.Abs(appDir)
 	if err != nil {
-		panic(err)
+		log.Fatalln("unable to get absolute path for", appDir, err)
 	}
+
 	handler := server.New(nil, dir)
 	l, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", port))
 	if err != nil {

@@ -3,7 +3,7 @@ import {Table} from "semantic-ui-react";
 import {InlineObject} from "../common/inline-object";
 import {formatResources} from "../common/resources";
 
-const formatArgs = (args: string[]): string => {
+const formatArgs = (args: string[]) => {
     const ret = [];
     args.forEach((arg) => {
         if (arg.length === 0 || arg.indexOf(" ") >= 0 || arg.indexOf("'") >= 0) {
@@ -14,7 +14,7 @@ const formatArgs = (args: string[]): string => {
             ret.push(arg);
         }
     });
-    return ret.join("  ");
+    return <code>{ret.join("  ")}</code>;
 };
 
 const formatPorts = (ports: any[]): React.ReactNode => {
