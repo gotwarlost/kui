@@ -1,5 +1,5 @@
 import * as React from "react";
-import {List, Segment, Table} from "semantic-ui-react";
+import {List, Table} from "semantic-ui-react";
 import {genericDetailForResource} from "./generic-detail";
 import {toSelectorString} from "../../../util";
 import {InlineObject} from "./common/inline-object";

@@ -4,7 +4,7 @@ import {Checkbox, Loader, Message, Segment} from "semantic-ui-react";
 import {IResource, ResourceQueryResults} from "../../../model/types";
 import {MetadataDetailUI} from "./common/metadata-detail-ui";
 
-export type IContentProvider = (item: IResource) => React.ReactNode;
+export type IContentProvider = (item: IResource, thisObj) => React.ReactNode;
 
 export interface IDetailProps {
     kind: string;
@@ -111,7 +111,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
     private renderItem(kind: string, item: IResource, provider: IContentProvider): React.ReactNode {
         if (!this._state().showYAML) {
             const meta = <MetadataDetailUI kind={kind} metadata={item.metadata}/>;
-            const rest = provider(item);
+            const rest = provider(item, this);
             return (
                 <div>
                     {meta}
