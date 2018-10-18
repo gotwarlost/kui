@@ -12,6 +12,7 @@ import {ResourceQuotaDetail} from "./resourcequotas";
 import {ClusterRoleDetail, RoleDetail} from "./roles";
 import {SecretDetail} from "./secrets";
 import {ServiceAccountDetail} from "./serviceaccounts";
+import {ServiceDetail} from "./services";
 import {StatefulsetDetail} from "./statefulsets";
 
 const pageMap = {
@@ -28,6 +29,7 @@ const pageMap = {
     roles: RoleDetail,
     secrets: SecretDetail,
     serviceaccounts: ServiceAccountDetail,
+    services: ServiceDetail,
     statefulsets: StatefulsetDetail,
 };
 
