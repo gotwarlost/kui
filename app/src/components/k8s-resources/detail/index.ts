@@ -1,6 +1,6 @@
 import * as React from "react";
 import {ConfigMapDetail} from "./configmaps";
-import {createDetailElement} from "./generic-detail";
+import {BasicDetail} from "./generic-detail";
 import {DaemonsetDetail} from "./daemonsets";
 import {DeploymentDetail} from "./deployments";
 import {JobDetail} from "./jobs";
@@ -36,7 +36,7 @@ const pageMap = {
 export const detailFor = (name: string): React.ReactNode => {
     const clz = pageMap[name];
     if (!clz) {
-        return createDetailElement({key: name, name });
+        return React.createElement(BasicDetail, {key: name, name }, null);
     }
     return React.createElement(clz, {key: name, name}, null);
 };
