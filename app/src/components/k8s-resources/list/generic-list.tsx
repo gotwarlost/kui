@@ -5,10 +5,15 @@ import {State, StateReader} from "../../../model/state";
 import {QueryScope} from "../../../model/types";
 import {IBaseAccessors, IListDispatch, IListProps, IReactTableColumn, ListUI} from "./list-ui";
 
-export const genericListForResource = (name: string,
-                                       cols: IReactTableColumn[] = null,
+interface nameProps {
+    name: string
+    key?: string
+}
+
+export const genericListForResource = (cols: IReactTableColumn[] = null,
                                        baseAccessors: IBaseAccessors = null) => connect(
-    (s: State): IListProps => {
+    (s: State, props: nameProps): IListProps => {
+        const name = props.name;
         const ns = s.selection.namespace;
         const qd = s.data || {};
         const key = StateReader.listQueryKey(s, name);
@@ -30,6 +35,8 @@ export const genericListForResource = (name: string,
     },
 )(ListUI);
 
-export const createListElement = (name: string, props = {}, state = null): React.ReactNode => {
-    return React.createElement(genericListForResource(name), props, state);
+const stdList = genericListForResource();
+
+export const createListElement = (props, state = null): React.ReactNode => {
+    return React.createElement(stdList, props, state);
 };

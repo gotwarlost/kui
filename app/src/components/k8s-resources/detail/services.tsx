@@ -151,7 +151,4 @@ const renderFn = (item): React.ReactNode => {
     );
 };
 
-export const ServiceDetail = genericDetailForResource(
-    "services",
-    renderFn,
-);
+export const ServiceDetail = genericDetailForResource(renderFn);

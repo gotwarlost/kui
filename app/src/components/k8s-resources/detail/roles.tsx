@@ -47,11 +47,5 @@ const renderFn = (item): React.ReactNode => {
 };
 
 export const RoleDetail = genericDetailForResource(
-    "roles",
-    renderFn,
-);
-
-export const ClusterRoleDetail = genericDetailForResource(
-    "clusterroles",
     renderFn,
 );

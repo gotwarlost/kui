@@ -55,4 +55,4 @@ const portsCell = (item): React.ReactNode => {
     return <React.Fragment>{lines}</React.Fragment>;
 };
 
-export const ServiceList = genericListForResource("services", cols);
+export const ServiceList = genericListForResource(cols);

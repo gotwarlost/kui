@@ -94,7 +94,6 @@ const getNodeInfo = (status): React.ReactFragment => {
 };
 
 export const NodeDetail = genericDetailForResource(
-    "nodes",
     (item): React.ReactNode => {
         const spec = (item as any).spec || {};
         const status = (item as any).status || {};

@@ -3,7 +3,6 @@ import {Segment, Table} from "semantic-ui-react";
 import {genericDetailForResource} from "./generic-detail";
 
 export const ResourceQuotaDetail = genericDetailForResource(
-    "resourcequotas",
     (item): React.ReactNode => {
         const spec = (item as any).spec || {};
         const status = (item as any).status || {};

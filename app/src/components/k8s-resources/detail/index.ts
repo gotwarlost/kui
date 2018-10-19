@@ -9,14 +9,14 @@ import {PodDetail} from "./pods";
 import {PrometheusRuleDetail} from "./prometheus-rules";
 import {ReplicaSetDetail} from "./replicasets";
 import {ResourceQuotaDetail} from "./resourcequotas";
-import {ClusterRoleDetail, RoleDetail} from "./roles";
+import {RoleDetail} from "./roles";
 import {SecretDetail} from "./secrets";
 import {ServiceAccountDetail} from "./serviceaccounts";
 import {ServiceDetail} from "./services";
 import {StatefulsetDetail} from "./statefulsets";
 
 const pageMap = {
-    clusterroles: ClusterRoleDetail,
+    clusterroles: RoleDetail,
     configmaps: ConfigMapDetail,
     daemonsets: DaemonsetDetail,
     deployments: DeploymentDetail,
@@ -36,7 +36,7 @@ const pageMap = {
 export const detailFor = (name: string): React.ReactNode => {
     const clz = pageMap[name];
     if (!clz) {
-        return createDetailElement(name);
+        return createDetailElement({key: name, name });
     }
-    return React.createElement(clz, {key: name}, null);
+    return React.createElement(clz, {key: name, name}, null);
 };

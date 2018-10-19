@@ -34,4 +34,4 @@ const cols = [
     },
 ];
 
-export const PodList = genericListForResource("pods", cols);
+export const PodList = genericListForResource(cols);

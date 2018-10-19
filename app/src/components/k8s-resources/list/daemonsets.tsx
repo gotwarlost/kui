@@ -15,4 +15,4 @@ const cols = [
     },
 ];
 
-export const DaemonSetList = genericListForResource("daemonsets", cols);
+export const DaemonSetList = genericListForResource(cols);

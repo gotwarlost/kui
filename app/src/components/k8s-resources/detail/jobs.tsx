@@ -81,4 +81,4 @@ const render = (item) => {
     );
 };
 
-export const JobDetail = genericDetailForResource("jobs", render);
+export const JobDetail = genericDetailForResource(render);

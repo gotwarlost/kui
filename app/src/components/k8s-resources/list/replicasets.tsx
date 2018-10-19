@@ -15,4 +15,4 @@ const cols = [
     },
 ];
 
-export const ReplicaSetList = genericListForResource("replicasets", cols);
+export const ReplicaSetList = genericListForResource(cols);

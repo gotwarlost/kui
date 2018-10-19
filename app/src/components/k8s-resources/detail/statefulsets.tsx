@@ -154,4 +154,4 @@ const render = (item) => {
     );
 };
 
-export const StatefulsetDetail = genericDetailForResource("statefulsets", render);
+export const StatefulsetDetail = genericDetailForResource(render);

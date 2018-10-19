@@ -76,4 +76,4 @@ const render = (item) => {
     );
 };
 
-export const DaemonsetDetail = genericDetailForResource("daemonsets", render);
+export const DaemonsetDetail = genericDetailForResource(render);

@@ -15,4 +15,4 @@ const cols = [
     },
 ];
 
-export const DeploymentList = genericListForResource("deployments", cols);
+export const DeploymentList = genericListForResource(cols);

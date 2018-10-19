@@ -3,7 +3,6 @@ import {Checkbox, Segment} from "semantic-ui-react";
 import {genericDetailForResource} from "./generic-detail";
 
 export const SecretDetail = genericDetailForResource(
-    "secrets",
     (item, component): React.ReactNode => {
         const secretState = component.state || {showSecrets: false};
         const t = (item as any).type;

@@ -34,7 +34,4 @@ const renderFn = (item): React.ReactNode => {
     );
 };
 
-export const ServiceAccountDetail = genericDetailForResource(
-    "serviceaccounts",
-    renderFn,
-);
+export const ServiceAccountDetail = genericDetailForResource(renderFn);

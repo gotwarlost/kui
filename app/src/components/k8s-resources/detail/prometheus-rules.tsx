@@ -4,7 +4,6 @@ import {InlineObject} from "./common/inline-object";
 import {genericDetailForResource} from "./generic-detail";
 
 export const PrometheusRuleDetail = genericDetailForResource(
-    "prometheusrules",
     (item): React.ReactNode => {
         const spec = (item as any).spec || {};
         const makeRule = (rule) => {

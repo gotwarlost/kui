@@ -2,7 +2,7 @@ import * as React from "react";
 import {Segment} from "semantic-ui-react";
 import {genericDetailForResource} from "./generic-detail";
 
-export const ConfigMapDetail = genericDetailForResource("configmaps",
+export const ConfigMapDetail = genericDetailForResource(
     (item): React.ReactNode => {
         const data = (item as any).data as object || {};
         const keys = Object.keys(data).sort();

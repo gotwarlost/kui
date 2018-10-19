@@ -42,4 +42,4 @@ class Accessors {
     }
 }
 
-export const EventList = genericListForResource("events", cols, new Accessors());
+export const EventList = genericListForResource(cols, new Accessors());

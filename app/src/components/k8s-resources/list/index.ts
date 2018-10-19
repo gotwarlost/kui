@@ -21,7 +21,7 @@ const pageMap = {
 export const listFor = (name: string): React.ReactNode => {
     const clz = pageMap[name];
     if (!clz) {
-        return createListElement(name, {key: name});
+        return createListElement({key: name, name}, null);
     }
-    return React.createElement(clz, {key: name}, null);
+    return React.createElement(clz, {key: name, name}, null);
 };

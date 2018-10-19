@@ -63,4 +63,4 @@ const render = (item) => {
     );
 };
 
-export const ReplicaSetDetail = genericDetailForResource("replicasets", render);
+export const ReplicaSetDetail = genericDetailForResource(render);

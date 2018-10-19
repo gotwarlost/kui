@@ -74,4 +74,4 @@ const render = (item) => {
     );
 };
 
-export const DeploymentDetail = genericDetailForResource("deployments", render);
+export const DeploymentDetail = genericDetailForResource(render);

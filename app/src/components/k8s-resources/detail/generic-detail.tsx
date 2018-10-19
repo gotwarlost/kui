@@ -3,8 +3,13 @@ import { connect } from "react-redux";
 import { State, StateReader } from "../../../model/state";
 import {DetailUI, IContentProvider, IDetailDispatch, IDetailProps} from "./detail-ui";
 
-export const genericDetailForResource = (name: string, provider: IContentProvider = null) => connect(
-    (s: State): IDetailProps => {
+interface nameProps {
+    name: string
+}
+
+export const genericDetailForResource = (provider: IContentProvider = null) => connect(
+    (s: State, props: nameProps): IDetailProps => {
+        const name = props.name;
         const qd = s.data || {};
         const key = StateReader.detailQueryKey(s);
         return {
@@ -20,6 +25,8 @@ export const genericDetailForResource = (name: string, provider: IContentProvide
     },
 )(DetailUI);
 
-export const createDetailElement = (name: string, props = {}, state = null): React.ReactNode => {
-    return React.createElement(genericDetailForResource(name), props, state);
+const stdDetail = genericDetailForResource();
+
+export const createDetailElement = (props, state = null): React.ReactNode => {
+    return React.createElement(stdDetail, props, state);
 };

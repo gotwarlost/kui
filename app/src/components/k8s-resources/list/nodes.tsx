@@ -28,4 +28,4 @@ const cols = [
     },
 ];
 
-export const NodeList = genericListForResource("nodes", cols);
+export const NodeList = genericListForResource(cols);
