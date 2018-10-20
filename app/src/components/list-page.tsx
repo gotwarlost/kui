@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import {State, StateReader} from "../model/state";
 import {ListPageSelection} from "../model/types";
 import {listFor} from "./k8s-resources/list";
+import {ErrorBoundary} from "./error-boundary";
 
 export interface IListPage {
     selection: ListPageSelection;
@@ -16,9 +17,11 @@ export class ListPageUI extends React.Component<IListPage, {}> {
         const op = this.props.selection.resources;
         const pages = op.map((name) => listFor(name));
         return (
-            <React.Fragment>
-                {pages}
-            </React.Fragment>
+            <ErrorBoundary>
+                <React.Fragment>
+                    {pages}
+                </React.Fragment>
+            </ErrorBoundary>
         );
     }
 }

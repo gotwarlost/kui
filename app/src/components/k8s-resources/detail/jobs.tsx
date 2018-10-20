@@ -3,7 +3,6 @@ import {Segment, Table} from "semantic-ui-react";
 import {ageInWords, toSelectorString} from "../../../util";
 import {genericDetailForResource} from "./generic-detail";
 import {Conditions} from "./common/conditions";
-import {InlineObject} from "./common/inline-object";
 import {PodTemplate} from "./pods/pod-template-ui";
 
 const render = (item) => {

@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import {State, StateReader} from "../model/state";
 import {ObjectSelection} from "../model/types";
 import {detailFor} from "./k8s-resources/detail";
+import {ErrorBoundary} from "./error-boundary";
 
 export interface IDetailPage {
     selection: ObjectSelection;
@@ -14,9 +15,11 @@ export class DetailPageUI extends React.Component<IDetailPage, {}> {
             return null;
         }
         return (
-            <React.Fragment>
-                {detailFor(this.props.selection.resourceName)}
-            </React.Fragment>
+            <ErrorBoundary>
+                <React.Fragment>
+                    {detailFor(this.props.selection.resourceName)}
+                </React.Fragment>
+            </ErrorBoundary>
         );
     }
 }

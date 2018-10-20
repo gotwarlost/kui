@@ -22,7 +22,7 @@
     "js-yaml": "^3.11.0",
     "moment": "^2.22.1",
     "oboe": "^2.1.4",
-    "react": "^16.2.0",
+    "react": "^16.5.2",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
