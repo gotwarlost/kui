@@ -23,8 +23,8 @@ import (
 
 const (
 	contextParamName    = "context"
-	resourceParamName   = "resource"
 	resourceIDParamName = "id"
+	resourceQueryParam  = "res"
 	namespaceQueryParam = "namespace"
 )
 
@@ -57,9 +57,9 @@ type logger struct {
 }
 
 func (l *logger) Log(rec accesslog.LogRecord) {
-	if rec.Status != http.StatusOK {
-		lg.Printf("(%d, %15v) %s %s", rec.Status, rec.ElapsedTime, rec.Method, rec.Uri)
-	}
+	//	if rec.Status < 200 && rec.Status >= 400 {
+	lg.Printf("(%d, %15v) %s %s", rec.Status, rec.ElapsedTime, rec.Method, rec.Uri)
+	//	}
 }
 
 func New(files []string, staticRoot string) APIHandler {
@@ -75,8 +75,8 @@ func New(files []string, staticRoot string) APIHandler {
 	mux := httptreemux.NewContextMux()
 	mux.GET("/api/contexts", s.listContexts)
 	mux.GET(fmt.Sprintf("/api/contexts/:%s", contextParamName), s.getContext)
-	mux.GET(fmt.Sprintf("/api/contexts/:%s/resources/:%s", contextParamName, resourceParamName), s.listResources)
-	mux.GET(fmt.Sprintf("/api/contexts/:%s/resources/:%s/:%s", contextParamName, resourceParamName, resourceIDParamName), s.getResource)
+	mux.GET(fmt.Sprintf("/api/contexts/:%s/resources", contextParamName), s.listResources)
+	mux.GET(fmt.Sprintf("/api/contexts/:%s/resources/:%s", contextParamName, resourceIDParamName), s.getResource)
 	mux.GET("/ui/*", func(w http.ResponseWriter, r *http.Request) {
 		w.Write(b)
 	})
@@ -231,12 +231,16 @@ func (s *server) getContext(w http.ResponseWriter, r *http.Request) {
 	enc.Encode(ret)
 }
 
-func (s *server) getResourceInfo(cfg *kubeconfig.Config, ctx string, name string) (*registry.ResourceInfo, error) {
+func (s *server) getResourceInfo(cfg *kubeconfig.Config, ctx string, id string) (*registry.ResourceInfo, error) {
 	rr, err := s.getRegistry(cfg, ctx)
 	if err != nil {
 		return nil, err
 	}
-	return rr.ResourceInfo(name)
+	key, err := registry.ResourceKeyFromString(id)
+	if err != nil {
+		return nil, err
+	}
+	return rr.ResourceInfo(key)
 }
 
 var downLog = log.New(os.Stderr, "[downstream] ", 0)
@@ -248,13 +252,16 @@ func (s *server) getOrList(w http.ResponseWriter, r *http.Request, object bool) 
 		http.Error(w, err.Error(), 500)
 		return
 	}
+
+	r.ParseForm()
+
 	ctx := p[contextParamName]
-	res := p[resourceParamName]
+	res := r.Form.Get(resourceQueryParam)
 	id := p[resourceIDParamName]
 
 	ri, err := s.getResourceInfo(cfg, ctx, res)
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		http.Error(w, err.Error(), 400)
 		return
 	}
 
@@ -264,39 +271,26 @@ func (s *server) getOrList(w http.ResponseWriter, r *http.Request, object bool) 
 		return
 	}
 
-	r.ParseForm()
-	ns := r.Form.Get(namespaceQueryParam)
-	if ri.IsClusterResource {
-		ns = ""
-	}
-
-	gpath := "/" + ri.GroupVersion.Version
-	if ri.GroupVersion.Group != "" {
-		gpath = "/" + ri.GroupVersion.Group + gpath
-	}
-
-	endPath := "/" + ri.Name
-	if ns != "" {
-		endPath = "/namespaces/" + ns + endPath
-	}
+	path := ri.APIListPath(r.Form.Get(namespaceQueryParam))
 
 	if object {
-		endPath += "/" + id
+		path += "/" + id
 	}
 
-	u := conn.baseURL + ri.Prefix + gpath + endPath
+	u := conn.baseURL + path
 
 	start := time.Now()
+	downLog.Println("GET", u)
 	resp, err := conn.client.Get(u)
 	if err != nil {
-		downLog.Println("error: GET", u, ",", err)
+		downLog.Println("error: GET", u, err)
 		http.Error(w, err.Error(), 500)
 		return
 	}
 	defer func() {
 		d := time.Now().Sub(start)
 		code := resp.StatusCode
-		if code != http.StatusOK {
+		if code < 200 || code >= 400 {
 			downLog.Printf("(%d, %15v) %s %s", code, d, "GET", u)
 		}
 	}()
@@ -309,7 +303,8 @@ func (s *server) getOrList(w http.ResponseWriter, r *http.Request, object bool) 
 		return
 	}
 
-	filter := newFilter(resp.Body, w, res)
+	e := ri.Key.EmptyVersion()
+	filter := newFilter(resp.Body, w, e.ResourceVersion.Group()+"/"+e.Kind)
 	if err := filter.process(); err != nil {
 		log.Println(err)
 	}

@@ -9,7 +9,7 @@ const loadList = (dispatch: any, client: Client, q: ResourceQuery) => {
         loading: true,
         query: q,
     }));
-    client.listResources(q.k8sContext, q.resourceName, q.namespace, (err, results) => {
+    client.listResources(q.k8sContext, q.resourceType, q.namespace, (err, results) => {
         dispatch(ActionFactory.loadData({
             err,
             query: q,
@@ -23,7 +23,7 @@ const loadDetail = (dispatch: any, client: Client, q: ResourceQuery) => {
         loading: true,
         query: q,
     }));
-    client.getResource(q.k8sContext, q.resourceName, q.namespace, q.objectName, (err, results) => {
+    client.getResource(q.k8sContext, q.resourceType, q.namespace, q.objectId, (err, results) => {
         dispatch(ActionFactory.loadData({
             err,
             query: q,
@@ -68,7 +68,7 @@ export const stateWatch = (client: Client) => ({dispatch, getState}) => (next) =
             contextName: sel.context,
             loading: true,
         }));
-        client.listResources(sel.context, "namespaces", "", (err, list) => {
+        client.listResources(sel.context, "v1:Namespace", "", (err, list) => {
             let namespaces = null;
             if (!err && list.items) {
                 namespaces = list.items.map((item) => item.metadata.name);
@@ -84,13 +84,13 @@ export const stateWatch = (client: Client) => ({dispatch, getState}) => (next) =
     // if list selection is present, ensured data is loaded
     const ls = StateReader.getListPageSelection(state);
     if (ls) {
-        ls.resources.forEach((name) => {
+        ls.resourceTypes.forEach((name) => {
             const lkey = StateReader.listQueryKey(state, name);
             if (!state.data[lkey]) {
                 const q: ResourceQuery = {
                     k8sContext: state.selection.context,
                     namespace: state.selection.namespace.namespace,
-                    resourceName: name,
+                    resourceType: name,
                 };
                 loadList(dispatch, client, q);
             }
@@ -105,8 +105,8 @@ export const stateWatch = (client: Client) => ({dispatch, getState}) => (next) =
             const q: ResourceQuery = {
                 k8sContext: state.selection.context,
                 namespace: os.namespace,
-                objectName: os.name,
-                resourceName: os.resourceName,
+                objectId: os.name,
+                resourceType: os.resourceType,
             };
             loadDetail(dispatch, client, q);
         }

@@ -64,7 +64,7 @@ export const path2Selection = (loc: LocationDescriptorObject): Selection => {
         const lr = query[LIST_RESOURCE_PARAM];
         if (lr) {
             sel.list = {
-                resources: Array.isArray(lr) ? lr : [lr],
+                resourceTypes: Array.isArray(lr) ? lr : [lr],
                 title: query[LIST_TITLE_PARAM].toString() || "",
             };
         }
@@ -74,7 +74,7 @@ export const path2Selection = (loc: LocationDescriptorObject): Selection => {
             sel.object = {
                 name: singularParam(on),
                 namespace: singularParam(query[OBJECT_NAMESPACE_PARAM]),
-                resourceName: singularParam(or),
+                resourceType: singularParam(or),
             };
         }
     }
@@ -98,11 +98,11 @@ export const selection2Path = (sel: Selection): LocationDescriptorObject => {
     }
     const query = {};
     if (sel.list) {
-        query[LIST_RESOURCE_PARAM] = sel.list.resources;
+        query[LIST_RESOURCE_PARAM] = sel.list.resourceTypes;
         query[LIST_TITLE_PARAM] = sel.list.title || "";
     }
     if (sel.object) {
-        query[OBJECT_RESOURCE_PARAM] = sel.object.resourceName;
+        query[OBJECT_RESOURCE_PARAM] = sel.object.resourceType;
         query[OBJECT_NAMESPACE_PARAM] = sel.object.namespace;
         query[OBJECT_NAME_PARAM] = sel.object.name;
     }

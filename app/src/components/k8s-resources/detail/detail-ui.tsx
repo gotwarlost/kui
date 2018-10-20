@@ -84,7 +84,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         const header = (
             <React.Fragment>
                 <h2>
-                    {this.props.qr.query.objectName}
+                    {this.props.qr.query.objectId}
                     &nbsp;&nbsp;
                 </h2>
                 {loading}

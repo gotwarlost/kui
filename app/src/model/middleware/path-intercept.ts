@@ -33,7 +33,7 @@ export const pathIntercept = (client: Client) => ({dispatch, getState}) => (next
             return navigateTo(dispatch, {
                 context: state.selection.context,
                 list: {
-                    resources: action.resources,
+                    resourceTypes: action.resourceTypes,
                     title: action.title,
                 },
                 namespace: state.selection.namespace,
@@ -47,7 +47,7 @@ export const pathIntercept = (client: Client) => ({dispatch, getState}) => (next
                 object: {
                     name: action.selection.name,
                     namespace: action.selection.namespace,
-                    resourceName: action.selection.resourceName,
+                    resourceType: action.selection.resourceType,
                 },
             });
         }

@@ -13,14 +13,17 @@ import (
 )
 
 var projections = map[string]func() projection{
-	"daemonsets":  func() projection { return &daemonset{} },
-	"deployments": func() projection { return &deployment{} },
-	"events":      func() projection { return &event{} },
-	"nodes":       func() projection { return &node{} },
-	"pods":        func() projection { return &pod{} },
-	"replicasets": func() projection { return &replicaset{} },
-	"services":    func() projection { return &service{} },
-	"":            func() projection { return &defaultObject{} },
+	"apps/DaemonSet":        func() projection { return &daemonset{} },
+	"extensions/DaemonSet":  func() projection { return &daemonset{} },
+	"apps/Deployment":       func() projection { return &deployment{} },
+	"extensions/Deployment": func() projection { return &deployment{} },
+	"/Event":                func() projection { return &event{} },
+	"/Node":                 func() projection { return &node{} },
+	"/Pod":                  func() projection { return &pod{} },
+	"apps/ReplicaSet":       func() projection { return &replicaset{} },
+	"extensions/ReplicaSet": func() projection { return &replicaset{} },
+	"/Service":              func() projection { return &service{} },
+	"":                      func() projection { return &defaultObject{} },
 }
 
 func toSelectorString(ps *metav1.LabelSelector) string {

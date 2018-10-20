@@ -1,4 +1,5 @@
 import * as React from "react";
+import {resourceTypeToKey} from "../../../util";
 import {DaemonSetList} from "./daemonsets";
 import {DeploymentList} from "./deployments";
 import {EventList} from "./events";
@@ -9,17 +10,21 @@ import {ReplicaSetList} from "./replicasets";
 import {ServiceList} from "./services";
 
 const pageMap = {
-    daemonsets: DaemonSetList,
-    deployments: DeploymentList,
-    events: EventList,
-    nodes: NodeList,
-    pods: PodList,
-    replicasets: ReplicaSetList,
-    services: ServiceList,
+    "/Event": EventList,
+    "/Node": NodeList,
+    "/Pod": PodList,
+    "/Service": ServiceList,
+    "apps/DaemonSet": DaemonSetList,
+    "apps/Deployment": DeploymentList,
+    "apps/ReplicaSet": ReplicaSetList,
+    "extensions/DaemonSet": DaemonSetList,
+    "extensions/Deployment": DeploymentList,
+    "extensions/ReplicaSet": ReplicaSetList,
 };
 
 export const listFor = (name: string): React.ReactNode => {
-    const clz = pageMap[name];
+    const key = resourceTypeToKey(name);
+    const clz = pageMap[key];
     if (!clz) {
         return React.createElement(BasicList, {key: name, name}, null);
     }

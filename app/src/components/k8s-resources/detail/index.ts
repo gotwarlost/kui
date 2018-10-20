@@ -1,4 +1,5 @@
 import * as React from "react";
+import {resourceTypeToKey} from "../../../util";
 import {ConfigMapDetail} from "./configmaps";
 import {BasicDetail} from "./generic-detail";
 import {DaemonsetDetail} from "./daemonsets";
@@ -16,25 +17,30 @@ import {ServiceDetail} from "./services";
 import {StatefulsetDetail} from "./statefulsets";
 
 const pageMap = {
-    clusterroles: RoleDetail,
-    configmaps: ConfigMapDetail,
-    daemonsets: DaemonsetDetail,
-    deployments: DeploymentDetail,
-    jobs: JobDetail,
-    nodes: NodeDetail,
-    pods: PodDetail,
-    prometheusrules: PrometheusRuleDetail,
-    replicasets: ReplicaSetDetail,
-    resourcequotas: ResourceQuotaDetail,
-    roles: RoleDetail,
-    secrets: SecretDetail,
-    serviceaccounts: ServiceAccountDetail,
-    services: ServiceDetail,
-    statefulsets: StatefulsetDetail,
+    "/ConfigMap": ConfigMapDetail,
+    "/Node": NodeDetail,
+    "/Pod": PodDetail,
+    "/ResourceQuota": ResourceQuotaDetail,
+    "/Secret": SecretDetail,
+    "/Service": ServiceDetail,
+    "/ServiceAccount": ServiceAccountDetail,
+    "apps/DaemonSet": DaemonsetDetail,
+    "apps/Deployment": DeploymentDetail,
+    "apps/ReplicaSet": ReplicaSetDetail,
+    "apps/StatefulSet": StatefulsetDetail,
+    "batch/Job": JobDetail,
+    "extensions/DaemonSet": DaemonsetDetail,
+    "extensions/Deployment": DeploymentDetail,
+    "extensions/ReplicaSet": ReplicaSetDetail,
+    "extensions/StatefulSet": StatefulsetDetail,
+    "monitoring.coreos.com/PrometheusRule": PrometheusRuleDetail,
+    "rbac.authorization.k8s.io/ClusterRole": RoleDetail,
+    "rbac.authorization.k8s.io/Role": RoleDetail,
 };
 
 export const detailFor = (name: string): React.ReactNode => {
-    const clz = pageMap[name];
+    const key = resourceTypeToKey(name);
+    const clz = pageMap[key];
     if (!clz) {
         return React.createElement(BasicDetail, {key: name, name }, null);
     }

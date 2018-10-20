@@ -128,7 +128,7 @@ export class ListUI extends React.Component<IList, {}> {
                     <a href="#"
                        data-namespace={original.metadata.namespace}
                        data-name={original.metadata.name}
-                       data-resource={this.props.qr.query.resourceName}
+                       data-resource={this.props.qr.query.resourceType}
                        onClick={this.onClick}
                     >
                         {value}

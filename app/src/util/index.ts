@@ -2,6 +2,15 @@ import * as moment from "moment";
 
 export const ageInWords = (dateStr: string): string => moment(dateStr).fromNow(true);
 
+export function resourceTypeToKey(name: string): string {
+    const parts = name.split(":");
+    const rv = parts[0];
+    const kind = parts[1];
+    const rvParts = rv.split("/");
+    const g = rvParts.length === 1 ? "" : rvParts[0];
+    return g + "/" + kind;
+}
+
 export function toSelectorString(selector): string {
     if (!selector) {
         return "false (does not match anything)";

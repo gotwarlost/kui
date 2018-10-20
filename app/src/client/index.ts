@@ -25,9 +25,9 @@ export class Client {
     }
 
     public listResources(context: string, resourceName: string, ns: string, cb: listResourceCallback) {
-        let url = `${this.baseURL}/${context}/resources/${resourceName}`;
+        let url = `${this.baseURL}/${context}/resources?res=${resourceName}`;
         if (ns) {
-            url += "?namespace=" + ns;
+            url += "&namespace=" + ns;
         }
         const stream = oboe({url});
         stream.on("fail", (err) => this.doError(url, err, cb));
@@ -35,9 +35,9 @@ export class Client {
     }
 
     public getResource(context: string, resourceName: string, ns: string, name: string, cb: getResourceCallback) {
-        let url = `${this.baseURL}/${context}/resources/${resourceName}/${name}`;
+        let url = `${this.baseURL}/${context}/resources/${name}?res=${resourceName}`;
         if (ns) {
-            url += "?namespace=" + ns;
+            url += "&namespace=" + ns;
         }
         const stream = oboe({url});
         stream.on("fail", (err) => this.doError(url, err, cb));

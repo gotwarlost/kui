@@ -17,7 +17,7 @@ export class DetailPageUI extends React.Component<IDetailPage, {}> {
         return (
             <ErrorBoundary>
                 <React.Fragment>
-                    {detailFor(this.props.selection.resourceName)}
+                    {detailFor(this.props.selection.resourceType)}
                 </React.Fragment>
             </ErrorBoundary>
         );

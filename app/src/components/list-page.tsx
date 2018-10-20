@@ -14,7 +14,7 @@ export class ListPageUI extends React.Component<IListPage, {}> {
         if (!this.props.selection) {
             return null;
         }
-        const op = this.props.selection.resources;
+        const op = this.props.selection.resourceTypes;
         const pages = op.map((name) => listFor(name));
         return (
             <ErrorBoundary>

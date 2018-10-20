@@ -77,16 +77,16 @@ export const Breadcrumb = connect(
             const ls = StateReader.getListPageSelection(s);
             const os = StateReader.getObjectSelection(s);
             if (os) {
-                const mi = StateReader.getResourceInfo(s, os.resourceName);
+                const mi = StateReader.getResourceInfo(s, os.resourceType);
                 if (mi) {
                     parts.push({text: mi.pluralName, link: "list page"});
                     parts.push({text: os.name});
                 }
             } else if (ls) {
-                if (ls.resources.length > 1) {
+                if (ls.resourceTypes.length > 1) {
                     parts.push({text: overviewTitle});
-                } else if (ls.resources.length === 1) {
-                    const ri = StateReader.getResourceInfo(s, ls.resources[0]);
+                } else if (ls.resourceTypes.length === 1) {
+                    const ri = StateReader.getResourceInfo(s, ls.resourceTypes[0]);
                     if (ri) {
                         parts.push({text: ri.pluralName});
                     }
@@ -102,7 +102,7 @@ export const Breadcrumb = connect(
                 evt.preventDefault();
                 const data = props.data as ObjectSelection;
                 if (data) {
-                    dispatch(ActionFactory.selectListPage("", [data.resourceName]));
+                    dispatch(ActionFactory.selectListPage("", [data.resourceType]));
                 }
             },
         };

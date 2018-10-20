@@ -24,10 +24,11 @@ export interface IContextList {
 }
 
 export interface IResourceInfo {
-    name: string;
-    isClusterResource: boolean;
+    id: string;
+    displayGroup: string;
     displayName: string;
     pluralName: string;
+    isClusterResource: boolean;
 }
 
 export interface IContextDetail {
@@ -38,9 +39,9 @@ export interface IContextDetail {
 // ResourceQuery is a query for a list or a single object.
 export class ResourceQuery {
     public k8sContext: string; // context name
-    public resourceName: string; // resource name
+    public resourceType: string; // resource type
     public namespace?: string; // optional namespace
-    public objectName?: string; // object name
+    public objectId?: string; // object id
 }
 
 // ResourceQueryResults encapsulates all the phases of executing a query
@@ -84,12 +85,12 @@ export class NamespaceListCache {
 
 export class ListPageSelection {
     public title: string;
-    public resources: string[];
+    public resourceTypes: string[];
 }
 
 // ObjectSelection is the selection of a single object.
 export class ObjectSelection {
-    public resourceName: string;
+    public resourceType: string;
     public namespace: string;
     public name: string;
 }

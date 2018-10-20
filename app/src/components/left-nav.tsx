@@ -72,7 +72,7 @@ export const LeftNav = connect(
     (s: State): ILeftNav => {
         const ns = s.selection.namespace;
         const allInfo = StateReader.getResources(s, ns.scope) || [];
-        const allResources = allInfo.map((item) => item.name);
+        const allResources = allInfo.map((item) => item.id);
         const counter = (name: string) => {
             const key = StateReader.listQueryKey(s, name);
             const qr = s.data[key];

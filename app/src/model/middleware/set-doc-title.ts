@@ -8,13 +8,13 @@ export const setDoctitle = (client: Client) => ({dispatch, getState}) => (next) 
     const ls = StateReader.getListPageSelection(state);
     let title = "kui";
     if (ob) {
-        const rName = StateReader.getResourceInfo(state, ob.resourceName).displayName;
+        const rName = StateReader.getResourceInfo(state, ob.resourceType).displayName;
         title = `${title}: ${rName} ${ob.name}`;
     } else if (ls) {
-        if (ls.resources.length > 1) {
+        if (ls.resourceTypes.length > 1) {
             title = `${title}: List overview`;
-        } else if (ls.resources.length > 0) {
-            const lName = StateReader.getResourceInfo(state, ls.resources[0]).pluralName;
+        } else if (ls.resourceTypes.length > 0) {
+            const lName = StateReader.getResourceInfo(state, ls.resourceTypes[0]).pluralName;
             title = `${title}: List ${lName}`;
         }
     }

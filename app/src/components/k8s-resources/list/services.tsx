@@ -22,7 +22,7 @@ const cols = [
 ];
 
 const portsCell = (item): React.ReactNode => {
-    const p = item.spec.ports || [];
+    const p = (item.spec || {}).ports || [];
     const lines: React.ReactNode[] = [];
     let count = 0;
     p.forEach((port) => {

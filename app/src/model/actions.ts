@@ -42,7 +42,7 @@ export interface ISelectNamespace extends Action {
 export interface ISelectListPage extends Action {
     type: ActionTypes.UI_SELECT_LIST_PAGE;
     title: string;
-    resources: string[];
+    resourceTypes: string[];
 }
 
 export interface ISelectObject extends Action {
@@ -104,12 +104,12 @@ export class ActionFactory {
         return {namespace, type: ActionTypes.UI_SELECT_NAMESPACE};
     }
 
-    public static selectListPage(title: string, resources: string[]): ISelectListPage {
-        return {resources, title, type: ActionTypes.UI_SELECT_LIST_PAGE};
+    public static selectListPage(title: string, resourceTypes: string[]): ISelectListPage {
+        return {resourceTypes, title, type: ActionTypes.UI_SELECT_LIST_PAGE};
     }
 
-    public static selectObject(resourceName: string, namespace: string, name: string): ISelectObject {
-        return {selection: {name, namespace, resourceName}, type: ActionTypes.UI_SELECT_OBJECT};
+    public static selectObject(resourceType: string, namespace: string, name: string): ISelectObject {
+        return {selection: {name, namespace, resourceType}, type: ActionTypes.UI_SELECT_OBJECT};
     }
 
     public static getContextDetail(cc: ContextCache): IGetContextDetail {

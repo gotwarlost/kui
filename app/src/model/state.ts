@@ -11,12 +11,12 @@ interface IQueryResultsMap {
 // resourceQueryKey returns the string representation of the
 // query, typically used as a cache key.
 export function resourceQueryKey(q: types.ResourceQuery): string {
-    const path = [q.k8sContext, q.resourceName];
+    const path = [q.k8sContext, q.resourceType];
     if (q.namespace) {
         path.push(q.namespace);
     }
-    if (q.objectName) {
-        path.push(q.objectName);
+    if (q.objectId) {
+        path.push(q.objectId);
     }
     return path.join("/");
 }
@@ -68,13 +68,13 @@ export class StateReader {
         return out;
     }
 
-    public static getResourceInfo(state: State, name: string): types.IResourceInfo {
+    public static getResourceInfo(state: State, id: string): types.IResourceInfo {
         if (!StateReader.hasResourceInfo(state)) {
             return null;
         }
         const resources = state.contextCache.detail.resources;
         for (const res of resources) {
-            if (res.name === name) {
+            if (res.id === id) {
                 return res;
             }
         }
@@ -92,7 +92,7 @@ export class StateReader {
             return state.selection.list;
         }
         return {
-            resources: StateReader.getResources(state, state.selection.namespace.scope).map((item) => item.name),
+            resourceTypes: StateReader.getResources(state, state.selection.namespace.scope).map((item) => item.id),
             title: overviewTitle,
         };
     }
@@ -107,24 +107,24 @@ export class StateReader {
         return null;
     }
 
-    public static listQueryKey(s: State, resourceName: string) {
+    public static listQueryKey(s: State, resourceType: string) {
         const sel = s.selection;
         const ns = sel.namespace;
-        const info = StateReader.getResourceInfo(s, resourceName) || {isClusterResource: false};
+        const info = StateReader.getResourceInfo(s, resourceType) || {isClusterResource: false};
         return resourceQueryKey({
             k8sContext: sel.context,
             namespace: !info.isClusterResource && ns.scope === types.QueryScope.SINGLE_NAMESPACE ? ns.namespace : "",
-            resourceName,
+            resourceType,
         });
     }
 
     public static detailQueryKey(s: State) {
-        const obj = StateReader.getObjectSelection(s) || {namespace: "", name: "", resourceName: ""};
+        const obj = StateReader.getObjectSelection(s) || {namespace: "", name: "", resourceType: ""};
         return resourceQueryKey({
             k8sContext: s.selection.context,
             namespace: obj.namespace,
-            objectName: obj.name,
-            resourceName: obj.resourceName,
+            objectId: obj.name,
+            resourceType: obj.resourceType,
         });
     }
 }
