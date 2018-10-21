@@ -2,6 +2,7 @@ import * as React from "react";
 import {Table} from "semantic-ui-react";
 import {ageInWords} from "../../../../util";
 import {InlineObject} from "./inline-object";
+import {ObjectLink} from "./object-link";
 
 interface IMetadata {
     name: string;
@@ -13,6 +14,7 @@ interface IMetadata {
     creationTimestamp: string;
     annotations?: object;
     labels?: object;
+    ownerReferences?: any[];
 }
 
 export interface IMetadataProps {
@@ -69,6 +71,23 @@ export class MetadataDetailUI extends React.Component<IMetadataProps, {}> {
                 <Table.Cell>{meta.namespace}</Table.Cell>
             </Table.Row>
         );
+        const ownerRow = meta.ownerReferences &&  meta.ownerReferences.length > 0 && (
+            <Table.Row>
+                <Table.Cell textAlign="right">Owner</Table.Cell>
+                <Table.Cell>{
+                    meta.ownerReferences.map( (ref) => {
+                        return (
+                          <React.Fragment>
+                              <ObjectLink type={ref.apiVersion + ":" + ref.kind}
+                                          name={ref.name}
+                                          namespace={meta.namespace || ""}
+                              />
+                          </React.Fragment>
+                        );
+                    })
+                }</Table.Cell>
+            </Table.Row>
+        );
         return (
             <Table basic="very" celled collapsing compact>
                 <Table.Body>
@@ -82,6 +101,7 @@ export class MetadataDetailUI extends React.Component<IMetadataProps, {}> {
                     {annRow}
                     {resourceVersionRow}
                     {generationRow}
+                    {ownerRow}
                 </Table.Body>
             </Table>
         );

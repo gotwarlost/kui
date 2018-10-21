@@ -2,8 +2,7 @@ import * as React from "react";
 import {connect} from "react-redux";
 import {State, StateReader} from "../model/state";
 import {ListPageSelection} from "../model/types";
-import {listFor} from "./k8s-resources/list";
-import {ErrorBoundary} from "./error-boundary";
+import {listFor} from "./k8s-resources/list/index";
 
 export interface IListPage {
     selection: ListPageSelection;
@@ -15,13 +14,13 @@ export class ListPageUI extends React.Component<IListPage, {}> {
             return null;
         }
         const op = this.props.selection.resourceTypes;
-        const pages = op.map((name) => listFor(name));
+        const showWhenNoResults = this.props.selection.resourceTypes.length === 1;
+        const pageSize = this.props.selection.resourceTypes.length === 1 ? 15 : 15; // need to fix bugs when different
+        const pages = op.map((name) => listFor(name, showWhenNoResults, pageSize));
         return (
-            <ErrorBoundary>
-                <React.Fragment>
-                    {pages}
-                </React.Fragment>
-            </ErrorBoundary>
+            <React.Fragment>
+                {pages}
+            </React.Fragment>
         );
     }
 }

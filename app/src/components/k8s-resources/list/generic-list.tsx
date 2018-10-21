@@ -5,13 +5,15 @@ import {State, StateReader} from "../../../model/state";
 import {QueryScope} from "../../../model/types";
 import {IBaseAccessors, IListDispatch, IListProps, IReactTableColumn, ListUI} from "./list-ui";
 
-interface INameProps {
+interface IGenericListProps {
     name: string;
+    showWhenNoResults?: boolean;
+    pageSize?: number;
 }
 
 export const genericListForResource = (cols: IReactTableColumn[] = null,
                                        baseAccessors: IBaseAccessors = null) => connect(
-    (s: State, props: INameProps): IListProps => {
+    (s: State, props: IGenericListProps): IListProps => {
         const name = props.name;
         const ns = s.selection.namespace;
         const qd = s.data || {};
@@ -22,6 +24,7 @@ export const genericListForResource = (cols: IReactTableColumn[] = null,
             cols,
             displayNamespace: ns.scope === QueryScope.ALL_NAMESPACES,
             listName: StateReader.getResourceInfo(s, name).pluralName,
+            pageSize: props.pageSize,
             qr,
         };
     },

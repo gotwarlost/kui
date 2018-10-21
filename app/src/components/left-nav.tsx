@@ -38,7 +38,7 @@ class LinkItem extends React.Component<ILinkItemProps, {}> {
     public render() {
         const title = this.props.title || "<unknown resource>";
 
-        if (typeof this.props.count === "number" && this.props.count === 0) {
+        if (!this.props.selected && typeof this.props.count === "number" && this.props.count === 0) {
             return null;
         }
 
@@ -103,7 +103,7 @@ class GroupItem extends React.Component<IGroupProps, {}> {
         }
         return (
             <React.Fragment>
-                <h4 style={{marginBottom: 0, marginTop: "0.5em", fontWeight: "normal" }}>{title}</h4>
+                <h4 style={{margin: "0.5em 0", fontWeight: "normal" }}>{title}</h4>
                     {
                         results.map( (attrs) => {
                             return React.createElement(LinkItem, attrs, {});

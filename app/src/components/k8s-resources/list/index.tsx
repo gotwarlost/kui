@@ -8,6 +8,7 @@ import {NodeList} from "./nodes";
 import {PodList} from "./pods";
 import {ReplicaSetList} from "./replicasets";
 import {ServiceList} from "./services";
+import {ErrorBoundary} from "../../error-boundary";
 
 const pageMap = {
     "/Event": EventList,
@@ -22,11 +23,17 @@ const pageMap = {
     "extensions/ReplicaSet": ReplicaSetList,
 };
 
-export const listFor = (name: string): React.ReactNode => {
+export const listFor = (name: string, showWhenNoResults: boolean, pageSize: number): React.ReactNode => {
     const key = resourceTypeToKey(name);
     const clz = pageMap[key];
-    if (!clz) {
-        return React.createElement(BasicList, {key: name, name}, null);
-    }
-    return React.createElement(clz, {key: name, name}, null);
+    const child = !clz ?
+        React.createElement(BasicList, {key: name, name, pageSize, showWhenNoResults}, null) :
+        React.createElement(clz, {key: name, name, pageSize, showWhenNoResults}, null);
+    return (
+        <ErrorBoundary>
+            <React.Fragment>
+                {child}
+            </React.Fragment>
+        </ErrorBoundary>
+    );
 };

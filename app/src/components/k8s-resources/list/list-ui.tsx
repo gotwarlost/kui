@@ -5,7 +5,6 @@ import {IResourceList, ResourceQueryResults} from "../../../model/types";
 import {ageInWords} from "../../../util";
 
 const PAGE_SIZE = 15;
-const PAGE_SIZE_CHECK = 20;
 
 export interface IBaseAccessors {
     getNamespaceAccessor(): any;
@@ -19,6 +18,7 @@ export interface IListProps {
     showWhenNoResults?: boolean;
     displayNamespace: boolean;
     baseAccessors: IBaseAccessors;
+    pageSize?: number;
 }
 
 export interface IListDispatch {
@@ -78,9 +78,11 @@ export class ListUI extends React.Component<IList, {}> {
         let content: React.ReactNode = null;
         if (!(loading || err)) {
             const resourceList = this.props.qr.results as IResourceList;
+            const maxPageSize = this.props.pageSize || PAGE_SIZE;
+            const checkPageSize = maxPageSize + 5;
             if (resourceList.items && resourceList.items.length > 0) {
-                const pagination = resourceList.items.length > PAGE_SIZE_CHECK;
-                const pageSize = resourceList.items.length > PAGE_SIZE_CHECK ? PAGE_SIZE : resourceList.items.length;
+                const pagination = resourceList.items.length > checkPageSize;
+                const pageSize = resourceList.items.length > checkPageSize ? maxPageSize : resourceList.items.length;
                 const nameCol = this.getNameColumn();
                 const ageCol = this.getAgeColumn();
                 const cols = this.props.displayNamespace ?

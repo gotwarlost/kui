@@ -162,17 +162,15 @@ func New(config *rest.Config) (*ResourceRegistry, error) {
 	return rr, nil
 }
 
-// HasResource returns a true if the supplied name is a valid resource.
-func (r *ResourceRegistry) HasResource(key ResourceKey) bool {
-	emptyKey := key.EmptyVersion()
-	_, ok := r.preferredVersions[emptyKey]
-	return ok
-}
-
 // ResourceInfo returns the information for the supplied type or an error if it was not found.
 func (r *ResourceRegistry) ResourceInfo(key ResourceKey) (*ResourceInfo, error) {
 	emptyKey := key.EmptyVersion()
-	key, ok := r.preferredVersions[emptyKey]
+	alias, ok := r.aliases[emptyKey]
+	if ok {
+		key, ok = r.preferredVersions[alias]
+	} else {
+		key, ok = r.preferredVersions[emptyKey]
+	}
 	if !ok {
 		return nil, fmt.Errorf("invalid type %v", key)
 	}
