@@ -1,6 +1,8 @@
 package server
 
 import (
+	"strings"
+
 	"github.com/gotwarlost/kui/pkg/registry"
 )
 
@@ -20,7 +22,7 @@ type ClusterResource struct {
 
 func fromResource(r registry.ResourceInfo) ClusterResource {
 	var displayGroup = r.Key.ResourceVersion.Group()
-	if displayGroup == "apps" || displayGroup == "extensions" {
+	if pos := strings.Index(displayGroup, "."); pos < 0 {
 		displayGroup = ""
 	}
 	return ClusterResource{

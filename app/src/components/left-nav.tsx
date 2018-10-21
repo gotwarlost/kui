@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Icon, List, Segment} from "semantic-ui-react";
 import {ActionFactory} from "../model/actions";
 import {overviewTitle, State, StateReader} from "../model/state";
-import {IResourceGroup, IResourceInfo, ListPageSelection} from "../model/types";
+import {IResourceGroup} from "../model/types";
 
 type countFn = (name: string) => any;
 type loadingFn = (name: string) => boolean;
@@ -21,9 +21,12 @@ interface IResultFinder {
 interface ILinkItemProps {
     title: string;
     name: string;
-    finder: IResultFinder;
+    count?: any;
+    loading?: boolean;
+    err?: any;
+    selected?: boolean;
     onClick: clickFn;
-    resources: string[];
+    allResourceTypes: string[];
 }
 
 class LinkItem extends React.Component<ILinkItemProps, {}> {
@@ -34,23 +37,19 @@ class LinkItem extends React.Component<ILinkItemProps, {}> {
 
     public render() {
         const title = this.props.title || "<unknown resource>";
-        const selected = this.props.finder.selectFn(this.props.name);
-        const count = this.props.finder.countFn(this.props.name);
-        const loading = this.props.finder.loadingFn(this.props.name);
-        const err = this.props.finder.errorFn(this.props.name);
 
-        if (typeof count === "number" && count === 0) {
+        if (typeof this.props.count === "number" && this.props.count === 0) {
             return null;
         }
 
         return (
-            <div className={selected ? "list-link list-link-selected" : "list-link"}>
+            <div className={this.props.selected ? "list-link list-link-selected" : "list-link"}>
                 <a href="#" onClick={this.onClick}>
                     {title}
                     &nbsp;
-                    {typeof(count) === "number" ? " (" + count + ")" : ""}
-                    {loading && <Icon name="wait" className="grey"/>}
-                    {err && <Icon name="warning sign" className="orange"/>}
+                    {typeof(this.props.count) === "number" ? " (" + this.props.count + ")" : ""}
+                    {this.props.loading && <Icon name="wait" className="grey"/>}
+                    {this.props.err && <Icon name="warning sign" className="orange"/>}
                 </a>
             </div>
         );
@@ -65,24 +64,36 @@ interface IGroupProps {
     group: IResourceGroup;
     finder: IResultFinder;
     onClick: clickFn;
+    allResourceTypes: string[];
 }
 
 class GroupItem extends React.Component<IGroupProps, {}> {
     public render() {
-        const title = this.props.group.name;
+        const title = this.props.group.name || "core and extensions";
         if (this.props.group.resources.length === 0) {
             return null;
         }
         let counted = true;
         let count = 0;
         let sel = false;
+        const results = [];
         this.props.group.resources.forEach((res) => {
-            if (this.props.finder.selectFn(res.id)) {
+            const attrs = {
+                allResourceTypes: this.props.allResourceTypes,
+                count: this.props.finder.countFn(res.id),
+                err: this.props.finder.errorFn(res.id),
+                loading: this.props.finder.loadingFn(res.id),
+                name: res.id,
+                onClick: this.props.onClick,
+                selected: this.props.finder.selectFn(res.id),
+                title: res.pluralName,
+            };
+            results.push(attrs);
+            if (attrs.selected) {
                 sel = true;
             }
-            const c = this.props.finder.countFn(res.id);
-            if (typeof c === "number") {
-                count += c;
+            if (typeof attrs.count === "number") {
+                count += attrs.count;
             } else {
                 counted = false;
             }
@@ -92,22 +103,12 @@ class GroupItem extends React.Component<IGroupProps, {}> {
         }
         return (
             <React.Fragment>
-                <h3 style={{marginBottom: 0}}>{title}</h3>
-                <List>
+                <h4 style={{marginBottom: 0, marginTop: "0.5em", fontWeight: "normal" }}>{title}</h4>
                     {
-                        this.props.group.resources.map( (res) => {
-                            return (
-                                <List.Item>
-                                    <LinkItem name={res.id}
-                                              title={res.pluralName}
-                                              finder={this.props.finder}
-                                              resources={[res.id]}
-                                              onClick={this.props.onClick} />
-                                </List.Item>
-                            );
+                        results.map( (attrs) => {
+                            return React.createElement(LinkItem, attrs, {});
                         })
                     }
-                </List>
             </React.Fragment>
         );
     }
@@ -134,27 +135,24 @@ export class LeftNavUI extends React.Component<ILeftNav, {}> {
         }
         const groupItems = this.props.allResources.map( (group) => {
             return (
-                <List.Item>
-                    <GroupItem group={group} finder={this.props.finder} onClick={this.props.onClick}/>
-                 </List.Item>
+                <GroupItem group={group}
+                           finder={this.props.finder}
+                           allResourceTypes={this.props.allResourceTypes}
+                           onClick={this.props.onClick}/>
             );
         });
         return (
             <Segment raised>
-                <List>
-                    <List.Item key={overviewTitle}>
-                        <h3>
-                            <LinkItem
-                                title={overviewTitle}
-                                name={""}
-                                finder={this.props.finder}
-                                onClick={this.props.onClick}
-                                resources={this.props.allResourceTypes}
-                            />
-                        </h3>
-                    </List.Item>
-                    {groupItems}
-                </List>
+                <h3 style={{marginBottom: 0, paddingBottom: 0}}>
+                    <LinkItem
+                        allResourceTypes={this.props.allResourceTypes}
+                        title={overviewTitle}
+                        name=""
+                        onClick={this.props.onClick}
+                        selected={this.props.finder.selectFn("")}
+                    />
+                </h3>
+                {groupItems}
             </Segment>
         );
     }
@@ -221,7 +219,8 @@ export const LeftNav = connect(
         return {
             onClick: (evt, props) => {
                 evt.preventDefault();
-                dispatch(ActionFactory.selectListPage(props.title, props.resources));
+                const resources = props.name !== "" ? [ props.name ] : props.allResourceTypes;
+                dispatch(ActionFactory.selectListPage(props.title, resources));
             },
         };
     },

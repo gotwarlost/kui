@@ -57,9 +57,9 @@ type logger struct {
 }
 
 func (l *logger) Log(rec accesslog.LogRecord) {
-	//	if rec.Status < 200 && rec.Status >= 400 {
-	lg.Printf("(%d, %15v) %s %s", rec.Status, rec.ElapsedTime, rec.Method, rec.Uri)
-	//	}
+	if rec.Status < 200 && rec.Status >= 400 {
+		lg.Printf("(%d, %15v) %s %s", rec.Status, rec.ElapsedTime, rec.Method, rec.Uri)
+	}
 }
 
 func New(files []string, staticRoot string) APIHandler {
