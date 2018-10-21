@@ -6,6 +6,7 @@ import {DetailPage} from "./detail-page";
 import {ListPage} from "./list-page";
 import {LeftNav} from "./left-nav";
 import {Breadcrumb} from "./breadcrumb";
+import {ErrorBoundary} from "./error-boundary";
 
 export interface IPageSelector {
     selectionPresent: boolean;
@@ -26,7 +27,11 @@ export class PageSelectorUI extends React.Component<IPageSelector, {}> {
             <Grid>
                 <Grid.Row>
                     <Grid.Column width={3}>
-                        <LeftNav/>
+                        <ErrorBoundary>
+                            <React.Fragment>
+                                <LeftNav/>
+                            </React.Fragment>
+                        </ErrorBoundary>
                     </Grid.Column>
                     <Grid.Column width={13}>
                         <Breadcrumb/>

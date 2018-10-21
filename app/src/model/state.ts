@@ -53,7 +53,7 @@ export class StateReader {
             state.selection.context === state.contextCache.contextName);
     }
 
-    public static getResources(state: State, scope: types.QueryScope): types.IResourceInfo[] {
+    public static getResources(state: State, scope: types.QueryScope): types.IResourceGroup[] {
         if (!StateReader.hasResourceInfo(state)) {
             return null;
         }
@@ -65,7 +65,30 @@ export class StateReader {
                 out.push(res);
             }
         }
-        return out;
+        const groupMap = {};
+        out.forEach( (info) => {
+            if (!groupMap[info.displayGroup]) {
+                groupMap[info.displayGroup] = [];
+            }
+            groupMap[info.displayGroup].push(info);
+        });
+        const keys = Object.keys(groupMap);
+        const groups = [];
+        keys.sort();
+        keys.forEach( (key) => {
+            const gtypes = groupMap[key];
+            gtypes.sort( (a, b) => {
+                if (a.displayName < b.displayName) {
+                    return -1;
+                }
+                return 1;
+            });
+            groups.push({
+                name: key,
+                resources: gtypes,
+            });
+        });
+        return groups;
     }
 
     public static getResourceInfo(state: State, id: string): types.IResourceInfo {
@@ -91,8 +114,15 @@ export class StateReader {
         if (state.selection.list) {
             return state.selection.list;
         }
+        const groups = StateReader.getResources(state, state.selection.namespace.scope);
+        const gtypes = [];
+        groups.forEach( (group) => {
+            group.resources.forEach( (res) => {
+                gtypes.push(res.id);
+            });
+        });
         return {
-            resourceTypes: StateReader.getResources(state, state.selection.namespace.scope).map((item) => item.id),
+            resourceTypes: gtypes,
             title: overviewTitle,
         };
     }

@@ -31,6 +31,11 @@ export interface IResourceInfo {
     isClusterResource: boolean;
 }
 
+export interface IResourceGroup {
+    name: string;
+    resources: IResourceInfo[];
+}
+
 export interface IContextDetail {
     defaultNamespace: string;
     resources: IResourceInfo[];
