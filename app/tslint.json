@@ -6,7 +6,8 @@
     "jsRules": {},
     "rules": {
         "max-classes-per-file": [false],
-        "ordered-imports": false
+        "ordered-imports": false,
+        "no-empty-interface": false
     },
     "rulesDirectory": []
 }

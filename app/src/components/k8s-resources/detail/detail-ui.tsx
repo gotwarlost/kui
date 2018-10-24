@@ -14,7 +14,11 @@ export interface IDetailProps {
     events?: ResourceQueryResults;
 }
 
-export interface IDetail extends IDetailProps, IListDispatch {
+export interface IDetailDispatch extends IListDispatch {
+
+}
+
+export interface IDetail extends IDetailProps, IDetailDispatch {
 }
 
 interface IDetailState {
