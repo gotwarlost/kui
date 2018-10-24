@@ -1,4 +1,4 @@
-import { genericListForResource } from "./generic-list";
+import {ListUI} from "./list-ui";
 
 const cols = [
     {
@@ -42,4 +42,10 @@ class Accessors {
     }
 }
 
-export const EventList = genericListForResource(cols, new Accessors());
+export class EventsListUI extends ListUI {
+    constructor(props, state) {
+        super(props, state);
+        this.cols = cols;
+        this.baseAccessors = new Accessors();
+    }
+}

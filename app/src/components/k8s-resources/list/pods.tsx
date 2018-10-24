@@ -1,4 +1,4 @@
-import {genericListForResource} from "./generic-list";
+import {ListUI} from "./list-ui";
 
 const cols = [
     {
@@ -34,4 +34,9 @@ const cols = [
     },
 ];
 
-export const PodList = genericListForResource(cols);
+export class PodListUI extends ListUI {
+    constructor(props, state) {
+        super(props, state);
+        this.cols = cols;
+    }
+}

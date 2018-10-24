@@ -1,8 +1,8 @@
 import * as React from "react";
 import {Table} from "semantic-ui-react";
-import {genericDetailForResource} from "./generic-detail";
+import {DetailUI} from "./detail-ui";
 
-const renderFn = (item): React.ReactNode => {
+const render = (item): React.ReactNode => {
     const rows = [];
     let autoMount = true;
     if (typeof item.automountServiceAccountToken !== "undefined") {
@@ -34,4 +34,9 @@ const renderFn = (item): React.ReactNode => {
     );
 };
 
-export const ServiceAccountDetail = genericDetailForResource(renderFn);
+export class ServiceAccountDetailUI extends DetailUI {
+    constructor(props, state) {
+        super(props, state);
+        this.provider = render;
+    }
+}

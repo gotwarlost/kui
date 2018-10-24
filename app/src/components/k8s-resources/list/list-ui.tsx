@@ -14,10 +14,8 @@ export interface IBaseAccessors {
 export interface IListProps {
     listName: string;
     qr: ResourceQueryResults;
-    cols?: IReactTableColumn[];
-    showWhenNoResults?: boolean;
     displayNamespace: boolean;
-    baseAccessors: IBaseAccessors;
+    showWhenNoResults?: boolean;
     pageSize?: number;
 }
 
@@ -46,6 +44,10 @@ export interface IReactTableColumn {
 }
 
 export class ListUI extends React.Component<IList, {}> {
+
+    protected baseAccessors?: IBaseAccessors;
+    protected cols?: IReactTableColumn[];
+
     constructor(props, state) {
         super(props, state);
         this.onClick = this.onClick.bind(this);
@@ -72,7 +74,7 @@ export class ListUI extends React.Component<IList, {}> {
         const err = this.props.qr.err && (
             <Message error>
                 <Message.Header>Load error</Message.Header>
-                {this.props.qr.err.message}
+                <pre className="wrapped">{this.props.qr.err.message}</pre>
             </Message>
         );
         let content: React.ReactNode = null;
@@ -120,7 +122,7 @@ export class ListUI extends React.Component<IList, {}> {
     }
 
     protected getAdditionalColumns(): IReactTableColumn[] {
-        return this.props.cols || [];
+        return this.cols || [];
     }
 
     private getNameColumn(): IReactTableColumn {
@@ -138,7 +140,7 @@ export class ListUI extends React.Component<IList, {}> {
                 );
             },
             Header: "Name",
-            accessor: this.props.baseAccessors ? this.props.baseAccessors.getNameAccessor() : "metadata.name",
+            accessor: this.baseAccessors ? this.baseAccessors.getNameAccessor() : "metadata.name",
             id: "__name__",
         };
     }
@@ -146,7 +148,7 @@ export class ListUI extends React.Component<IList, {}> {
     private getNamespaceColumn(): IReactTableColumn {
         return {
             Header: "Namespace",
-            accessor: this.props.baseAccessors ? this.props.baseAccessors.getNamespaceAccessor() : "metadata.namespace",
+            accessor: this.baseAccessors ? this.baseAccessors.getNamespaceAccessor() : "metadata.namespace",
             id: "__namespace__",
         };
     }
@@ -185,5 +187,4 @@ export class ListUI extends React.Component<IList, {}> {
             });
         }
     }
-
 }

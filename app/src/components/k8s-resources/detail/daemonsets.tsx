@@ -1,10 +1,10 @@
 import * as React from "react";
 import {Segment, Table} from "semantic-ui-react";
 import {toSelectorString} from "../../../util";
-import {genericDetailForResource} from "./generic-detail";
 import {Conditions} from "./common/conditions";
 import {InlineObject} from "./common/inline-object";
 import {PodTemplate} from "./pods/pod-template-ui";
+import {DetailUI} from "./detail-ui";
 
 const render = (item) => {
     const spec = item.spec || {};
@@ -68,12 +68,19 @@ const render = (item) => {
         </React.Fragment>
     );
 
+    const podTemplateNode = !spec.template ? null : <PodTemplate template={spec.template || {}}/>;
+
     return (
       <React.Fragment>
           {statNode}
-          <PodTemplate template={spec.template}/>
+          {podTemplateNode}
       </React.Fragment>
     );
 };
 
-export const DaemonsetDetail = genericDetailForResource(render);
+export class DaemonsetDetailUI extends DetailUI {
+    constructor(props, state) {
+        super(props, state);
+        this.provider = render;
+    }
+}

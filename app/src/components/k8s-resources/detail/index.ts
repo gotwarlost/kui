@@ -1,48 +1,45 @@
 import * as React from "react";
 import {resourceTypeToKey} from "../../../util";
-import {ConfigMapDetail} from "./configmaps";
-import {BasicDetail} from "./generic-detail";
-import {DaemonsetDetail} from "./daemonsets";
-import {DeploymentDetail} from "./deployments";
-import {JobDetail} from "./jobs";
-import {NodeDetail} from "./nodes";
-import {PodDetail} from "./pods";
-import {PrometheusRuleDetail} from "./prometheus-rules";
-import {ReplicaSetDetail} from "./replicasets";
-import {ResourceQuotaDetail} from "./resourcequotas";
-import {RoleDetail} from "./roles";
-import {SecretDetail} from "./secrets";
-import {ServiceAccountDetail} from "./serviceaccounts";
-import {ServiceDetail} from "./services";
-import {StatefulsetDetail} from "./statefulsets";
+import {ConfigMapDetailUI} from "./configmaps";
+import {DetailUI, IDetail} from "./detail-ui";
+import {DaemonsetDetailUI} from "./daemonsets";
+import {DeploymentDetailUI} from "./deployments";
+import {JobDetailUI} from "./jobs";
+import {NodeDetailUI} from "./nodes";
+import {PodDetailUI} from "./pods";
+import {PrometheusRuleDetailUI} from "./prometheus-rules";
+import {ReplicaSetDetailUI} from "./replicasets";
+import {ResourceQuotaDetailUI} from "./resourcequotas";
+import {RoleDetailUI} from "./roles";
+import {SecretDetailUI} from "./secrets";
+import {ServiceAccountDetailUI} from "./serviceaccounts";
+import {ServiceDetailUI} from "./services";
+import {StatefulsetDetailUI} from "./statefulsets";
 
 const pageMap = {
-    "/ConfigMap": ConfigMapDetail,
-    "/Node": NodeDetail,
-    "/Pod": PodDetail,
-    "/ResourceQuota": ResourceQuotaDetail,
-    "/Secret": SecretDetail,
-    "/Service": ServiceDetail,
-    "/ServiceAccount": ServiceAccountDetail,
-    "apps/DaemonSet": DaemonsetDetail,
-    "apps/Deployment": DeploymentDetail,
-    "apps/ReplicaSet": ReplicaSetDetail,
-    "apps/StatefulSet": StatefulsetDetail,
-    "batch/Job": JobDetail,
-    "extensions/DaemonSet": DaemonsetDetail,
-    "extensions/Deployment": DeploymentDetail,
-    "extensions/ReplicaSet": ReplicaSetDetail,
-    "extensions/StatefulSet": StatefulsetDetail,
-    "monitoring.coreos.com/PrometheusRule": PrometheusRuleDetail,
-    "rbac.authorization.k8s.io/ClusterRole": RoleDetail,
-    "rbac.authorization.k8s.io/Role": RoleDetail,
+    "/ConfigMap": ConfigMapDetailUI,
+    "/Node": NodeDetailUI,
+    "/Pod": PodDetailUI,
+    "/ResourceQuota": ResourceQuotaDetailUI,
+    "/Secret": SecretDetailUI,
+    "/Service": ServiceDetailUI,
+    "/ServiceAccount": ServiceAccountDetailUI,
+    "apps/DaemonSet": DaemonsetDetailUI,
+    "apps/Deployment": DeploymentDetailUI,
+    "apps/ReplicaSet": ReplicaSetDetailUI,
+    "apps/StatefulSet": StatefulsetDetailUI,
+    "batch/Job": JobDetailUI,
+    "extensions/DaemonSet": DaemonsetDetailUI,
+    "extensions/Deployment": DeploymentDetailUI,
+    "extensions/ReplicaSet": ReplicaSetDetailUI,
+    "extensions/StatefulSet": StatefulsetDetailUI,
+    "monitoring.coreos.com/PrometheusRule": PrometheusRuleDetailUI,
+    "rbac.authorization.k8s.io/ClusterRole": RoleDetailUI,
+    "rbac.authorization.k8s.io/Role": RoleDetailUI,
 };
 
-export const detailFor = (name: string): React.ReactNode => {
-    const key = resourceTypeToKey(name);
-    const clz = pageMap[key];
-    if (!clz) {
-        return React.createElement(BasicDetail, {key: name, name }, null);
-    }
-    return React.createElement(clz, {key: name, name}, null);
+export const renderDetail = (resourceType: string, props: IDetail): React.ReactNode => {
+    const key = resourceTypeToKey(resourceType);
+    const clz = pageMap[key] || DetailUI;
+    return React.createElement(clz, {key, ...props}, null);
 };

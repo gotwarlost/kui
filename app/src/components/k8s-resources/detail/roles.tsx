@@ -1,8 +1,8 @@
 import * as React from "react";
 import {Segment, Table} from "semantic-ui-react";
-import {genericDetailForResource} from "./generic-detail";
+import {DetailUI} from "./detail-ui";
 
-const renderFn = (item): React.ReactNode => {
+const render = (item): React.ReactNode => {
     const rules = (item as any).rules || [];
     let count = 0;
     const items = rules.map((rule: any) => {
@@ -46,6 +46,9 @@ const renderFn = (item): React.ReactNode => {
     );
 };
 
-export const RoleDetail = genericDetailForResource(
-    renderFn,
-);
+export class RoleDetailUI extends DetailUI {
+    constructor(props, state) {
+        super(props, state);
+        this.provider = render;
+    }
+}

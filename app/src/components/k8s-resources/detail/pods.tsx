@@ -1,10 +1,15 @@
 import * as React from "react";
-import {genericDetailForResource} from "./generic-detail";
 import {Pod} from "./pods/pod-ui";
+import {DetailUI} from "./detail-ui";
 
-export const PodDetail = genericDetailForResource(
-    (item): React.ReactNode => {
-        const pod = new Pod({spec: item.spec, status: item.status});
-        return pod.render();
-    },
-);
+const render = (item): React.ReactNode => {
+    const pod = new Pod({spec: item.spec, status: item.status});
+    return pod.render();
+};
+
+export class PodDetailUI extends DetailUI {
+    constructor(props, state) {
+        super(props, state);
+        this.provider = render;
+    }
+}

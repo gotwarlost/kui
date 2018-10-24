@@ -52,6 +52,9 @@ export class Client {
         if (thrown) {
             return cb(new Error(thrown.toString()));
         }
+        if (statusCode < 200 || statusCode >= 300) {
+            return cb(new Error(`unexpected error accessing ${url}\nstatus code: ${statusCode}, body: ${body}`));
+        }
         if (body) {
             return cb(new Error(`${statusCode}:${body}`));
         }

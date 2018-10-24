@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Grid, Segment, Table} from "semantic-ui-react";
 import {Conditions} from "./common/conditions";
-import {genericDetailForResource} from "./generic-detail";
+import {DetailUI} from "./detail-ui";
 
 const getResources = (status): React.ReactFragment => {
     return (
@@ -93,35 +93,40 @@ const getNodeInfo = (status): React.ReactFragment => {
     );
 };
 
-export const NodeDetail = genericDetailForResource(
-    (item): React.ReactNode => {
-        const spec = (item as any).spec || {};
-        const status = (item as any).status || {};
-        return(
-            <React.Fragment>
-                <Grid stackable>
-                    <Grid.Column width={8}>
-                        <Segment raised>
-                        <Conditions conditions={status.conditions}/>
-                        </Segment>
-                    </Grid.Column>
-                    <Grid.Column width={8}>
-                        <Segment raised>
-                        {getResources(status)}
-                        </Segment>
-                    </Grid.Column>
-                    <Grid.Column  width={8}>
-                        <Segment raised>
-                        {getNodeInfo(status)}
-                        </Segment>
-                    </Grid.Column>
-                    <Grid.Column width={8}>
-                        <Segment raised>
-                            {getSpec(spec)}
-                        </Segment>
-                    </Grid.Column>
-                </Grid>
-            </React.Fragment>
-        );
-    },
-);
+const render  = (item): React.ReactNode => {
+    const spec = (item as any).spec || {};
+    const status = (item as any).status || {};
+    return(
+        <React.Fragment>
+            <Grid stackable>
+                <Grid.Column width={8}>
+                    <Segment raised>
+                    <Conditions conditions={status.conditions}/>
+                    </Segment>
+                </Grid.Column>
+                <Grid.Column width={8}>
+                    <Segment raised>
+                    {getResources(status)}
+                    </Segment>
+                </Grid.Column>
+                <Grid.Column  width={8}>
+                    <Segment raised>
+                    {getNodeInfo(status)}
+                    </Segment>
+                </Grid.Column>
+                <Grid.Column width={8}>
+                    <Segment raised>
+                        {getSpec(spec)}
+                    </Segment>
+                </Grid.Column>
+            </Grid>
+        </React.Fragment>
+    );
+};
+
+export class NodeDetailUI extends DetailUI {
+    constructor(props, state) {
+        super(props, state);
+        this.provider = render;
+    }
+}

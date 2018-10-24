@@ -1,5 +1,5 @@
 import * as React from "react";
-import {genericListForResource} from "./generic-list";
+import {ListUI} from "./list-ui";
 
 const cols = [
     {
@@ -55,4 +55,9 @@ const portsCell = (item): React.ReactNode => {
     return <React.Fragment>{lines}</React.Fragment>;
 };
 
-export const ServiceList = genericListForResource(cols);
+export class ServiceListUI extends ListUI {
+    constructor(props, state) {
+        super(cols, state);
+        this.cols = cols;
+    }
+}

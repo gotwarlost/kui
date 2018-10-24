@@ -1,8 +1,8 @@
 import * as React from "react";
 import {List, Table} from "semantic-ui-react";
-import {genericDetailForResource} from "./generic-detail";
 import {toSelectorString} from "../../../util";
 import {InlineObject} from "./common/inline-object";
+import {DetailUI} from "./detail-ui";
 
 const getPorts = (ports)  => {
     const p = ports || [];
@@ -39,7 +39,7 @@ const getPorts = (ports)  => {
     );
 };
 
-const renderFn = (item): React.ReactNode => {
+const render = (item): React.ReactNode => {
     const spec = item.spec || {};
     const status = item.status || {};
     const rows = [];
@@ -151,4 +151,9 @@ const renderFn = (item): React.ReactNode => {
     );
 };
 
-export const ServiceDetail = genericDetailForResource(renderFn);
+export class ServiceDetailUI extends DetailUI {
+    constructor(props, state) {
+        super(props, state);
+        this.provider = render;
+    }
+}

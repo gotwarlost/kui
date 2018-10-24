@@ -1,4 +1,4 @@
-import {genericListForResource} from "./generic-list";
+import {ListUI} from "./list-ui";
 
 const cols = [
     {
@@ -15,4 +15,9 @@ const cols = [
     },
 ];
 
-export const DaemonSetList = genericListForResource(cols);
+export class DaemonSetListUI extends ListUI {
+    constructor(props, state) {
+        super(props, state);
+        this.cols = cols;
+    }
+}

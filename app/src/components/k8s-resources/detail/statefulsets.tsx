@@ -1,11 +1,11 @@
 import * as React from "react";
 import {Segment, Table} from "semantic-ui-react";
 import {toSelectorString} from "../../../util";
-import {genericDetailForResource} from "./generic-detail";
 import {Conditions} from "./common/conditions";
 import {InlineObject} from "./common/inline-object";
 import {PodTemplate} from "./pods/pod-template-ui";
 import {formatResources} from "./common/resources";
+import {DetailUI} from "./detail-ui";
 
 const vcTemplate = (template, num) => {
     const spec = template.spec || {};
@@ -154,4 +154,9 @@ const render = (item) => {
     );
 };
 
-export const StatefulsetDetail = genericDetailForResource(render);
+export class StatefulsetDetailUI extends DetailUI {
+    constructor(props, state) {
+        super(props, state);
+        this.provider = render;
+    }
+}

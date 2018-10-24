@@ -2,21 +2,19 @@ import * as yaml from "js-yaml";
 import * as React from "react";
 import {Checkbox, Loader, Message, Segment} from "semantic-ui-react";
 import {IResource, ResourceQueryResults} from "../../../model/types";
+import {renderList} from "../list";
 import {MetadataDetailUI} from "./common/metadata-detail-ui";
+import {IListDispatch} from "../list/list-ui";
 
 export type IContentProvider = (item: IResource, thisObj) => React.ReactNode;
 
 export interface IDetailProps {
     kind: string;
     qr: ResourceQueryResults;
-    provider: IContentProvider;
+    events?: ResourceQueryResults;
 }
 
-export interface IDetailDispatch {
-    onBack(event: any);
-}
-
-export interface IDetail extends IDetailProps, IDetailDispatch {
+export interface IDetail extends IDetailProps, IListDispatch {
 }
 
 interface IDetailState {
@@ -54,14 +52,17 @@ const miniYAMLProvider = (item): React.ReactNode => {
 };
 
 export class DetailUI extends React.Component<IDetail, IDetailState> {
+
+    protected provider?: IContentProvider;
+
     constructor(props, state) {
         super(props, state);
-        this.onBack = this.onBack.bind(this);
         this.toggleYAML = this.toggleYAML.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
     public render() {
-        const provider = this.props.provider || miniYAMLProvider;
+        const provider = this.provider || miniYAMLProvider;
         if (!this.props.qr) {
             return null;
         }
@@ -71,7 +72,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         const err = this.props.qr.err && (
             <Message error>
                 <Message.Header>Load error</Message.Header>
-                {this.props.qr.err.message}
+                <pre className="wrapped">{this.props.qr.err.message}</pre>
             </Message>
         );
         const toggle = (
@@ -93,7 +94,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         );
         let content: React.ReactNode;
         if (!(loading || err)) {
-            content = this.renderItem(this.props.kind, this.props.qr.results as IResource, provider);
+            content = this.renderItem(this.props.kind, this.props.qr.results as IResource, this.props.events, provider);
         }
         return (
             <Segment raised>
@@ -108,18 +109,30 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         (window as any).PR.prettyPrint();
     }
 
-    private renderItem(kind: string, item: IResource, provider: IContentProvider): React.ReactNode {
-        if (!this._state().showYAML) {
-            const meta = <MetadataDetailUI kind={kind} metadata={item.metadata}/>;
-            const rest = provider(item, this);
-            return (
-                <div>
-                    {meta}
-                    {rest}
-                </div>
-            );
+    private renderItem(kind: string, item: IResource, events: ResourceQueryResults,
+                       provider: IContentProvider): React.ReactNode {
+        if (this._state().showYAML) {
+            return renderYAML(item);
         }
-        return renderYAML(item);
+        const meta = <MetadataDetailUI kind={kind} metadata={item.metadata}/>;
+
+        const e = !events ? null :
+            renderList("v1:Event", {
+                displayNamespace: false,
+                listName: "Events",
+                onSelect: this.props.onSelect,
+                pageSize: 15,
+                qr: events,
+                showWhenNoResults: false,
+            });
+        const rest = provider(item, this);
+        return (
+            <div>
+                {meta}
+                {e}
+                {rest}
+            </div>
+        );
     }
 
     private _state() {
@@ -130,10 +143,14 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         this.setState({showYAML: data.checked});
     }
 
-    private onBack(e: React.SyntheticEvent<{}>) {
+    private onClick(e: React.SyntheticEvent<HTMLElement>) {
         e.preventDefault();
-        if (this.props.onBack) {
-            this.props.onBack(e);
+        if (this.props.onSelect) {
+            this.props.onSelect(e, {
+                namespace: e.currentTarget.getAttribute("data-namespace"),
+                objectID: e.currentTarget.getAttribute("data-name"),
+                resourceName: e.currentTarget.getAttribute("data-resource"),
+            });
         }
     }
 }

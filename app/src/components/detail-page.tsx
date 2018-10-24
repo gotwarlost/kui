@@ -1,23 +1,24 @@
 import * as React from "react";
 import {connect} from "react-redux";
 import {State, StateReader} from "../model/state";
-import {ObjectSelection} from "../model/types";
-import {detailFor} from "./k8s-resources/detail";
+import {renderDetail} from "./k8s-resources/detail";
+import {IDetailProps, IDetailDispatch} from "./k8s-resources/detail/detail-ui";
 import {ErrorBoundary} from "./error-boundary";
+import {ActionFactory} from "../model/actions";
 
-export interface IDetailPage {
-    selection: ObjectSelection;
+interface IDetailPlus extends IDetailProps {
+    resourceType: string;
 }
 
-export class DetailPageUI extends React.Component<IDetailPage, {}> {
+export class DetailPageUI extends React.Component<IDetailPlus, {}> {
     public render() {
-        if (!this.props.selection) {
+        if (!this.props.qr) {
             return null;
         }
         return (
             <ErrorBoundary>
                 <React.Fragment>
-                    {detailFor(this.props.selection.resourceType)}
+                    {renderDetail(this.props.resourceType, this.props)}
                 </React.Fragment>
             </ErrorBoundary>
         );
@@ -25,10 +26,24 @@ export class DetailPageUI extends React.Component<IDetailPage, {}> {
 }
 
 export const DetailPage = connect(
-    (s: State): IDetailPage => {
-        return {selection: StateReader.getObjectSelection(s)};
+    (s: State): IDetailPlus => {
+        const selection = StateReader.getObjectSelection(s);
+        const resourceType = selection && selection.resourceType;
+        const key = StateReader.detailQueryKey(s);
+        const qr = StateReader.getResults(s, { path: key });
+        const events = StateReader.getResults(s, { path: key, queryName: "events" });
+        return {
+            events,
+            kind: resourceType,
+            qr,
+            resourceType,
+        };
     },
-    (dispatch): {} => {
-        return {};
+    (dispatch): IDetailDispatch => {
+        return {
+            onSelect: (evt, data) => {
+                return dispatch(ActionFactory.selectObject(data.resourceName, data.namespace, data.objectID));
+            },
+        };
     },
 )(DetailPageUI);

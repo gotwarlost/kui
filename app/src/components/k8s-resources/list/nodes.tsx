@@ -1,4 +1,4 @@
-import { genericListForResource } from "./generic-list";
+import {ListUI} from "./list-ui";
 
 const cols = [
     {
@@ -28,4 +28,9 @@ const cols = [
     },
 ];
 
-export const NodeList = genericListForResource(cols);
+export class NodeListUI extends ListUI {
+    constructor(props, state) {
+        super(props, state);
+        this.cols = cols;
+    }
+}
