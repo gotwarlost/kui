@@ -16,9 +16,8 @@ export const genericListForResource = (cols: IReactTableColumn[] = null,
     (s: State, props: IGenericListProps): IListProps => {
         const name = props.name;
         const ns = s.selection.namespace;
-        const qd = s.data || {};
         const key = StateReader.listQueryKey(s, name);
-        const qr = qd[key];
+        const qr = StateReader.getResults(s, { path: key });
         return {
             baseAccessors,
             cols,

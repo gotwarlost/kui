@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -278,6 +279,18 @@ func (s *server) getOrList(w http.ResponseWriter, r *http.Request, object bool) 
 	}
 
 	u := conn.baseURL + path
+	var queryParams []string
+	prefix := "k8s."
+	for k := range r.Form {
+		if strings.Index(k, prefix) == 0 {
+			k2 := k[len(prefix):]
+			v := url.QueryEscape(r.Form.Get(k))
+			queryParams = append(queryParams, fmt.Sprintf("%s=%s", k2, v))
+		}
+	}
+	if len(queryParams) > 0 {
+		u = fmt.Sprintf("%s?%s", u, strings.Join(queryParams, "&"))
+	}
 
 	start := time.Now()
 	downLog.Println("GET", u)

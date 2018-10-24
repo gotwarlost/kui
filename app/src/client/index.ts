@@ -24,21 +24,24 @@ export class Client {
         stream.on("done", (obj) => cb(null, obj));
     }
 
-    public listResources(context: string, resourceName: string, ns: string, cb: listResourceCallback) {
+    public listResources(context: string, resourceName: string, ns: string, params: object, cb: listResourceCallback) {
         let url = `${this.baseURL}/${context}/resources?res=${resourceName}`;
         if (ns) {
             url += "&namespace=" + ns;
         }
+        url = this.addParams(url, params);
         const stream = oboe({url});
         stream.on("fail", (err) => this.doError(url, err, cb));
         stream.on("done", (obj) => cb(null, obj));
     }
 
-    public getResource(context: string, resourceName: string, ns: string, name: string, cb: getResourceCallback) {
+    public getResource(context: string, resourceName: string, ns: string, name: string,
+                       params: object, cb: getResourceCallback) {
         let url = `${this.baseURL}/${context}/resources/${name}?res=${resourceName}`;
         if (ns) {
             url += "&namespace=" + ns;
         }
+        url = this.addParams(url, params);
         const stream = oboe({url});
         stream.on("fail", (err) => this.doError(url, err, cb));
         stream.on("done", (obj) => cb(null, obj));
@@ -53,5 +56,14 @@ export class Client {
             return cb(new Error(`${statusCode}:${body}`));
         }
         return cb(new Error(`unexpected error accessing ${url}`));
+    }
+
+    private addParams(url: string, params: object): string {
+        if (params) {
+            Object.keys(params).forEach( (p) => {
+                url += "&" + p + "=" + escape(params[p]);
+            });
+        }
+        return url;
     }
 }

@@ -47,6 +47,7 @@ export class ResourceQuery {
     public resourceType: string; // resource type
     public namespace?: string; // optional namespace
     public objectId?: string; // object id
+    public params?: object; // query params
 }
 
 // ResourceQueryResults encapsulates all the phases of executing a query
@@ -56,6 +57,16 @@ export class ResourceQueryResults {
     public loading?: boolean;
     public results?: IResource | IResourceList;
     public err?: Error;
+}
+
+export interface IResultsPath {
+    path: string;
+    queryName?: string;
+}
+
+export interface IQueryWithLocation {
+    query: ResourceQuery;
+    location: IResultsPath;
 }
 
 export enum QueryScope {

@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Icon, List, Segment} from "semantic-ui-react";
 import {ActionFactory} from "../model/actions";
 import {overviewTitle, State, StateReader} from "../model/state";
-import {IResourceGroup} from "../model/types";
+import {IResourceGroup, ResourceQueryResults} from "../model/types";
 
 type countFn = (name: string) => any;
 type loadingFn = (name: string) => boolean;
@@ -166,13 +166,16 @@ export const LeftNav = connect(
         allResources.forEach( (g) => {
             g.resources.forEach( (r) => { allResourceTypes.push(r.id); });
         });
+        const getData = (name: string): ResourceQueryResults => {
+            const key = StateReader.listQueryKey(s, name);
+            return StateReader.getResults(s, { path: key });
+        };
         const finder = {
             countFn: (name: string) => {
                 if (name === "") {
                     return undefined;
                 }
-                const key = StateReader.listQueryKey(s, name);
-                const qr = s.data[key];
+                const qr = getData(name);
                 if (qr && qr.results) {
                     const items = (qr.results as any).items;
                     if (items && items.hasOwnProperty("length")) {
@@ -185,16 +188,14 @@ export const LeftNav = connect(
                 if (name === "") {
                     return false;
                 }
-                const key = StateReader.listQueryKey(s, name);
-                const qr = s.data[key];
+                const qr = getData(name);
                 return qr && !!qr.err;
             },
             loadingFn: (name: string) => {
                 if (name === "") {
                     return false;
                 }
-                const key = StateReader.listQueryKey(s, name);
-                const qr = s.data[key];
+                const qr = getData(name);
                 return qr && qr.loading;
             },
             selectFn: (name: string) => {

@@ -1,6 +1,8 @@
 import {Action} from "redux";
 import {
     ContextCache,
+    IQueryWithLocation,
+    IResultsPath,
     NamespaceListCache,
     NamespaceSelection,
     ObjectSelection,
@@ -15,9 +17,11 @@ export enum ActionTypes {
 
     // data events, namespaces are treated specially since
     // they drive processing.
+    START_CONTEXT_LOAD = "start context load",
     GET_CONTEXT_DETAIL = "get context detail",
     GET_NAMESPACE_LIST = "get namespace list",
-    LOAD_DATA = "load data",
+    START_QUERIES = "start data load",
+    DATA_RESULT = "load results",
     CLEAR_CACHE= "clear cache",
 
     // from react router redux, cannot use exported value in enum
@@ -50,6 +54,12 @@ export interface ISelectObject extends Action {
     selection: ObjectSelection;
 }
 
+export interface IStartContextLoad extends Action {
+    type: ActionTypes.START_CONTEXT_LOAD;
+    cc: ContextCache;
+    nl: NamespaceListCache;
+}
+
 export interface IGetContextDetail extends Action {
     type: ActionTypes.GET_CONTEXT_DETAIL;
     cc: ContextCache;
@@ -62,8 +72,15 @@ export interface IListNamespaces extends Action {
 }
 
 // sent when loading other data.
-export interface ILoadData extends Action {
-    type: ActionTypes.LOAD_DATA;
+export interface IStartQueries extends Action {
+    type: ActionTypes.START_QUERIES;
+    queries: IQueryWithLocation[];
+}
+
+// sent when loading results.
+export interface IDataResult extends Action {
+    type: ActionTypes.DATA_RESULT;
+    location: IResultsPath;
     qr: ResourceQueryResults;
 }
 
@@ -87,9 +104,11 @@ export type AppAction =
     | ISelectNamespace
     | ISelectListPage
     | ISelectObject
+    | IStartContextLoad
     | IGetContextDetail
     | IListNamespaces
-    | ILoadData
+    | IStartQueries
+    | IDataResult
     | IClearCache
     | ILocationChange
     | IOtherMessage;
@@ -112,6 +131,10 @@ export class ActionFactory {
         return {selection: {name, namespace, resourceType}, type: ActionTypes.UI_SELECT_OBJECT};
     }
 
+    public static startContextLoad(cc: ContextCache, nl: NamespaceListCache): IStartContextLoad {
+        return {cc, nl, type: ActionTypes.START_CONTEXT_LOAD};
+    }
+
     public static getContextDetail(cc: ContextCache): IGetContextDetail {
         return {cc, type: ActionTypes.GET_CONTEXT_DETAIL};
     }
@@ -120,8 +143,12 @@ export class ActionFactory {
         return {nl, type: ActionTypes.GET_NAMESPACE_LIST};
     }
 
-    public static loadData(qr: ResourceQueryResults): ILoadData {
-        return {qr, type: ActionTypes.LOAD_DATA};
+    public static startQueries(queries: IQueryWithLocation[]): IStartQueries {
+        return {queries, type: ActionTypes.START_QUERIES};
+    }
+
+    public static dataResult(qr: ResourceQueryResults, cachePath: IResultsPath): IDataResult {
+        return {location: cachePath, qr, type: ActionTypes.DATA_RESULT};
     }
 
     public static clearCache(): IClearCache {

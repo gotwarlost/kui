@@ -10,12 +10,10 @@ interface INameProps {
 export const genericDetailForResource = (provider: IContentProvider = null) => connect(
     (s: State, props: INameProps): IDetailProps => {
         const name = props.name;
-        const qd = s.data || {};
-        const key = StateReader.detailQueryKey(s);
         return {
             kind: name,
             provider,
-            qr: qd[key],
+            qr: StateReader.getResults(s, { path: StateReader.detailQueryKey(s) }),
         };
     },
     (dispatch): IDetailDispatch => {

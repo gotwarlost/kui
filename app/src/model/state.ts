@@ -1,6 +1,6 @@
 import {routerReducer} from "react-router-redux";
 import * as types from "./types";
-import {NamespaceSelection, ResourceQueryResults} from "./types";
+import {IResultsPath, NamespaceSelection, ResourceQueryResults} from "./types";
 
 // IQueryResultsMap is a cache of query results, keyed by resource
 // query string.
@@ -10,7 +10,7 @@ interface IQueryResultsMap {
 
 // resourceQueryKey returns the string representation of the
 // query, typically used as a cache key.
-export function resourceQueryKey(q: types.ResourceQuery): string {
+const resourceQueryKey = (q: types.ResourceQuery): string => {
     const path = [q.k8sContext, q.resourceType];
     if (q.namespace) {
         path.push(q.namespace);
@@ -19,7 +19,7 @@ export function resourceQueryKey(q: types.ResourceQuery): string {
         path.push(q.objectId);
     }
     return path.join("/");
-}
+};
 
 export class State {
     public availableContexts: string[];
@@ -156,6 +156,20 @@ export class StateReader {
             objectId: obj.name,
             resourceType: obj.resourceType,
         });
+    }
+
+    public static getResults(s: State, location: IResultsPath): ResourceQueryResults {
+        const scope = s.data[location.path];
+        const qName = location.queryName || "";
+        if (!scope) {
+            return null;
+        }
+        const output = scope[qName];
+        return output || null;
+    }
+
+    public static hasResults(s: State, location: IResultsPath): boolean {
+        return StateReader.getResults(s, location) !== null;
     }
 }
 
