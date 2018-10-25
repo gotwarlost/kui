@@ -28,8 +28,8 @@ func (rv ResourceVersion) Version() string {
 	return parts[1]
 }
 
-func (rv ResourceVersion) EmptyVersion() ResourceVersion {
-	return ResourceVersion(fmt.Sprintf("%s/%s", rv.Group(), ""))
+func (rv ResourceVersion) WithEmptyVersion() ResourceVersion {
+	return ResourceVersion(fmt.Sprintf("%s", rv.Group()))
 }
 
 func (rv ResourceVersion) String() string {
@@ -41,18 +41,22 @@ type ResourceKey struct {
 	Kind            string
 }
 
-func (r ResourceKey) EmptyVersion() ResourceKey {
-	return ResourceKey{ResourceVersion: r.ResourceVersion.EmptyVersion(), Kind: r.Kind}
+func (r ResourceKey) WithEmptyVersion() ResourceKey {
+	return ResourceKey{ResourceVersion: r.ResourceVersion.WithEmptyVersion(), Kind: r.Kind}
 }
 
 func (r ResourceKey) String() string {
+	rv := r.ResourceVersion.String()
+	if rv == "" {
+		return r.Kind
+	}
 	return fmt.Sprintf("%s:%s", r.ResourceVersion, r.Kind)
 }
 
 func ResourceKeyFromString(s string) (ResourceKey, error) {
 	parts := strings.SplitN(s, ":", 2)
 	if len(parts) < 2 {
-		return ResourceKey{}, fmt.Errorf("invalid resource key %q", s)
+		return ResourceKey{ResourceVersion: ResourceVersion(""), Kind: parts[0]}, nil
 	}
 	return ResourceKey{ResourceVersion: ResourceVersion(parts[0]), Kind: parts[1]}, nil
 }
@@ -148,23 +152,33 @@ func New(config *rest.Config) (*ResourceRegistry, error) {
 			preferredKeys = append(preferredKeys, k)
 		}
 	}
+	rr.aliases[ResourceKey{ResourceVersion: ResourceVersion("events.k8s.io"), Kind: "Event"}] =
+		ResourceKey{ResourceVersion: ResourceVersion(""), Kind: "Event"}
+
 	for _, key := range preferredKeys {
 		for k := range rr.types {
 			if k.ResourceVersion.Group() == "extensions" && k.Kind == key.Kind {
+				rr.aliases[k.WithEmptyVersion()] = key.WithEmptyVersion()
+			}
+		}
+	}
+
+	for alias := range rr.aliases {
+		for k := range rr.types {
+			if alias == k.WithEmptyVersion() {
 				delete(rr.types, k)
-				rr.aliases[k.EmptyVersion()] = key.EmptyVersion()
 			}
 		}
 	}
 	for key := range rr.types {
-		rr.preferredVersions[key.EmptyVersion()] = key
+		rr.preferredVersions[key.WithEmptyVersion()] = key
 	}
 	return rr, nil
 }
 
 // ResourceInfo returns the information for the supplied type or an error if it was not found.
 func (r *ResourceRegistry) ResourceInfo(key ResourceKey) (*ResourceInfo, error) {
-	emptyKey := key.EmptyVersion()
+	emptyKey := key.WithEmptyVersion()
 	alias, ok := r.aliases[emptyKey]
 	if ok {
 		key, ok = r.preferredVersions[alias]
@@ -188,6 +202,14 @@ func (r *ResourceRegistry) AllResources() []ResourceInfo {
 		return ret[i].DisplayName < ret[j].DisplayName
 	})
 	return ret
+}
+
+func (r *ResourceRegistry) Aliases() map[ResourceKey]ResourceKey {
+	return r.aliases
+}
+
+func (r *ResourceRegistry) PreferredVersions() map[ResourceKey]ResourceKey {
+	return r.preferredVersions
 }
 
 func getSingularPluralNames(name, kind string) (string, string) {

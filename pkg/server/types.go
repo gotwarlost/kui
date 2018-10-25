@@ -35,6 +35,8 @@ func fromResource(r registry.ResourceInfo) ClusterResource {
 }
 
 type ContextDetail struct {
-	DefaultNamespace string            `json:"defaultNamespace"`
-	Resources        []ClusterResource `json:"resources"`
+	DefaultNamespace  string            `json:"defaultNamespace"`
+	Resources         []ClusterResource `json:"resources"`
+	Aliases           map[string]string `json:"aliases"`
+	PreferredVersions map[string]string `json:"preferredVersions"`
 }

@@ -227,6 +227,15 @@ func (s *server) getContext(w http.ResponseWriter, r *http.Request) {
 	for _, res := range rr.AllResources() {
 		ret.Resources = append(ret.Resources, fromResource(res))
 	}
+	ret.Aliases = map[string]string{}
+	for k, v := range rr.Aliases() {
+		ret.Aliases[k.String()] = v.String()
+	}
+	ret.PreferredVersions = map[string]string{}
+	for k, v := range rr.PreferredVersions() {
+		ret.PreferredVersions[k.String()] = v.String()
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	enc := json.NewEncoder(w)
 	enc.Encode(ret)
@@ -316,7 +325,7 @@ func (s *server) getOrList(w http.ResponseWriter, r *http.Request, object bool) 
 		return
 	}
 
-	e := ri.Key.EmptyVersion()
+	e := ri.Key.WithEmptyVersion()
 	filter := newFilter(resp.Body, w, e.ResourceVersion.Group()+"/"+e.Kind)
 	if err := filter.process(); err != nil {
 		log.Println(err)

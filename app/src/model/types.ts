@@ -39,6 +39,8 @@ export interface IResourceGroup {
 export interface IContextDetail {
     defaultNamespace: string;
     resources: IResourceInfo[];
+    preferredVersions: object;
+    aliases: object;
 }
 
 // ResourceQuery is a query for a list or a single object.

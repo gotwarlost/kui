@@ -95,9 +95,20 @@ export class StateReader {
         if (!StateReader.hasResourceInfo(state)) {
             return null;
         }
-        const resources = state.contextCache.detail.resources;
+        const parts = id.split(":");
+        const rv = parts.length === 1 ? "" : parts[0];
+        const kind = parts.length === 1 ? parts[0] : parts[1];
+        const rparts = rv.split("/");
+        const group = rparts.length === 1 ? "" : rparts[0];
+        const base = group === "" ? kind : group + ":" + kind;
+
+        const reg = state.contextCache.detail;
+        const real = reg.aliases[base] || base;
+        const preferredVersion = reg.preferredVersions[real];
+
+        const resources = reg.resources;
         for (const res of resources) {
-            if (res.id === id) {
+            if (res.id === preferredVersion) {
                 return res;
             }
         }
