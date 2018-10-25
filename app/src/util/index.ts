@@ -1,4 +1,5 @@
 import * as moment from "moment";
+import {IResourceInfo} from "../model/types";
 
 export const ageInWords = (dateStr: string): string => moment(dateStr).fromNow(true);
 
@@ -8,7 +9,14 @@ export function resourceTypeToKey(name: string): string {
     const kind = parts[1];
     const rvParts = rv.split("/");
     const g = rvParts.length === 1 ? "" : rvParts[0];
-    return g + "/" + kind;
+    return g === "" ? kind : g + ":" + kind;
+}
+
+export function collectionName(x: IResourceInfo): string {
+    if (!x) {
+        return "";
+    }
+    return x.displayGroup === "" ? x.pluralName : x.pluralName + " (" + x.displayGroup + ")";
 }
 
 export function toSelectorString(selector): string {

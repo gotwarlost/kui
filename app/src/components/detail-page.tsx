@@ -2,7 +2,7 @@ import * as React from "react";
 import {connect} from "react-redux";
 import {State, StateReader} from "../model/state";
 import {renderDetail} from "./k8s-resources/detail";
-import {IDetailProps, IDetailDispatch, IDetail} from "./k8s-resources/detail/detail-ui";
+import {IDetailProps, IDetailDispatch} from "./k8s-resources/detail/detail-ui";
 import {ErrorBoundary} from "./error-boundary";
 import {ActionFactory} from "../model/actions";
 

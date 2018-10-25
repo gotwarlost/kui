@@ -13,16 +13,16 @@ import (
 )
 
 var projections = map[string]func() projection{
-	"apps/DaemonSet":        func() projection { return &daemonset{} },
-	"extensions/DaemonSet":  func() projection { return &daemonset{} },
-	"apps/Deployment":       func() projection { return &deployment{} },
-	"extensions/Deployment": func() projection { return &deployment{} },
-	"/Event":                func() projection { return &event{} },
-	"/Node":                 func() projection { return &node{} },
-	"/Pod":                  func() projection { return &pod{} },
-	"apps/ReplicaSet":       func() projection { return &replicaset{} },
-	"extensions/ReplicaSet": func() projection { return &replicaset{} },
-	"/Service":              func() projection { return &service{} },
+	"apps:DaemonSet":        func() projection { return &daemonset{} },
+	"extensions:DaemonSet":  func() projection { return &daemonset{} },
+	"apps:Deployment":       func() projection { return &deployment{} },
+	"extensions:Deployment": func() projection { return &deployment{} },
+	"Event":                 func() projection { return &event{} },
+	"Node":                  func() projection { return &node{} },
+	"Pod":                   func() projection { return &pod{} },
+	"apps:ReplicaSet":       func() projection { return &replicaset{} },
+	"extensions:ReplicaSet": func() projection { return &replicaset{} },
+	"Service":               func() projection { return &service{} },
 	"":                      func() projection { return &defaultObject{} },
 }
 

@@ -325,8 +325,7 @@ func (s *server) getOrList(w http.ResponseWriter, r *http.Request, object bool) 
 		return
 	}
 
-	e := ri.Key.WithEmptyVersion()
-	filter := newFilter(resp.Body, w, e.ResourceVersion.Group()+"/"+e.Kind)
+	filter := newFilter(resp.Body, w, ri.Key.WithEmptyVersion().String())
 	if err := filter.process(); err != nil {
 		log.Println(err)
 	}

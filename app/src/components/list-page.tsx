@@ -5,6 +5,7 @@ import {QueryScope} from "../model/types";
 import {renderList} from "./k8s-resources/list";
 import {IListDispatch} from "./k8s-resources/list/list-ui";
 import {ActionFactory} from "../model/actions";
+import {collectionName} from "../util";
 
 interface IListPageProps {
     state: State;
@@ -29,8 +30,7 @@ export class ListPageUI extends React.Component<IListPage, {}> {
             const qr = StateReader.getResults(state, { path: key });
             return renderList(resourceType, {
                 displayNamespace: ns.scope === QueryScope.ALL_NAMESPACES,
-                listName: (StateReader.getResourceInfo(state, resourceType) ||
-                    { pluralName: "unknown-types"}).pluralName,
+                listName: collectionName(StateReader.getResourceInfo(state, resourceType)),
                 onSelect: this.props.onSelect,
                 pageSize,
                 qr,

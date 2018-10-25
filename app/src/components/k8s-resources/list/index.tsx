@@ -12,16 +12,16 @@ import {ErrorBoundary} from "../../error-boundary";
 import {IList} from "./list-ui";
 
 const pageMap = {
-    "/Event": EventsListUI,
-    "/Node": NodeListUI,
-    "/Pod": PodListUI,
-    "/Service": ServiceListUI,
-    "apps/DaemonSet": DaemonSetListUI,
-    "apps/Deployment": DeploymentListUI,
-    "apps/ReplicaSet": ReplicaSetListUI,
-    "extensions/DaemonSet": DaemonSetListUI,
-    "extensions/Deployment": DeploymentListUI,
-    "extensions/ReplicaSet": ReplicaSetListUI,
+    "Event": EventsListUI,
+    "Node": NodeListUI,
+    "Pod": PodListUI,
+    "Service": ServiceListUI,
+    "apps:DaemonSet": DaemonSetListUI,
+    "apps:Deployment": DeploymentListUI,
+    "apps:ReplicaSet": ReplicaSetListUI,
+    "extensions:DaemonSet": DaemonSetListUI,
+    "extensions:Deployment": DeploymentListUI,
+    "extensions:ReplicaSet": ReplicaSetListUI,
 };
 
 export const renderList = (resourceType: string, props: IList): React.ReactNode => {

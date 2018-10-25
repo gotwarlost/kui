@@ -4,7 +4,7 @@ import {Checkbox, Label, Loader} from "semantic-ui-react";
 import {Dropdown, Icon, Popup} from "semantic-ui-react";
 import {ActionFactory} from "../model/actions";
 import {State} from "../model/state";
-import {IResourceList, NamespaceListCache, NamespaceSelection, QueryScope} from "../model/types";
+import {NamespaceSelection, QueryScope} from "../model/types";
 
 interface IErrorIcon {
     prefix?: string;

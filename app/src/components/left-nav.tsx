@@ -1,6 +1,6 @@
 import * as React from "react";
 import {connect} from "react-redux";
-import {Icon, List, Segment} from "semantic-ui-react";
+import {Icon, Segment} from "semantic-ui-react";
 import {ActionFactory} from "../model/actions";
 import {overviewTitle, State, StateReader} from "../model/state";
 import {IResourceGroup, ResourceQueryResults} from "../model/types";

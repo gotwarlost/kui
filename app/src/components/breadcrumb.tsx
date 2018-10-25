@@ -3,7 +3,8 @@ import {connect} from "react-redux";
 import {Segment} from "semantic-ui-react";
 import {ActionFactory} from "../model/actions";
 import {overviewTitle, State, StateReader} from "../model/state";
-import {IResourceInfo, ListPageSelection, ObjectSelection, QueryScope} from "../model/types";
+import {ObjectSelection, QueryScope} from "../model/types";
+import {collectionName} from "../util";
 
 interface IPart {
     text: string;
@@ -79,7 +80,7 @@ export const Breadcrumb = connect(
             if (os) {
                 const mi = StateReader.getResourceInfo(s, os.resourceType);
                 if (mi) {
-                    parts.push({text: mi.pluralName, link: "list page"});
+                    parts.push({text: collectionName(mi), link: "list page"});
                     parts.push({text: os.name});
                 }
             } else if (ls) {
@@ -88,7 +89,7 @@ export const Breadcrumb = connect(
                 } else if (ls.resourceTypes.length === 1) {
                     const ri = StateReader.getResourceInfo(s, ls.resourceTypes[0]);
                     if (ri) {
-                        parts.push({text: ri.pluralName});
+                        parts.push({text: collectionName(ri)});
                     }
                 }
             }
