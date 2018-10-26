@@ -5,7 +5,7 @@ import {connect} from "react-redux";
 interface IObjectLinkProps {
     type: string;
     name: string;
-    namespace?: string;
+    namespace: string;
 }
 
 interface IObjectLinkDispatch {
@@ -22,7 +22,7 @@ class ObjectLinkUI extends React.Component<IObjectLink, {}> {
     }
 
     public render() {
-        return <a href="#" onClick={this.onClick}>{this.props.type}:{this.props.name}</a>;
+        return <a href="#" onClick={this.onClick}>{this.props.children}</a>;
     }
 
     private onClick(e) {

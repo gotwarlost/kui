@@ -4,12 +4,17 @@ import {MetadataDetailUI} from "../common/metadata-detail-ui";
 import {Pod} from "./pod-ui";
 
 export interface IPodTemplateProps {
+    namespace: string;
     template: any;
 }
 
 export class PodTemplate extends React.Component<IPodTemplateProps, {}> {
     public render() {
-        const podTemplate = <Pod spec={this.props.template.spec} status={{}} />;
+        const podTemplate = <Pod
+            spec={this.props.template.spec}
+            status={{}}
+            namespace={this.props.namespace}
+        />;
         return (
             <React.Fragment>
                 <h2>Pod template</h2>

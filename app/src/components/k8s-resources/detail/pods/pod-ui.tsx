@@ -8,6 +8,7 @@ import {Volumes} from "./volumes-ui";
 import {Conditions} from "../common/conditions";
 
 interface IPodProps {
+    namespace: string;
     spec: any;
     status?: any;
 }
@@ -362,7 +363,7 @@ export class Pod extends React.Component<IPodProps, {}> {
             pod.push(
                 <Segment raised>
                     <h2>Volumes</h2>
-                    <Volumes volumes={spec.volumes}/>
+                    <Volumes namespace={this.props.namespace} volumes={spec.volumes}/>
                 </Segment>,
             );
         }
@@ -371,7 +372,7 @@ export class Pod extends React.Component<IPodProps, {}> {
             containers.push(
                 <React.Fragment key={c.name}>
                     <h3>Init container: {c.name}</h3>
-                    <Container spec={c} />
+                    <Container spec={c} namespace={this.props.namespace}/>
                 </React.Fragment>,
             );
         });
@@ -379,7 +380,7 @@ export class Pod extends React.Component<IPodProps, {}> {
             containers.push(
                 <React.Fragment key={c.name}>
                     <h3>Container: {c.name}</h3>
-                    <Container spec={c}/>
+                    <Container spec={c} namespace={this.props.namespace} />
                 </React.Fragment>,
             );
         });

@@ -81,7 +81,9 @@ export class MetadataDetailUI extends React.Component<IMetadataProps, {}> {
                               <ObjectLink type={ref.apiVersion + ":" + ref.kind}
                                           name={ref.name}
                                           namespace={meta.namespace || ""}
-                              />
+                              >
+                                  {ref.kind}:{ref.name}
+                              </ObjectLink>
                           </React.Fragment>
                         );
                     })

@@ -68,7 +68,10 @@ const render = (item) => {
         </React.Fragment>
     );
 
-    const podTemplateNode = !spec.template ? null : <PodTemplate template={spec.template || {}}/>;
+    const podTemplateNode = !spec.template ?
+        null :
+        <PodTemplate namespace={item.metadata.namespace}
+                     template={spec.template || {}}/>;
 
     return (
       <React.Fragment>

@@ -2,6 +2,7 @@ import * as React from "react";
 import {Table} from "semantic-ui-react";
 import {InlineObject} from "../common/inline-object";
 import {formatResources} from "../common/resources";
+import {ObjectLink} from "../common/object-link";
 
 const formatArgs = (args: string[]) => {
     const ret = [];
@@ -49,7 +50,7 @@ const formatPorts = (ports: any[]): React.ReactNode => {
     return <React.Fragment>{lines}</React.Fragment>;
 };
 
-const formatEnv = (env: any[]): React.ReactNode => {
+const formatEnv = (env: any[], namespace: string): React.ReactNode => {
     const rows = [];
     env.forEach((e) => {
         let cell = e.value;
@@ -71,7 +72,9 @@ const formatEnv = (env: any[]): React.ReactNode => {
                 cell = (
                     <React.Fragment>
                         <i>from configmap </i>
-                        {base.name},
+                        <ObjectLink type="ConfigMap" namespace={namespace} name={base.name}>
+                        {base.name}
+                        </ObjectLink>,
                         key={base.key}
                         {base.optional ? ", optional" : ""}
                     </React.Fragment>
@@ -81,7 +84,9 @@ const formatEnv = (env: any[]): React.ReactNode => {
                 cell = (
                     <React.Fragment>
                         <i>from secret </i>
-                        {base.name},
+                        <ObjectLink type="Secret" namespace={namespace} name={base.name}>
+                        {base.name}
+                        </ObjectLink>,
                         key={base.key}
                         {base.optional ? ", optional" : ""}
                     </React.Fragment>
@@ -106,17 +111,20 @@ const formatEnv = (env: any[]): React.ReactNode => {
     );
 };
 
-const  formatEnvSource = (e): React.ReactNode  => {
+const  formatEnvSource = (e: any, namespace: string): React.ReactNode  => {
     let base;
     let source;
     let name;
     let prefix;
     let opt;
+    let srcType;
     if (e.configMapKeyRef) {
         source = "config map";
+        srcType = "ConfigMap";
         base = e.configMapKeyRef;
     } else if (e.secretKeyRef) {
         source = "secret";
+        srcType = "Secret";
         base = e.secretKeyRef;
     } else {
         source = "unknown source";
@@ -129,7 +137,12 @@ const  formatEnvSource = (e): React.ReactNode  => {
     return (
         <Table.Row>
             <Table.Cell textAlign="right">Env from {source}</Table.Cell>
-            <Table.Cell>{name}{prefix}{opt}</Table.Cell>
+            <Table.Cell>
+                <ObjectLink type={srcType} name={name} namespace={namespace}>
+                    {name}
+                </ObjectLink>
+                {prefix}{opt}
+            </Table.Cell>
         </Table.Row>
     );
 };
@@ -226,6 +239,7 @@ const formatProbe = (probe: any): React.ReactNode => {
 };
 
 export interface IContainerProps {
+    namespace: string;
     spec: any;
     status?: any;
 }
@@ -267,12 +281,12 @@ export class Container extends React.Component<IContainerProps, {}> {
         rows.push(spec.env && spec.env.length && (
             <Table.Row>
                 <Table.Cell verticalAlign="top" textAlign="right">Environment</Table.Cell>
-                <Table.Cell>{formatEnv(spec.env)}</Table.Cell>
+                <Table.Cell>{formatEnv(spec.env, this.props.namespace)}</Table.Cell>
             </Table.Row>
         ));
         if (spec.envFrom && spec.envFrom.length) {
             spec.envFrom.forEach( (e) => {
-                rows.push(formatEnvSource(e));
+                rows.push(formatEnvSource(e, this.props.namespace));
             });
         }
         if (spec.resources && (spec.resources.requests || spec.resources.limits)) {

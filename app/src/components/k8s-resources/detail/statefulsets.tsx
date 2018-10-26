@@ -149,7 +149,7 @@ const render = (item) => {
     return (
       <React.Fragment>
           {statNode}
-          <PodTemplate template={spec.template}/>
+          <PodTemplate namespace={item.metadata.namespace} template={spec.template}/>
       </React.Fragment>
     );
 };
