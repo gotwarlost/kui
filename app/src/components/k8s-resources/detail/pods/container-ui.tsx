@@ -3,6 +3,7 @@ import {Table} from "semantic-ui-react";
 import {InlineObject} from "../common/inline-object";
 import {formatResources} from "../common/resources";
 import {ObjectLink} from "../common/object-link";
+import {StandardResourceTypes} from "../../../../util";
 
 const formatArgs = (args: string[]) => {
     const ret = [];
@@ -72,7 +73,7 @@ const formatEnv = (env: any[], namespace: string): React.ReactNode => {
                 cell = (
                     <React.Fragment>
                         <i>from configmap </i>
-                        <ObjectLink type="ConfigMap" namespace={namespace} name={base.name}>
+                        <ObjectLink type={StandardResourceTypes.CONFIG_MAP} namespace={namespace} name={base.name}>
                         {base.name}
                         </ObjectLink>,
                         key={base.key}
@@ -84,7 +85,7 @@ const formatEnv = (env: any[], namespace: string): React.ReactNode => {
                 cell = (
                     <React.Fragment>
                         <i>from secret </i>
-                        <ObjectLink type="Secret" namespace={namespace} name={base.name}>
+                        <ObjectLink type={StandardResourceTypes.SECRET} namespace={namespace} name={base.name}>
                         {base.name}
                         </ObjectLink>,
                         key={base.key}
@@ -120,11 +121,11 @@ const  formatEnvSource = (e: any, namespace: string): React.ReactNode  => {
     let srcType;
     if (e.configMapKeyRef) {
         source = "config map";
-        srcType = "ConfigMap";
+        srcType = StandardResourceTypes.CONFIG_MAP;
         base = e.configMapKeyRef;
     } else if (e.secretKeyRef) {
         source = "secret";
-        srcType = "Secret";
+        srcType = StandardResourceTypes.SECRET;
         base = e.secretKeyRef;
     } else {
         source = "unknown source";

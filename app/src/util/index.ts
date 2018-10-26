@@ -12,6 +12,14 @@ export function resourceTypeToKey(name: string): string {
     return g === "" ? kind : g + ":" + kind;
 }
 
+export enum StandardResourceTypes {
+    CONFIG_MAP = "ConfigMap",
+    EVENT = "Event",
+    POD = "Pod",
+    REPLICA_SET = "apps/ReplicaSets",
+    SECRET = "Secret",
+}
+
 export function collectionName(x: IResourceInfo): string {
     if (!x) {
         return "";

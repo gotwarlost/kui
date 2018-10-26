@@ -3,6 +3,7 @@ import {Client} from "../../client";
 import {ActionFactory, ActionTypes} from "../actions";
 import {State, StateReader} from "../state";
 import {IQueryWithLocation, IResultsPath, ResourceQuery} from "../types";
+import {StandardResourceTypes} from "../../util";
 
 const loadList = (dispatch: any, client: Client, queryLoc: IQueryWithLocation) => {
     const q = queryLoc.query;
@@ -134,7 +135,7 @@ export const stateWatch = (client: Client) => ({dispatch, getState}) => (next) =
                 k8sContext: state.selection.context,
                 namespace: os.namespace,
                 params: { "k8s.fieldSelector": involved.join(",") },
-                resourceType: "v1:Event",
+                resourceType: StandardResourceTypes.EVENT,
             };
             listQueries.push({ location: { path: location.path, queryName: "events" }, query: eventsQuery});
             dispatch(ActionFactory.startQueries(queries));
