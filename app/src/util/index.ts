@@ -3,7 +3,7 @@ import {IResourceInfo} from "../model/types";
 
 export const ageInWords = (dateStr: string): string => moment(dateStr).fromNow(true);
 
-export function resourceTypeToKey(name: string): string {
+export function versionlessResourceType(name: string): string {
     const parts = name.split(":");
     const rv = parts[0];
     const kind = parts[1];
@@ -14,10 +14,15 @@ export function resourceTypeToKey(name: string): string {
 
 export enum StandardResourceTypes {
     CONFIG_MAP = "ConfigMap",
+    DAEMONSET = "apps:Daemonset",
+    DEPLOYMENT = "apps:Deployment",
     EVENT = "Event",
+    NODE = "Node",
     POD = "Pod",
-    REPLICA_SET = "apps/ReplicaSets",
+    REPLICA_SET = "apps:ReplicaSet",
     SECRET = "Secret",
+    SERVICE = "Service",
+    STATEFUL_SET = "extensions:StatefulSet",
 }
 
 export function collectionName(x: IResourceInfo): string {

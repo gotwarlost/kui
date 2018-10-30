@@ -3,15 +3,14 @@ import {connect} from "react-redux";
 import {State, StateReader} from "../model/state";
 import {QueryScope} from "../model/types";
 import {renderList} from "./k8s-resources/list";
-import {IListDispatch} from "./k8s-resources/list/list-ui";
-import {ActionFactory} from "../model/actions";
 import {collectionName} from "../util";
 
-interface IListPageProps {
+export interface IListPageProps {
     state: State;
 }
 
-interface IListPage extends IListPageProps, IListDispatch {
+interface IListPage extends IListPageProps {
+
 }
 
 export class ListPageUI extends React.Component<IListPage, {}> {
@@ -31,7 +30,6 @@ export class ListPageUI extends React.Component<IListPage, {}> {
             return renderList(resourceType, {
                 displayNamespace: ns.scope === QueryScope.ALL_NAMESPACES,
                 listName: collectionName(StateReader.getResourceInfo(state, resourceType)),
-                onSelect: this.props.onSelect,
                 pageSize,
                 qr,
                 showWhenNoResults,
@@ -46,12 +44,8 @@ export class ListPageUI extends React.Component<IListPage, {}> {
 }
 
 export const ListPage = connect(
-    (s: State): IListPageProps => ({ state: s }),
-    (dispatch): IListDispatch => {
-        return {
-            onSelect: (evt, data) => {
-                return dispatch(ActionFactory.selectObject(data.resourceName, data.namespace, data.objectID));
-            },
-        };
+    (s: State): IListPage => ({ state: s }),
+    (dispatch) => {
+        return {};
     },
 )(ListPageUI);

@@ -3,6 +3,7 @@ import ReactTable from "react-table";
 import {Loader, Message, Segment} from "semantic-ui-react";
 import {IResourceList, ResourceQueryResults} from "../../../model/types";
 import {ageInWords} from "../../../util";
+import {ObjectLink} from "../detail/common/object-link";
 
 const PAGE_SIZE = 15;
 
@@ -11,23 +12,12 @@ export interface IBaseAccessors {
     getNameAccessor(): any;
 }
 
-export interface IListProps {
+export interface IList {
     listName: string;
     qr: ResourceQueryResults;
     displayNamespace: boolean;
     showWhenNoResults?: boolean;
     pageSize?: number;
-}
-
-export interface IListDispatch {
-    onSelect(event: any, data: {
-        namespace: string,
-        resourceName: string,
-        objectID: string,
-    });
-}
-
-export interface IList extends IListProps, IListDispatch {
 }
 
 // subset of column definition that we use. Augment when needed.
@@ -50,7 +40,6 @@ export class ListUI extends React.Component<IList, {}> {
 
     constructor(props, state) {
         super(props, state);
-        this.onClick = this.onClick.bind(this);
     }
 
     public render() {
@@ -129,14 +118,11 @@ export class ListUI extends React.Component<IList, {}> {
         return {
             Cell: ({original, value}) => {
                 return (
-                    <a href="#"
-                       data-namespace={original.metadata.namespace}
-                       data-name={original.metadata.name}
-                       data-resource={this.props.qr.query.resourceType}
-                       onClick={this.onClick}
-                    >
+                    <ObjectLink type={this.props.qr.query.resourceType}
+                                name={original.metadata.name}
+                                namespace={original.metadata.namespace}>
                         {value}
-                    </a>
+                    </ObjectLink>
                 );
             },
             Header: "Name",
@@ -175,16 +161,5 @@ export class ListUI extends React.Component<IList, {}> {
             return "";
         }
         return ageInWords(item.metadata.creationTimestamp);
-    }
-
-    private onClick(e: React.SyntheticEvent<HTMLElement>) {
-        e.preventDefault();
-        if (this.props.onSelect) {
-            this.props.onSelect(e, {
-                namespace: e.currentTarget.getAttribute("data-namespace"),
-                objectID: e.currentTarget.getAttribute("data-name"),
-                resourceName: e.currentTarget.getAttribute("data-resource"),
-            });
-        }
     }
 }

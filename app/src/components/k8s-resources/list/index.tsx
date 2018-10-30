@@ -1,5 +1,5 @@
 import * as React from "react";
-import {resourceTypeToKey} from "../../../util";
+import {versionlessResourceType} from "../../../util";
 import {DaemonSetListUI} from "./daemonsets";
 import {DeploymentListUI} from "./deployments";
 import {EventsListUI} from "./events";
@@ -25,7 +25,7 @@ const pageMap = {
 };
 
 export const renderList = (resourceType: string, props: IList): React.ReactNode => {
-    const key = resourceTypeToKey(resourceType);
+    const key = versionlessResourceType(resourceType);
     const clz = pageMap[key] || ListUI;
     const child = React.createElement(clz, {key, ...props}, null);
     return (

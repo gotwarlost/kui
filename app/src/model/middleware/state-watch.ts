@@ -3,9 +3,8 @@ import {Client} from "../../client";
 import {ActionFactory, ActionTypes} from "../actions";
 import {State, StateReader} from "../state";
 import {IQueryWithLocation, IResultsPath, ResourceQuery} from "../types";
-import {StandardResourceTypes} from "../../util";
 
-const loadList = (dispatch: any, client: Client, queryLoc: IQueryWithLocation) => {
+export const loadList = (dispatch: any, client: Client, queryLoc: IQueryWithLocation) => {
     const q = queryLoc.query;
     client.listResources(q.k8sContext, q.resourceType, q.namespace, queryLoc.query.params, (err, results) => {
         dispatch(ActionFactory.dataResult({
@@ -16,7 +15,7 @@ const loadList = (dispatch: any, client: Client, queryLoc: IQueryWithLocation) =
     });
 };
 
-const loadDetail = (dispatch: any, client: Client, queryLoc: IQueryWithLocation) => {
+export const loadDetail = (dispatch: any, client: Client, queryLoc: IQueryWithLocation) => {
     const q = queryLoc.query;
     client.getResource(q.k8sContext, q.resourceType, q.namespace, q.objectId, queryLoc.query.params, (err, results) => {
         dispatch(ActionFactory.dataResult({
@@ -106,6 +105,7 @@ export const stateWatch = (client: Client) => ({dispatch, getState}) => (next) =
             queries.forEach((query) => {
                 loadList(dispatch, client, query);
             });
+            return null;
         }
     }
 
@@ -122,28 +122,9 @@ export const stateWatch = (client: Client) => ({dispatch, getState}) => (next) =
         if (!StateReader.hasResults(state, location)) {
             const ql = {location, query};
             const queries = [ ql ];
-            const listQueries = [];
-            const parts = os.resourceType.split(":");
-            const involved = [
-                "involvedObject.name=" + os.name,
-                "involvedObject.kind=" + parts[1],
-            ];
-            if (os.namespace) {
-                involved.push("involvedObject.namespace=" + os.namespace);
-            }
-            const eventsQuery: ResourceQuery = {
-                k8sContext: state.selection.context,
-                namespace: os.namespace,
-                params: { "k8s.fieldSelector": involved.join(",") },
-                resourceType: StandardResourceTypes.EVENT,
-            };
-            listQueries.push({ location: { path: location.path, queryName: "events" }, query: eventsQuery});
             dispatch(ActionFactory.startQueries(queries));
             queries.forEach( (q1) => {
                 loadDetail(dispatch, client, q1);
-            });
-            listQueries.forEach( (q2) => {
-                loadList(dispatch, client, q2);
             });
         }
     }

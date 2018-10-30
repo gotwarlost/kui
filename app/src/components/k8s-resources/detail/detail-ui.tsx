@@ -4,21 +4,13 @@ import {Checkbox, Loader, Message, Segment} from "semantic-ui-react";
 import {IResource, ResourceQueryResults} from "../../../model/types";
 import {renderList} from "../list";
 import {MetadataDetailUI} from "./common/metadata-detail-ui";
-import {IListDispatch} from "../list/list-ui";
 
 export type IContentProvider = (item: IResource, thisObj) => React.ReactNode;
 
-export interface IDetailProps {
+export interface IDetail {
     kind: string;
     qr: ResourceQueryResults;
     events?: ResourceQueryResults;
-}
-
-export interface IDetailDispatch extends IListDispatch {
-
-}
-
-export interface IDetail extends IDetailProps, IDetailDispatch {
 }
 
 interface IDetailState {
@@ -62,7 +54,6 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
     constructor(props, state) {
         super(props, state);
         this.toggleYAML = this.toggleYAML.bind(this);
-        this.onClick = this.onClick.bind(this);
     }
 
     public render() {
@@ -124,7 +115,6 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
             renderList("v1:Event", {
                 displayNamespace: false,
                 listName: "Events",
-                onSelect: this.props.onSelect,
                 pageSize: 15,
                 qr: events,
                 showWhenNoResults: false,
@@ -145,16 +135,5 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
 
     private toggleYAML(event, data) {
         this.setState({showYAML: data.checked});
-    }
-
-    private onClick(e: React.SyntheticEvent<HTMLElement>) {
-        e.preventDefault();
-        if (this.props.onSelect) {
-            this.props.onSelect(e, {
-                namespace: e.currentTarget.getAttribute("data-namespace"),
-                objectID: e.currentTarget.getAttribute("data-name"),
-                resourceName: e.currentTarget.getAttribute("data-resource"),
-            });
-        }
     }
 }

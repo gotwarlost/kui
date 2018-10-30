@@ -1,5 +1,5 @@
 import * as React from "react";
-import {resourceTypeToKey} from "../../../util";
+import {versionlessResourceType} from "../../../util";
 import {ConfigMapDetailUI} from "./configmaps";
 import {DetailUI, IDetail} from "./detail-ui";
 import {DaemonsetDetailUI} from "./daemonsets";
@@ -39,7 +39,7 @@ const pageMap = {
 };
 
 export const renderDetail = (resourceType: string, props: IDetail): React.ReactNode => {
-    const key = resourceTypeToKey(resourceType);
+    const key = versionlessResourceType(resourceType);
     const clz = pageMap[key] || DetailUI;
     return React.createElement(clz, {key, ...props}, null);
 };
