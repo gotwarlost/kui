@@ -9,20 +9,20 @@ export function versionlessResourceType(name: string): string {
     const kind = parts.length > 1  ? parts[1] : parts[0];
     const rvParts = rv.split("/");
     const g = rvParts.length === 1 ? "" : rvParts[0];
-    return g === "" ? kind : g + ":" + kind;
+    return g + "/:" + kind;
 }
 
 export enum StandardResourceTypes {
-    CONFIG_MAP = "ConfigMap",
-    DAEMONSET = "apps:Daemonset",
-    DEPLOYMENT = "apps:Deployment",
-    EVENT = "Event",
-    NODE = "Node",
-    POD = "Pod",
-    REPLICA_SET = "apps:ReplicaSet",
-    SECRET = "Secret",
-    SERVICE = "Service",
-    STATEFUL_SET = "extensions:StatefulSet",
+    CONFIG_MAP = "/:ConfigMap",
+    DAEMONSET = "apps/:Daemonset",
+    DEPLOYMENT = "apps/:Deployment",
+    EVENT = "/:Event",
+    NODE = "/:Node",
+    POD = "/:Pod",
+    REPLICA_SET = "apps/:ReplicaSet",
+    SECRET = "/:Secret",
+    SERVICE = "/:Service",
+    STATEFUL_SET = "extensions/:StatefulSet",
 }
 
 export function collectionName(x: IResourceInfo): string {

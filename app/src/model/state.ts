@@ -100,7 +100,7 @@ export class StateReader {
         const kind = parts.length === 1 ? parts[0] : parts[1];
         const rparts = rv.split("/");
         const group = rparts.length === 1 ? "" : rparts[0];
-        const base = group === "" ? kind : group + ":" + kind;
+        const base = group + "/:" + kind;
 
         const reg = state.contextCache.detail;
         const real = reg.aliases[base] || base;

@@ -93,6 +93,11 @@ const getRelatedQueries = (item: IResource, ctx: ContextCache, parentPath: strin
             break;
         case StandardResourceTypes.DEPLOYMENT:
             addEvents = true;
+            ret.push(lsQuery(item, {
+                labelSelector: toSelectorString(item.spec.selector),
+                queryName: "replicasets",
+                resourceName: StandardResourceTypes.REPLICA_SET,
+            }, ctx, parentPath));
             break;
         case StandardResourceTypes.POD:
             addEvents = true;

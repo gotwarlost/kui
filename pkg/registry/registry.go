@@ -29,7 +29,7 @@ func (rv ResourceVersion) Version() string {
 }
 
 func (rv ResourceVersion) WithEmptyVersion() ResourceVersion {
-	return ResourceVersion(fmt.Sprintf("%s", rv.Group()))
+	return ResourceVersion(fmt.Sprintf("%s/", rv.Group()))
 }
 
 func (rv ResourceVersion) String() string {
@@ -46,17 +46,13 @@ func (r ResourceKey) WithEmptyVersion() ResourceKey {
 }
 
 func (r ResourceKey) String() string {
-	rv := r.ResourceVersion.String()
-	if rv == "" {
-		return r.Kind
-	}
 	return fmt.Sprintf("%s:%s", r.ResourceVersion, r.Kind)
 }
 
 func ResourceKeyFromString(s string) (ResourceKey, error) {
 	parts := strings.SplitN(s, ":", 2)
 	if len(parts) < 2 {
-		return ResourceKey{ResourceVersion: ResourceVersion(""), Kind: parts[0]}, nil
+		return ResourceKey{ResourceVersion: ResourceVersion("/"), Kind: parts[0]}, nil
 	}
 	return ResourceKey{ResourceVersion: ResourceVersion(parts[0]), Kind: parts[1]}, nil
 }
@@ -153,7 +149,7 @@ func New(config *rest.Config) (*ResourceRegistry, error) {
 		}
 	}
 	rr.aliases[ResourceKey{ResourceVersion: ResourceVersion("events.k8s.io"), Kind: "Event"}] =
-		ResourceKey{ResourceVersion: ResourceVersion(""), Kind: "Event"}
+		ResourceKey{ResourceVersion: ResourceVersion("/"), Kind: "Event"}
 
 	for _, key := range preferredKeys {
 		for k := range rr.types {

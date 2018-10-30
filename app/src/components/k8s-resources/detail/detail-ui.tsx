@@ -4,6 +4,7 @@ import {Checkbox, Loader, Message, Segment} from "semantic-ui-react";
 import {IResource, ResourceQueryResults} from "../../../model/types";
 import {renderList} from "../list";
 import {MetadataDetailUI} from "./common/metadata-detail-ui";
+import {StandardResourceTypes} from "../../../util";
 
 export type IContentProvider = (item: IResource, thisObj) => React.ReactNode;
 
@@ -112,7 +113,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         const meta = <MetadataDetailUI kind={kind} metadata={item.metadata}/>;
 
         const e = !events ? null :
-            renderList("v1:Event", {
+            renderList(StandardResourceTypes.EVENT, {
                 displayNamespace: false,
                 listName: "Events",
                 pageSize: 15,

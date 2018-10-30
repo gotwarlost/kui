@@ -58,7 +58,7 @@ const render = (item, component) => {
 
     const podList = renderList(StandardResourceTypes.POD, {
         displayNamespace: false,
-        listName: "pods",
+        listName: "Pods",
         pageSize: 15,
         qr: component.props.relatedQueryResults("pods"),
         showWhenNoResults: false,
