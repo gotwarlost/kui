@@ -5,8 +5,8 @@ export const ageInWords = (dateStr: string): string => moment(dateStr).fromNow(t
 
 export function versionlessResourceType(name: string): string {
     const parts = name.split(":");
-    const rv = parts[0];
-    const kind = parts[1];
+    const rv = parts.length > 1  ? parts[0] : "";
+    const kind = parts.length > 1  ? parts[1] : parts[0];
     const rvParts = rv.split("/");
     const g = rvParts.length === 1 ? "" : rvParts[0];
     return g === "" ? kind : g + ":" + kind;

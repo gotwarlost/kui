@@ -88,7 +88,7 @@ const getRelatedQueries = (item: IResource, ctx: ContextCache, parentPath: strin
             ret.push(lsQuery(item, {
                 labelSelector: toSelectorString(item.spec.selector),
                 queryName: "pods",
-                resourceName: pv,
+                resourceName: StandardResourceTypes.POD,
             }, ctx, parentPath));
             break;
         case StandardResourceTypes.DEPLOYMENT:
