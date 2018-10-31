@@ -1,11 +1,12 @@
 import * as React from "react";
 import {Segment, Table} from "semantic-ui-react";
-import {toSelectorString} from "../../../util";
+import {StandardResourceTypes, toSelectorString} from "../../../util";
 import {Conditions} from "./common/conditions";
 import {InlineObject} from "./common/inline-object";
 import {PodTemplate} from "./pods/pod-template-ui";
 import {formatResources} from "./common/resources";
 import {DetailUI} from "./detail-ui";
+import {renderList} from "../list";
 
 const vcTemplate = (template, num) => {
     const spec = template.spec || {};
@@ -63,7 +64,7 @@ const vcTemplate = (template, num) => {
     );
 };
 
-const render = (item) => {
+const render = (item, component) => {
     const spec = item.spec || {};
     const status = item.status || {};
     const rows = [];
@@ -142,13 +143,22 @@ const render = (item) => {
                 </Table>
                 <Conditions conditions={status.conditions}/>
             </Segment>
-            {volumeTemplates}
         </React.Fragment>
     );
+
+    const podList = renderList(StandardResourceTypes.POD, {
+        displayNamespace: false,
+        listName: "Pods",
+        pageSize: 15,
+        qr: component.props.relatedQueryResults("pods"),
+        showWhenNoResults: false,
+    });
 
     return (
       <React.Fragment>
           {statNode}
+          {podList}
+          {volumeTemplates}
           <PodTemplate namespace={item.metadata.namespace} template={spec.template}/>
       </React.Fragment>
     );
@@ -157,6 +167,9 @@ const render = (item) => {
 export class StatefulsetDetailUI extends DetailUI {
     constructor(props, state) {
         super(props, state);
-        this.provider = render;
+    }
+
+    protected renderContent(item) {
+        return render(item, this);
     }
 }

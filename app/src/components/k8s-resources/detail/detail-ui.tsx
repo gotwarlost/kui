@@ -6,12 +6,13 @@ import {renderList} from "../list";
 import {MetadataDetailUI} from "./common/metadata-detail-ui";
 import {StandardResourceTypes} from "../../../util";
 
-export type IContentProvider = (item: IResource, thisObj) => React.ReactNode;
-
 export interface IDetail {
     kind: string;
     qr: ResourceQueryResults;
     events?: ResourceQueryResults;
+    title?: string;
+    hideMetadata?: boolean;
+    hideYAMLToggle?: boolean;
 }
 
 interface IDetailState {
@@ -28,29 +29,7 @@ const renderYAML = (item): React.ReactNode => {
     );
 };
 
-const miniYAMLProvider = (item): React.ReactNode => {
-    if (!item) {
-        return null;
-    }
-    const ob = {};
-    Object.keys(item).forEach( (k) => {
-        if (k === "metadata" || k === "kind" || k === "apiVersion") {
-            return;
-        }
-        ob[k] = item[k];
-    });
-    const yml = renderYAML(ob);
-    return (
-        <React.Fragment>
-            <i>This resource does not have a custom renderer, rendering as YAML</i>
-            {yml}
-        </React.Fragment>
-    );
-};
-
 export class DetailUI extends React.Component<IDetail, IDetailState> {
-
-    protected provider?: IContentProvider;
 
     constructor(props, state) {
         super(props, state);
@@ -58,7 +37,6 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
     }
 
     public render() {
-        const provider = this.provider || miniYAMLProvider;
         if (!this.props.qr) {
             return null;
         }
@@ -72,7 +50,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
             </Message>
         );
         const toggle = (
-            !(loading || err) && (
+            !(loading || err) && !this.props.hideYAMLToggle && (
                 <span style={{fontWeight: "normal"}}>
                    <Checkbox toggle onChange={this.toggleYAML} label="YAML"/>
                 </span>
@@ -81,7 +59,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         const header = (
             <React.Fragment>
                 <h2>
-                    {this.props.qr.query.objectId}
+                    {this.props.title || this.props.qr.query.objectId}
                     &nbsp;&nbsp;
                 </h2>
                 {loading}
@@ -90,7 +68,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         );
         let content: React.ReactNode;
         if (!(loading || err)) {
-            content = this.renderItem(this.props.kind, this.props.qr.results as IResource, this.props.events, provider);
+            content = this.renderItem(this.props.kind, this.props.qr.results as IResource, this.props.events);
         }
         return (
             <Segment raised>
@@ -105,12 +83,31 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         (window as any).PR.prettyPrint();
     }
 
-    private renderItem(kind: string, item: IResource, events: ResourceQueryResults,
-                       provider: IContentProvider): React.ReactNode {
+    protected renderContent(item: IResource): React.ReactNode {
+        if (!item) {
+            return null;
+        }
+        const ob = {};
+        Object.keys(item).forEach( (k) => {
+            if (k === "metadata" || k === "kind" || k === "apiVersion") {
+                return;
+            }
+            ob[k] = item[k];
+        });
+        const yml = renderYAML(ob);
+        return (
+            <React.Fragment>
+                <i>This resource does not have a custom renderer, rendering as YAML</i>
+                {yml}
+            </React.Fragment>
+        );
+    }
+
+    private renderItem(kind: string, item: IResource, events: ResourceQueryResults): React.ReactNode {
         if (this._state().showYAML) {
             return renderYAML(item);
         }
-        const meta = <MetadataDetailUI kind={kind} metadata={item.metadata}/>;
+        const meta = this.props.hideMetadata ? null : <MetadataDetailUI kind={kind} metadata={item.metadata}/>;
 
         const e = !events ? null :
             renderList(StandardResourceTypes.EVENT, {
@@ -120,7 +117,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
                 qr: events,
                 showWhenNoResults: false,
             });
-        const rest = provider(item, this);
+        const rest = this.renderContent(item);
         return (
             <div>
                 {meta}

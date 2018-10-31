@@ -2,7 +2,7 @@ import * as React from "react";
 import {Segment, Table} from "semantic-ui-react";
 import {DetailUI} from "./detail-ui";
 
-const render = (item): React.ReactNode => {
+const render = (item, component): React.ReactNode => {
     const spec = (item as any).spec || {};
     const status = (item as any).status || {};
     const quotaSpec = spec.hard || {};
@@ -51,6 +51,9 @@ const render = (item): React.ReactNode => {
 export class ResourceQuotaDetailUI extends DetailUI {
     constructor(props, state) {
         super(props, state);
-        this.provider = render;
+    }
+
+    protected renderContent(item) {
+        return render(item, this);
     }
 }

@@ -2,7 +2,7 @@ import * as React from "react";
 import {Segment, Table} from "semantic-ui-react";
 import {DetailUI} from "./detail-ui";
 
-const render = (item): React.ReactNode => {
+const render = (item, component): React.ReactNode => {
     const rules = (item as any).rules || [];
     let count = 0;
     const items = rules.map((rule: any) => {
@@ -49,6 +49,9 @@ const render = (item): React.ReactNode => {
 export class RoleDetailUI extends DetailUI {
     constructor(props, state) {
         super(props, state);
-        this.provider = render;
+    }
+
+    protected renderContent(item) {
+        return render(item, this);
     }
 }

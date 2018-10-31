@@ -54,6 +54,16 @@ const eventsQuery = (item: IResource, ctx: ContextCache, parentPath: string): IQ
     return { location: { path: parentPath, queryName: "events" }, query: qry };
 };
 
+const endpointsQuery = (item: IResource, ctx: ContextCache, parentPath: string): IQueryWithLocation => {
+    const qry: ResourceQuery = {
+        k8sContext: ctx.contextName,
+        namespace: item.metadata.namespace,
+        objectId: item.metadata.name,
+        resourceType: StandardResourceTypes.ENDPOINTS,
+    };
+    return { location: { path: parentPath, queryName: "endpoints" }, query: qry };
+};
+
 interface ILabelSelectorQuery {
     resourceName: string;
     labelSelector: string;
@@ -82,6 +92,11 @@ const getRelatedQueries = (item: IResource, ctx: ContextCache, parentPath: strin
     switch (rv) {
         case StandardResourceTypes.DAEMONSET:
             addEvents = true;
+            ret.push(lsQuery(item, {
+                labelSelector: toSelectorString(item.spec.selector),
+                queryName: "pods",
+                resourceName: StandardResourceTypes.POD,
+            }, ctx, parentPath));
             break;
         case StandardResourceTypes.REPLICA_SET:
             addEvents = true;
@@ -104,9 +119,15 @@ const getRelatedQueries = (item: IResource, ctx: ContextCache, parentPath: strin
             break;
         case StandardResourceTypes.SERVICE:
             addEvents = true;
+            ret.push(endpointsQuery(item, ctx, parentPath));
             break;
         case StandardResourceTypes.STATEFUL_SET:
             addEvents = true;
+            ret.push(lsQuery(item, {
+                labelSelector: toSelectorString(item.spec.selector),
+                queryName: "pods",
+                resourceName: StandardResourceTypes.POD,
+            }, ctx, parentPath));
             break;
     }
     if (addEvents) {

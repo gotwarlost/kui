@@ -2,7 +2,7 @@ import * as React from "react";
 import {Pod} from "./pods/pod-ui";
 import {DetailUI} from "./detail-ui";
 
-const render = (item): React.ReactNode => {
+const render = (item, component): React.ReactNode => {
     const pod = new Pod({
         namespace: item.metadata.namespace,
         spec: item.spec,
@@ -13,6 +13,9 @@ const render = (item): React.ReactNode => {
 export class PodDetailUI extends DetailUI {
     constructor(props, state) {
         super(props, state);
-        this.provider = render;
+    }
+
+    protected renderContent(item) {
+        return render(item, this);
     }
 }

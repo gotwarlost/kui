@@ -91,6 +91,9 @@ const render = (item, component) => {
 export class DeploymentDetailUI extends DetailUI {
     constructor(props, state) {
         super(props, state);
-        this.provider = render;
+    }
+
+    protected renderContent(item) {
+        return render(item, this);
     }
 }

@@ -3,7 +3,7 @@ import {Segment, Table} from "semantic-ui-react";
 import {InlineObject} from "./common/inline-object";
 import {DetailUI} from "./detail-ui";
 
-const render = (item): React.ReactNode => {
+const render = (item, component): React.ReactNode => {
     const spec = (item as any).spec || {};
     const makeRule = (rule) => {
         const rows = [];
@@ -71,6 +71,9 @@ const render = (item): React.ReactNode => {
 export class PrometheusRuleDetailUI extends DetailUI {
     constructor(props, state) {
         super(props, state);
-        this.provider = render;
+    }
+
+    protected renderContent(item) {
+        return render(item, this);
     }
 }

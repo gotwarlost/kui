@@ -1,8 +1,9 @@
 import * as React from "react";
 import {List, Table} from "semantic-ui-react";
-import {toSelectorString} from "../../../util";
+import {StandardResourceTypes, toSelectorString} from "../../../util";
 import {InlineObject} from "./common/inline-object";
 import {DetailUI} from "./detail-ui";
+import {renderDetail} from ".";
 
 const getPorts = (ports)  => {
     const p = ports || [];
@@ -39,7 +40,7 @@ const getPorts = (ports)  => {
     );
 };
 
-const render = (item): React.ReactNode => {
+const render = (item, component): React.ReactNode => {
     const spec = item.spec || {};
     const status = item.status || {};
     const rows = [];
@@ -141,8 +142,16 @@ const render = (item): React.ReactNode => {
             <Table.Cell>{spec.sessionAffinityConfig.clientIP.timeoutSeconds}s</Table.Cell>
         </Table.Row>
     ));
+    const endpointDetail = renderDetail(StandardResourceTypes.ENDPOINTS, {
+        hideMetadata: true,
+        hideYAMLToggle: true,
+        kind: "Endpoints",
+        qr: component.props.relatedQueryResults("endpoints"),
+        title: "Endpoints",
+    });
     return (
         <React.Fragment>
+            {endpointDetail}
             <h3>Attributes</h3>
             <Table basic="very" celled collapsing>
                 {rows}
@@ -154,6 +163,9 @@ const render = (item): React.ReactNode => {
 export class ServiceDetailUI extends DetailUI {
     constructor(props, state) {
         super(props, state);
-        this.provider = render;
+    }
+
+    protected renderContent(item) {
+        return render(item, this);
     }
 }

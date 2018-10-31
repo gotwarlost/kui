@@ -5,7 +5,7 @@ import {Conditions} from "./common/conditions";
 import {PodTemplate} from "./pods/pod-template-ui";
 import {DetailUI} from "./detail-ui";
 
-const render = (item) => {
+const render = (item, component) => {
     const spec = item.spec || {};
     const status = item.status || {};
     const rows = [];
@@ -83,6 +83,9 @@ const render = (item) => {
 export class JobDetailUI extends DetailUI {
     constructor(props, state) {
         super(props, state);
-        this.provider = render;
+    }
+
+    protected renderContent(item) {
+        return render(item, this);
     }
 }

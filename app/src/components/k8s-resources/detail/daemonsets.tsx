@@ -1,12 +1,13 @@
 import * as React from "react";
 import {Segment, Table} from "semantic-ui-react";
-import {toSelectorString} from "../../../util";
+import {StandardResourceTypes, toSelectorString} from "../../../util";
 import {Conditions} from "./common/conditions";
 import {InlineObject} from "./common/inline-object";
 import {PodTemplate} from "./pods/pod-template-ui";
 import {DetailUI} from "./detail-ui";
+import {renderList} from "../list";
 
-const render = (item) => {
+const render = (item, component) => {
     const spec = item.spec || {};
     const status = item.status || {};
     const rows = [];
@@ -68,6 +69,14 @@ const render = (item) => {
         </React.Fragment>
     );
 
+    const podList = renderList(StandardResourceTypes.POD, {
+        displayNamespace: false,
+        listName: "Pods",
+        pageSize: 15,
+        qr: component.props.relatedQueryResults("pods"),
+        showWhenNoResults: false,
+    });
+
     const podTemplateNode = !spec.template ?
         null :
         <PodTemplate namespace={item.metadata.namespace}
@@ -76,6 +85,7 @@ const render = (item) => {
     return (
       <React.Fragment>
           {statNode}
+          {podList}
           {podTemplateNode}
       </React.Fragment>
     );
@@ -84,6 +94,9 @@ const render = (item) => {
 export class DaemonsetDetailUI extends DetailUI {
     constructor(props, state) {
         super(props, state);
-        this.provider = render;
+    }
+
+    protected renderContent(item) {
+        return render(item, this);
     }
 }

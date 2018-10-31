@@ -14,15 +14,16 @@ export function versionlessResourceType(name: string): string {
 
 export enum StandardResourceTypes {
     CONFIG_MAP = "/:ConfigMap",
-    DAEMONSET = "apps/:Daemonset",
+    DAEMONSET = "apps/:DaemonSet",
     DEPLOYMENT = "apps/:Deployment",
+    ENDPOINTS = "/:Endpoints",
     EVENT = "/:Event",
     NODE = "/:Node",
     POD = "/:Pod",
     REPLICA_SET = "apps/:ReplicaSet",
     SECRET = "/:Secret",
     SERVICE = "/:Service",
-    STATEFUL_SET = "extensions/:StatefulSet",
+    STATEFUL_SET = "apps/:StatefulSet",
 }
 
 export function collectionName(x: IResourceInfo): string {
