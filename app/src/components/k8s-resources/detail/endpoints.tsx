@@ -25,6 +25,9 @@ const renderEndpoints = (subset): React.ReactNode => {
     });
     nrAddresses.push(...addresses);
     const targetAccessor = ({original, value}) => {
+        if (!value) {
+            return null;
+        }
         return (
             <ObjectLink type={value.apiVersion + ":" + value.kind}
                         name={value.name}
