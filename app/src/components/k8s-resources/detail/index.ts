@@ -4,6 +4,7 @@ import {ConfigMapDetailUI} from "./configmaps";
 import {DetailUI, IDetail} from "./detail-ui";
 import {DaemonsetDetailUI} from "./daemonsets";
 import {DeploymentDetailUI} from "./deployments";
+import {EndpointsDetailUI} from "./endpoints";
 import {JobDetailUI} from "./jobs";
 import {NodeDetailUI} from "./nodes";
 import {PodDetailUI} from "./pods";
@@ -18,6 +19,7 @@ import {StatefulsetDetailUI} from "./statefulsets";
 
 const pageMap = {
     "/:ConfigMap": ConfigMapDetailUI,
+    "/:Endpoints": EndpointsDetailUI,
     "/:Node": NodeDetailUI,
     "/:Pod": PodDetailUI,
     "/:ResourceQuota": ResourceQuotaDetailUI,
