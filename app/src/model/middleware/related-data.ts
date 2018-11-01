@@ -90,6 +90,9 @@ const getRelatedQueries = (item: IResource, ctx: ContextCache, parentPath: strin
     }
     let addEvents = false;
     switch (rv) {
+        case StandardResourceTypes.NODE:
+            addEvents = true;
+            break;
         case StandardResourceTypes.DAEMONSET:
             addEvents = true;
             ret.push(lsQuery(item, {

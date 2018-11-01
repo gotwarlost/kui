@@ -7,6 +7,16 @@ import {IQueryWithLocation, IResultsPath, ResourceQuery} from "../types";
 export const loadList = (dispatch: any, client: Client, queryLoc: IQueryWithLocation) => {
     const q = queryLoc.query;
     client.listResources(q.k8sContext, q.resourceType, q.namespace, queryLoc.query.params, (err, results) => {
+        if (results && results.items && results.items.length > 0) {
+            results.items.sort( (a, b) => {
+                const at = a.metadata && a.metadata.creationTimestamp;
+                const bt = b.metadata && b.metadata.creationTimestamp;
+                if (at < bt) {
+                    return 1;
+                }
+                return -1;
+            });
+        }
         dispatch(ActionFactory.dataResult({
             err,
             query: q,

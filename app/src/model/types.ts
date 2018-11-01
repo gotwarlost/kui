@@ -3,6 +3,7 @@ export interface IResourceMetadata {
     name: string;
     namespace?: string;
     labels: object;
+    creationTimestamp?: string;
 }
 
 export interface IResource {
