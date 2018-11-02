@@ -49,3 +49,10 @@ test-fe:
 
 watch:
 	(cd app && npm run watch)
+
+dist: clean build
+	rm -rf tmp/release
+	mkdir -p tmp/release
+	go build -o tmp/release/kui .
+	rsync -rvtl ./dist ./tmp/release/dist/
+	(cd tmp/release && tar -cvzf ../kui.tar.gz .)
