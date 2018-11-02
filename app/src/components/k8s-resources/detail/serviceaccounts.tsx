@@ -1,6 +1,26 @@
 import * as React from "react";
-import {Table} from "semantic-ui-react";
+import {List, Table} from "semantic-ui-react";
 import {DetailUI} from "./detail-ui";
+import {ObjectLink} from "./common/object-link";
+import {StandardResourceTypes} from "../../../util";
+
+const secretLink = (secret, currentNs) => {
+    const name = (secret || {}).name;
+    const ns = (secret.namespace || currentNs);
+    return (
+        <ObjectLink namespace={ns} name={name} type={StandardResourceTypes.SECRET}>
+            {name}
+        </ObjectLink>
+    );
+};
+
+const secretListItem = (secret, currentNs) => {
+   return (
+       <List.Item>
+           {secretLink(secret, currentNs)}
+       </List.Item>
+   );
+};
 
 const render = (item, component): React.ReactNode => {
     const rows = [];
@@ -11,13 +31,19 @@ const render = (item, component): React.ReactNode => {
     rows.push(item.secrets && item.secrets.length > 0 && (
         <Table.Row>
             <Table.Cell textAlign="right">Secrets</Table.Cell>
-            <Table.Cell>{item.secrets.map( (x) => x.name ).join(", ")}</Table.Cell>
+            <Table.Cell>
+                <List>
+                    {item.secrets.map( (x) => secretListItem(x, item.metadata.namespace))}
+                </List>
+            </Table.Cell>
         </Table.Row>
     ));
     rows.push(item.imagePullSecrets && item.imagePullSecrets.length > 0 && (
         <Table.Row>
             <Table.Cell textAlign="right">Image pull secrets</Table.Cell>
-            <Table.Cell>{item.imagePullSecrets.map( (x) => x.name ).join(", ")}</Table.Cell>
+            <List>
+                {item.imagePullSecrets.map( (x) => secretListItem(x, item.metadata.namespace))}
+            </List>
         </Table.Row>
     ));
     rows.push(

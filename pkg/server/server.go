@@ -9,7 +9,9 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/user"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -39,9 +41,14 @@ type conn struct {
 	client  *http.Client
 }
 
+type fileWithStats struct {
+	file string
+	stat os.FileInfo
+}
+
 type server struct {
 	l       sync.RWMutex
-	kcFiles []string
+	kcFiles []fileWithStats
 	cfg     *kubeconfig.Config
 	regMap  map[string]*registry.ResourceRegistry
 	connMap map[string]*conn
@@ -63,9 +70,42 @@ func (l *logger) Log(rec accesslog.LogRecord) {
 	}
 }
 
+func getDefaultKubeConfigFiles() []string {
+	kc := os.Getenv("KUBECONFIG")
+	if kc != "" {
+		return strings.Split(kc, strconv.QuoteRune(filepath.ListSeparator))
+	}
+	var homeDir string
+	u, err := user.Current()
+	if err != nil {
+		log.Printf("error getting current user, using $HOME, %v\n", err)
+		homeDir = os.Getenv("HOME")
+	} else {
+		homeDir = u.HomeDir
+	}
+	if homeDir != "" {
+		return []string{filepath.Join(homeDir, ".kube", "config")}
+	}
+	return nil
+}
+
 func New(files []string, staticRoot string) APIHandler {
+	if len(files) == 0 {
+		files = getDefaultKubeConfigFiles()
+	}
+	var fs []fileWithStats
+	for _, f := range files {
+		fws := fileWithStats{file: f}
+		s, err := os.Stat(f)
+		if err != nil {
+			log.Println("[warn] stat error on kubeconfig file", f)
+		} else {
+			fws.stat = s
+		}
+		fs = append(fs, fws)
+	}
 	s := &server{
-		kcFiles: files,
+		kcFiles: fs,
 		regMap:  map[string]*registry.ResourceRegistry{},
 		connMap: map[string]*conn{},
 	}
@@ -132,11 +172,26 @@ func (s *server) setCachedConn(ctx string, c *conn) {
 }
 
 func (s *server) getConfig() (*kubeconfig.Config, error) {
+	for _, fws := range s.kcFiles {
+		st, err := os.Stat(fws.file)
+		if err != nil {
+			continue
+		}
+		if fws.stat != nil {
+			if fws.stat.ModTime().Before(st.ModTime()) {
+				s.setCachedConfig(nil)
+			}
+		}
+	}
 	cc := s.getCachedConfig()
 	if cc != nil {
 		return cc, nil
 	}
-	cfg, err := kubeconfig.New(s.kcFiles)
+	var files []string
+	for _, fws := range s.kcFiles {
+		files = append(files, fws.file)
+	}
+	cfg, err := kubeconfig.New(files)
 	if err != nil {
 		s.setCachedConfig(cfg)
 	}

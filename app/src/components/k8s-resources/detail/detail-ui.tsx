@@ -7,7 +7,6 @@ import {MetadataDetailUI} from "./common/metadata-detail-ui";
 import {StandardResourceTypes} from "../../../util";
 
 export interface IDetail {
-    kind: string;
     qr: ResourceQueryResults;
     events?: ResourceQueryResults;
     title?: string;
@@ -68,7 +67,7 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         );
         let content: React.ReactNode;
         if (!(loading || err)) {
-            content = this.renderItem(this.props.kind, this.props.qr.results as IResource, this.props.events);
+            content = this.renderItem(this.props.qr.results as IResource, this.props.events);
         }
         return (
             <Segment raised>
@@ -103,11 +102,13 @@ export class DetailUI extends React.Component<IDetail, IDetailState> {
         );
     }
 
-    private renderItem(kind: string, item: IResource, events: ResourceQueryResults): React.ReactNode {
+    private renderItem(item: IResource, events: ResourceQueryResults): React.ReactNode {
         if (this._state().showYAML) {
             return renderYAML(item);
         }
-        const meta = this.props.hideMetadata ? null : <MetadataDetailUI kind={kind} metadata={item.metadata}/>;
+        const meta = this.props.hideMetadata ?
+            null :
+            <MetadataDetailUI kind={item.apiVersion + "/" + item.kind} metadata={item.metadata}/>;
 
         const e = !events ? null :
             renderList(StandardResourceTypes.EVENT, {

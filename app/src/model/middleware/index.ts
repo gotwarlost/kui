@@ -4,6 +4,7 @@ import {pathIntercept} from "./path-intercept";
 import {setDoctitle} from "./set-doc-title";
 import {stateWatch} from "./state-watch";
 import {loadRelatedData} from "./related-data";
+import {setScrollPosition} from "./scroller";
 
 export function getMiddleware(client: Client): Middleware[] {
     return [
@@ -11,5 +12,6 @@ export function getMiddleware(client: Client): Middleware[] {
         stateWatch(client),
         loadRelatedData(client),
         setDoctitle(client),
+        setScrollPosition(client),
     ];
 }

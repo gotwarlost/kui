@@ -38,7 +38,6 @@ export const DetailPage = connect(
         const events = relatedQueryResults("events");
         return {
             events,
-            kind: resourceType,
             qr,
             relatedQueryResults,
             resourceType,

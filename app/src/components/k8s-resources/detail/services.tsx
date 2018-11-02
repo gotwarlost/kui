@@ -145,7 +145,6 @@ const render = (item, component): React.ReactNode => {
     const endpointDetail = renderDetail(StandardResourceTypes.ENDPOINTS, {
         hideMetadata: true,
         hideYAMLToggle: true,
-        kind: "Endpoints",
         qr: component.props.relatedQueryResults("endpoints"),
         title: "Endpoints",
     });
