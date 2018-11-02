@@ -28,13 +28,14 @@ var (
 func initialize() {
 	appDir = os.Getenv("KUI_APP_DIR")
 	if appDir == "" {
-		appDir = "dist/app"
+		appDir = "dist"
 	}
 
-	flag.StringVar(&appDir, "app-dir", appDir, "path to webapp directory")
-	flag.IntVar(&port, "port", 11491, "listen port, set to 0 for random port")
-	flag.BoolVar(&foreground, "fore", false, "run server in foreground, no system tray")
-	flag.Parse()
+	fs := flag.NewFlagSet("kui", flag.ExitOnError)
+	fs.StringVar(&appDir, "app-dir", appDir, "path to webapp directory")
+	fs.IntVar(&port, "port", 11491, "listen port, set to 0 for random port")
+	fs.BoolVar(&foreground, "fore", false, "run server in foreground, no system tray")
+	fs.Parse(os.Args[1:])
 
 	dir, err := filepath.Abs(appDir)
 	if err != nil {

@@ -1,7 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const srcDir = path.resolve("src");
-const distDir = path.resolve(__dirname, "..", "dist", "app");
+const distDir = path.resolve(__dirname, "..", "dist");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
