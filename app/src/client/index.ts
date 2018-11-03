@@ -66,7 +66,7 @@ export class Client {
             if (statusCode === 403) {
                 return cb(new AuthzError(msg));
             }
-            return cb(new Error());
+            return cb(new Error(msg));
         }
         if (body) {
             return cb(new Error(`${statusCode}:${body}`));
