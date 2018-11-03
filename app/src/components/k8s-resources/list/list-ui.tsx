@@ -60,6 +60,11 @@ export class ListUI extends React.Component<IList, {}> {
         const header = (
             <h2>{this.props.listName}{loading}{stats}</h2>
         );
+
+        if (this.props.qr.err && this.props.qr.err.authzError && !this.props.showWhenNoResults) {
+            return null;
+        }
+
         const err = this.props.qr.err && (
             <Message error>
                 <Message.Header>Load error</Message.Header>

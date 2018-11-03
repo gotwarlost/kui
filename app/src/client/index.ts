@@ -6,6 +6,15 @@ export type getContextsCallback = (err: Error, result: IContextDetail) => void;
 export type listResourceCallback = (err: Error, result: IResourceList) => void;
 export type getResourceCallback = (err: Error, result: IResource) => void;
 
+export class AuthzError extends Error {
+    private authzError: boolean;
+
+    constructor(msg) {
+        super(msg);
+        this.authzError = true;
+    }
+}
+
 export class Client {
     constructor(private baseURL: string) {
     }
@@ -53,7 +62,11 @@ export class Client {
             return cb(new Error(thrown.toString()));
         }
         if (statusCode < 200 || statusCode >= 300) {
-            return cb(new Error(`unexpected error accessing ${url}\nstatus code: ${statusCode}, body: ${body}`));
+            const msg = `unexpected error accessing ${url}\nstatus code: ${statusCode}, body: ${body}`;
+            if (statusCode === 403) {
+                return cb(new AuthzError(msg));
+            }
+            return cb(new Error());
         }
         if (body) {
             return cb(new Error(`${statusCode}:${body}`));

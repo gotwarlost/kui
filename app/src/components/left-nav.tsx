@@ -3,11 +3,11 @@ import {connect} from "react-redux";
 import {Icon, Segment} from "semantic-ui-react";
 import {ActionFactory} from "../model/actions";
 import {overviewTitle, State, StateReader} from "../model/state";
-import {IResourceGroup, ResourceQueryResults} from "../model/types";
+import {IExtendedError, IResourceGroup, ResourceQueryResults} from "../model/types";
 
 type countFn = (name: string) => any;
 type loadingFn = (name: string) => boolean;
-type errorFn = (name: string) => boolean;
+type errorFn = (name: string) => any;
 type selectFn = (name: string) => boolean;
 type clickFn = (evt: any, props: ILinkItemProps) => any;
 
@@ -23,7 +23,7 @@ interface ILinkItemProps {
     name: string;
     count?: any;
     loading?: boolean;
-    err?: any;
+    err?: IExtendedError;
     selected?: boolean;
     onClick: clickFn;
     allResourceTypes: string[];
@@ -37,6 +37,10 @@ class LinkItem extends React.Component<ILinkItemProps, {}> {
 
     public render() {
         const title = this.props.title || "<unknown resource>";
+
+        if (this.props.err && this.props.err.authzError) {
+            return null;
+        }
 
         if (!this.props.selected && typeof this.props.count === "number" && this.props.count === 0) {
             return null;
@@ -95,7 +99,9 @@ class GroupItem extends React.Component<IGroupProps, {}> {
             if (typeof attrs.count === "number") {
                 count += attrs.count;
             } else {
-                counted = false;
+                if (!(attrs.err && attrs.err.authzError)) {
+                    counted = false;
+                }
             }
         });
         if (!sel && counted && count === 0) {
@@ -189,7 +195,7 @@ export const LeftNav = connect(
                     return false;
                 }
                 const qr = getData(name);
-                return qr && !!qr.err;
+                return qr && qr.err;
             },
             loadingFn: (name: string) => {
                 if (name === "") {

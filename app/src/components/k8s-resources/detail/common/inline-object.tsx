@@ -77,7 +77,7 @@ export class InlineObject extends React.Component<IObjectProps, {}> {
                     </Popup>
                 );
             }
-            if (typeof origV === "string" && origV.indexOf("http://") === 0 || origV.indexOf("https://") === 0) {
+            if (typeof origV === "string" && (origV.indexOf("http://") === 0 || origV.indexOf("https://")) === 0) {
                 v = <a target="_blank" href={origV}>{v}</a>;
             }
             elements.push(

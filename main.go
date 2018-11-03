@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/getlantern/systray"
 	"github.com/gotwarlost/kui/pkg/server"
@@ -17,12 +18,14 @@ import (
 )
 
 var (
-	appDir     string
-	port       int
-	foreground bool
-	icon       []byte
-	serverURL  string
-	doneChan   <-chan error
+	appDir            string
+	port              int
+	foreground        bool
+	icon              []byte
+	serverURL         string
+	doneChan          <-chan error
+	impersonateUser   string
+	impersonateGroups string
 )
 
 func initialize() {
@@ -33,6 +36,8 @@ func initialize() {
 
 	fs := flag.NewFlagSet("kui", flag.ExitOnError)
 	fs.StringVar(&appDir, "app-dir", appDir, "path to webapp directory")
+	fs.StringVar(&impersonateUser, "as", "", "user to impersonate")
+	fs.StringVar(&impersonateGroups, "as-group", "", "comma-separated groups to impersonate")
 	fs.IntVar(&port, "port", 11491, "listen port, set to 0 for random port")
 	fs.BoolVar(&foreground, "fore", false, "run server in foreground, no system tray")
 	fs.Parse(os.Args[1:])
@@ -76,7 +81,22 @@ func startServer() (string, <-chan error) {
 	}
 	addr := l.Addr()
 	log.Println("listening on", addr)
-	handler := server.New(nil, appDir)
+	imp := server.Impersonation{
+		User: impersonateUser,
+	}
+	if impersonateGroups != "" {
+		imp.Groups = strings.Split(impersonateGroups, ",")
+	}
+	cfg := server.Config{
+		StaticRoot:    appDir,
+		Impersonation: imp,
+		UserAgent:     "kui/1.0 (" + runtime.GOOS + "/" + runtime.GOARCH + ")", // FIXME for real version
+	}
+	handler, err := server.New(cfg)
+	if err != nil {
+		ch <- err
+		return "", ch
+	}
 	go func() {
 		ch <- http.Serve(l, handler)
 	}()

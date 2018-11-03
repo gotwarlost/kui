@@ -53,13 +53,17 @@ export class ResourceQuery {
     public params?: object; // query params
 }
 
+export interface IExtendedError extends Error {
+    authzError?: boolean;
+}
+
 // ResourceQueryResults encapsulates all the phases of executing a query
 // including the initial wait, error conditions and results.
 export class ResourceQueryResults {
     public query: ResourceQuery;
     public loading?: boolean;
     public results?: IResource | IResourceList;
-    public err?: Error;
+    public err?: IExtendedError;
 }
 
 export interface IResultsPath {

@@ -31,27 +31,76 @@ const (
 	namespaceQueryParam = "namespace"
 )
 
-type APIHandler interface {
-	http.Handler
-	BustCache()
+// Impersonation provides a mechanism to impersonate other users and
+// groups when making calls to the Kubernetes API. This is applied for _all_
+// contexts and may only be meaningfully used when the user is a cluster
+// admin for all contexts.
+type Impersonation struct {
+	User   string   // user to impersonate
+	Groups []string // groups to impersonate
 }
 
+// Config is the server config.
+type Config struct {
+	StaticRoot      string        // the root of the filesystem for the static server
+	KubeConfigFiles []string      // list of kubeconfig files, empty uses k8s defaults
+	Impersonation   Impersonation // any client impersonation required
+	UserAgent       string        // the user-agent to use
+}
+
+// APIHandler is an HTTP handler with some additional methods.
+type APIHandler interface {
+	http.Handler
+	BustCache() // bust all internal caches
+}
+
+// conn is connection information for a specific context that includes
+// the base URL and a configured client.
 type conn struct {
 	baseURL string
 	client  *http.Client
 }
 
+// fileWithStats tracks a file and its associated stat object, if found.
 type fileWithStats struct {
 	file string
 	stat os.FileInfo
 }
 
+// hdrTransport provides a round tripper that adds user-agent and impersonation
+// headers.
+type hdrTransport struct {
+	ua            string
+	impersonation Impersonation
+	delegate      http.RoundTripper
+}
+
+// RoundTrip implements the round tripper.
+func (it *hdrTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	if it.ua != "" {
+		r.Header.Set("User-Agent", it.ua)
+	}
+	imp := it.impersonation
+	if imp.User != "" {
+		r.Header.Set("Impersonate-User", imp.User)
+	}
+	for _, g := range imp.Groups {
+		if g != "" {
+			r.Header.Add("Impersonate-Group", g)
+		}
+	}
+	return it.delegate.RoundTrip(r)
+}
+
+// server implements APIHandler
 type server struct {
-	l       sync.RWMutex
-	kcFiles []fileWithStats
-	cfg     *kubeconfig.Config
-	regMap  map[string]*registry.ResourceRegistry
-	connMap map[string]*conn
+	ua            string
+	impersonation Impersonation
+	kcFiles       []fileWithStats
+	l             sync.RWMutex
+	cfg           *kubeconfig.Config
+	regMap        map[string]*registry.ResourceRegistry
+	connMap       map[string]*conn
 }
 
 type handler struct {
@@ -70,6 +119,8 @@ func (l *logger) Log(rec accesslog.LogRecord) {
 	}
 }
 
+// getDefaultKubeConfigFiles returns the default kubeconfig files typically derived
+// by Kubernetes (from KUBECONFIG and ~/.kube/config).
 func getDefaultKubeConfigFiles() []string {
 	kc := os.Getenv("KUBECONFIG")
 	if kc != "" {
@@ -89,7 +140,10 @@ func getDefaultKubeConfigFiles() []string {
 	return nil
 }
 
-func New(files []string, staticRoot string) APIHandler {
+func New(c Config) (APIHandler, error) {
+	files := c.KubeConfigFiles
+	staticRoot := c.StaticRoot
+
 	if len(files) == 0 {
 		files = getDefaultKubeConfigFiles()
 	}
@@ -105,14 +159,17 @@ func New(files []string, staticRoot string) APIHandler {
 		fs = append(fs, fws)
 	}
 	s := &server{
-		kcFiles: fs,
-		regMap:  map[string]*registry.ResourceRegistry{},
-		connMap: map[string]*conn{},
+		ua:            c.UserAgent,
+		impersonation: c.Impersonation,
+		kcFiles:       fs,
+		regMap:        map[string]*registry.ResourceRegistry{},
+		connMap:       map[string]*conn{},
 	}
 	b, err := ioutil.ReadFile(filepath.Join(staticRoot, "index.html"))
 	if err != nil {
-		panic("unable to read index.html under " + staticRoot)
+		return nil, fmt.Errorf("unable to read index.html under %s", staticRoot)
 	}
+
 	mux := httptreemux.NewContextMux()
 	mux.GET("/api/contexts", s.listContexts)
 	mux.GET(fmt.Sprintf("/api/contexts/:%s", contextParamName), s.getContext)
@@ -124,9 +181,10 @@ func New(files []string, staticRoot string) APIHandler {
 	mux.NotFoundHandler = http.FileServer(http.Dir(staticRoot)).ServeHTTP
 
 	h := accesslog.NewLoggingHandler(mux, &logger{})
-	return &handler{Handler: h, server: s}
+	return &handler{Handler: h, server: s}, nil
 }
 
+// BustCache busts all caches including the connection and the registry cache.
 func (s *server) BustCache() {
 	s.l.Lock()
 	defer s.l.Unlock()
@@ -145,6 +203,7 @@ func (s *server) setCachedConfig(c *kubeconfig.Config) {
 	s.l.Lock()
 	defer s.l.Unlock()
 	s.cfg = c
+	s.connMap = map[string]*conn{}
 }
 
 func (s *server) getCachedRegistry(ctx string) *registry.ResourceRegistry {
@@ -171,6 +230,7 @@ func (s *server) setCachedConn(ctx string, c *conn) {
 	s.connMap[ctx] = c
 }
 
+// getConfig returns the k8s config.
 func (s *server) getConfig() (*kubeconfig.Config, error) {
 	for _, fws := range s.kcFiles {
 		st, err := os.Stat(fws.file)
@@ -235,6 +295,12 @@ func (s *server) getConn(cfg *kubeconfig.Config, ctx string) (*conn, error) {
 	rt, err := rest.TransportFor(rc)
 	if err != nil {
 		return nil, err
+	}
+
+	rt = &hdrTransport{
+		ua:            s.ua,
+		impersonation: s.impersonation,
+		delegate:      rt,
 	}
 
 	u, _, err := defaultServerUrlFor(rc)
