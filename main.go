@@ -52,7 +52,7 @@ func defaultAppDir() string {
 	if err != nil {
 		exePath = exe
 	}
-	dir := filepath.Dir(exePath)
+	dir := filepath.Join(filepath.Dir(exePath), "dist")
 	_, err = os.Stat(filepath.Join(dir, "index.html"))
 	if err != nil {
 		return ultimateDefault()
