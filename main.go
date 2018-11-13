@@ -28,14 +28,43 @@ var (
 	impersonateGroups string
 )
 
-func initialize() {
-	appDir = os.Getenv("KUI_APP_DIR")
-	if appDir == "" {
-		appDir = "dist"
+// Version is the program version.
+var Version string
+
+func defaultAppDir() string {
+	ultimateDefault := func() string {
+		rel := filepath.Join(".", "dist")
+		dir, err := filepath.Abs(rel)
+		if err != nil {
+			return rel
+		}
+		return dir
 	}
+	appDir = os.Getenv("KUI_APP_DIR")
+	if appDir != "" {
+		return appDir
+	}
+	exe, err := os.Executable()
+	if err != nil {
+		return ultimateDefault()
+	}
+	exePath, err := filepath.EvalSymlinks(exe)
+	if err != nil {
+		exePath = exe
+	}
+	dir := filepath.Dir(exePath)
+	_, err = os.Stat(filepath.Join(dir, "index.html"))
+	if err != nil {
+		return ultimateDefault()
+	}
+	return dir
+}
+
+func initialize() {
+	appDir = defaultAppDir()
 
 	fs := flag.NewFlagSet("kui", flag.ExitOnError)
-	fs.StringVar(&appDir, "app-dir", appDir, "path to webapp directory")
+	fs.StringVar(&appDir, "app-dir", appDir, "path to webapp directory (from $KUI_APP_DIR, if set)")
 	fs.StringVar(&impersonateUser, "as", "", "user to impersonate")
 	fs.StringVar(&impersonateGroups, "as-group", "", "comma-separated groups to impersonate")
 	fs.IntVar(&port, "port", 11491, "listen port, set to 0 for random port")
@@ -140,9 +169,6 @@ func onReady() {
 	openBrowser()
 }
 
-func onExit() {
-}
-
 func main() {
 	runtime.LockOSThread()
 	initialize()
@@ -151,5 +177,5 @@ func main() {
 		err := <-doneChan
 		log.Fatalln(err)
 	}
-	systray.Run(onReady, onExit)
+	systray.Run(onReady, func() {})
 }

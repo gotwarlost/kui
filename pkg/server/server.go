@@ -140,6 +140,7 @@ func getDefaultKubeConfigFiles() []string {
 	return nil
 }
 
+// New returns an API handler for the supplied configuration.
 func New(c Config) (APIHandler, error) {
 	files := c.KubeConfigFiles
 	staticRoot := c.StaticRoot
@@ -270,7 +271,7 @@ func (s *server) getRegistry(cfg *kubeconfig.Config, ctx string) (*registry.Reso
 	return registry.New(rc)
 }
 
-func defaultServerUrlFor(config *rest.Config) (*url.URL, string, error) {
+func defaultServerURLFor(config *rest.Config) (*url.URL, string, error) {
 	// config.Insecure is taken to mean "I want HTTPS but don't bother checking the certs against a CA."
 	hasCA := len(config.CAFile) != 0 || len(config.CAData) != 0
 	hasCert := len(config.CertFile) != 0 || len(config.CertData) != 0
@@ -303,7 +304,7 @@ func (s *server) getConn(cfg *kubeconfig.Config, ctx string) (*conn, error) {
 		delegate:      rt,
 	}
 
-	u, _, err := defaultServerUrlFor(rc)
+	u, _, err := defaultServerURLFor(rc)
 	if err != nil {
 		return nil, err
 	}

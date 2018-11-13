@@ -1,3 +1,4 @@
+// Package kubeconfig provides support for reading kubernetes config files.
 package kubeconfig
 
 import (
@@ -46,18 +47,23 @@ func New(kcFiles []string) (*Config, error) {
 	}, nil
 }
 
+// ContextNames returns a list of context names available in the k8s config.
 func (c *Config) ContextNames() []string {
 	return c.names
 }
 
+// IsValidContext returns true if the supplied context name is found in the config.
 func (c *Config) IsValidContext(ctx string) bool {
 	return c.nameMap[ctx]
 }
 
+// CurrentContext returns the current context set in the config.
 func (c *Config) CurrentContext() string {
 	return c.rc.CurrentContext
 }
 
+// DefaultNamespaceForContext returns the default namespace set for the specified context,
+// defaulting to the "default" namespace.
 func (c *Config) DefaultNamespaceForContext(ctx string) string {
 	def := "default"
 	if c.rc.Contexts == nil {
@@ -73,6 +79,8 @@ func (c *Config) DefaultNamespaceForContext(ctx string) string {
 	return context.Namespace
 }
 
+// RESTConfig returns the REST configuration for the supplied context that can be used to
+// create a k8s client.
 func (c *Config) RESTConfig(context string) (*rest.Config, error) {
 	conf := clientcmd.NewDefaultClientConfig(c.rc, &clientcmd.ConfigOverrides{CurrentContext: context})
 	rc, err := conf.ClientConfig()

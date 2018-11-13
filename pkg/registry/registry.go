@@ -1,3 +1,5 @@
+// Package registry returns information about registered resource types for
+// a K8s cluster.
 package registry
 
 import (
@@ -11,8 +13,11 @@ import (
 	"k8s.io/client-go/rest"
 )
 
+// ResourceVersion represents a resource version usually expressed as [group]/[version] (e.g. extensions/v1beta1).
+// If the string does not have an embedded slash, it is assumed to be a version with an empty group (e.g. v1).
 type ResourceVersion string
 
+// Group returns the group for the version or an empty string if there is no group.
 func (rv ResourceVersion) Group() string {
 	parts := strings.SplitN(string(rv), "/", 2)
 	if len(parts) == 1 {
@@ -20,6 +25,8 @@ func (rv ResourceVersion) Group() string {
 	}
 	return parts[0]
 }
+
+// Version returns the version portion of the resource.
 func (rv ResourceVersion) Version() string {
 	parts := strings.SplitN(string(rv), "/", 2)
 	if len(parts) == 1 {
@@ -28,27 +35,35 @@ func (rv ResourceVersion) Version() string {
 	return parts[1]
 }
 
+// WithEmptyVersion returns a resource version that has an empty version. When the group is empty this
+// returns a "/" and not an empty string.
 func (rv ResourceVersion) WithEmptyVersion() ResourceVersion {
 	return ResourceVersion(fmt.Sprintf("%s/", rv.Group()))
 }
 
+// String is the string representation of the resource version.
 func (rv ResourceVersion) String() string {
 	return string(rv)
 }
 
+// ResourceKey represents a single resource type having a resource version and a kind.
+// It has a string representation of [resource version]:[kind]
 type ResourceKey struct {
-	ResourceVersion ResourceVersion
-	Kind            string
+	ResourceVersion ResourceVersion // the resource version
+	Kind            string          // the kind of resource
 }
 
+// WithEmptyVersion returns a resource key with an empty resource version.
 func (r ResourceKey) WithEmptyVersion() ResourceKey {
 	return ResourceKey{ResourceVersion: r.ResourceVersion.WithEmptyVersion(), Kind: r.Kind}
 }
 
+// String returns the string representation of the reosurce key.
 func (r ResourceKey) String() string {
 	return fmt.Sprintf("%s:%s", r.ResourceVersion, r.Kind)
 }
 
+// ResourceKeyFromString parses a string and returns a resource key.
 func ResourceKeyFromString(s string) (ResourceKey, error) {
 	parts := strings.SplitN(s, ":", 2)
 	if len(parts) < 2 {
@@ -66,6 +81,9 @@ type ResourceInfo struct {
 	APIPathName       string      // "daemonsets", "pods" etc.
 }
 
+// APIListPath returns the path to list the resource for the supplied namespace.
+// The namespace argument is ignored for cluster resources. When the namespace is
+// empty, the returned list path is for all namespaces.
 func (r ResourceInfo) APIListPath(namespace string) string {
 	prefix := "/apis"
 	if r.Key.ResourceVersion.Group() == "" {
@@ -200,10 +218,14 @@ func (r *ResourceRegistry) AllResources() []ResourceInfo {
 	return ret
 }
 
+// Aliases returns a map of known resource aliases where both the key and value
+// have empty versions.
 func (r *ResourceRegistry) Aliases() map[ResourceKey]ResourceKey {
 	return r.aliases
 }
 
+// PreferredVersions returns a map of resource keys with empty versions mapped to
+// the actual preferred version of the resource.
 func (r *ResourceRegistry) PreferredVersions() map[ResourceKey]ResourceKey {
 	return r.preferredVersions
 }
